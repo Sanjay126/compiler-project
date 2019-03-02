@@ -27,7 +27,7 @@ char getNextChar(FILE *fp){
 	// if(currVariables.bufferSize==0) check later
 }
 
-tokenInfo* newToken(char* str,tokenId tid)
+tokenInfo* genearteNewToken(char* str,tokenId tid)
 {
 	tokenInfo* new =  (tokenInfo*)malloc(sizeof(tokenInfo));
 	
@@ -39,7 +39,7 @@ tokenInfo* newToken(char* str,tokenId tid)
 	return new;
 }
 tokenInfo* getNextToken(FILE *fp){
-	int currPos = -1;
+	int buffer2Pos = -1;
 	currVariables.state = 0;
 	char curr = 0;
 	char buffer2(MAX_LENGTH);
@@ -47,14 +47,161 @@ tokenInfo* getNextToken(FILE *fp){
 	while(1){
 		cur = getNextChar(fp);
 		if(currVariables.flag == 1)
-			return newToken("$",TK_DOLLAR); //$1 or $
+			return genearteNewToken("$",TK_DOLLAR); //$1 or $
 
-		currPos++;
-		buffer2[currPos] = cur;
+		buffer2Pos++;
+		buffer2[buffer2Pos] = cur;
 
 		switch(currVariables.state)
 		{
 			case 0 :
+				switch(curr){
+					case '\n': 
+						currVariables.lineNo++;
+					case ' ':
+					case '\t':
+					case '\r':
+						buffer2Pos=-1;
+						break;
+					case '<':
+						currVariables.state=1;
+						break;
+					case '>':
+						currVariables.state=4;
+						break;
+					case '#':
+						currVariables.state=5;
+						break;
+					case '!':
+						currVariables.state=7;
+						break;
+					case '=':
+						currVariables.state=8;
+						break;
+					case '&':
+						currVariables.state=9;
+						break;
+					case '@':
+						currVariables.state=11;
+						break;
+					case '_':
+						currVariables.state=13;
+						break;
+					case '0':
+					case '1':
+					case '2':
+					case '3':
+					case '4':
+					case '5':
+					case '6':
+					case '7':
+					case '8':
+					case '9':
+						currVariables.state=17;
+						break;
+					case '%':
+						currVariables.state=20;
+						break;
+					case '[':
+						return genearteNewToken(&curr, TK_SQL);
+					case ']':
+						return genearteNewToken(&curr, TK_SQR);
+					case ',':
+						return genearteNewToken(&curr, TK_COMMA);
+					case ';':
+						return genearteNewToken(&curr, TK_SEM);
+					case ':':
+						return genearteNewToken(&curr, TK_COLON);
+					case '.':
+						return genearteNewToken(&curr, TK_DOT);
+					case '(':
+						return genearteNewToken(&curr, TK_OP);
+					case ')':
+						return genearteNewToken(&curr, TK_CP);
+					case '+':
+						return genearteNewToken(&curr, TK_PLUS);
+					case '-':
+						return genearteNewToken(&curr, TK_MINUS);
+					case '*':
+						return genearteNewToken(&curr, TK_MUL);
+					case '/':
+						return genearteNewToken(&curr, TK_DIV);
+					case '~':
+						return genearteNewToken(&curr, TK_NOT);
+					case 'b':
+					case 'c':
+					case 'd':
+						currVariables.state=21;
+						break;
+					case 'a':
+					case 'e':
+					case 'f':
+					case 'g':
+					case 'h':
+					case 'i':
+					case 'j':
+					case 'k':
+					case 'l':
+					case 'm':
+					case 'n':
+					case 'o':
+					case 'p':
+					case 'q':
+					case 'r':
+					case 's':
+					case 't':
+					case 'u':
+					case 'v':
+					case 'w':
+					case 'x':
+					case 'y':
+					case 'z':
+						currVariables.state=22;
+						break;
+					default :
+						return NULL;	//// TODO  error handling 
+
+
+				}
+				break;
+			case 1:
+				switch(curr){
+					case '-':
+						currVariables.state=2;
+						break;
+					case '=':
+						return genearteNewToken("<=", TK_LE);
+					default:
+						currVariables.offset--;
+						return genearteNewToken("<", TK_LT);
+				}
+				break;
+			case 2:
+				if(curr=='-'){
+					currVariables.state=3;
+				}
+				else{
+					return NULL;	// TODO error handling
+				}
+				break;
+			case 3:
+				if(curr=='-'){
+					return genearteNewToken("<---",TK_ASSIGNOP);
+				}
+				else{
+					return NULL;	// TODO error handling
+				}
+				break;
+			case 4:
+				if(curr=='='){
+					return genearteNewToken(">=",TK_GE);
+				}
+				else{
+					currVariables.offset--;
+					return genearteNewToken(">=",TK_GE);
+				}
+				break;
+
 				
 		}
 	}
