@@ -198,11 +198,117 @@ tokenInfo* getNextToken(FILE *fp){
 				}
 				else{
 					currVariables.offset--;
-					return genearteNewToken(">=",TK_GE);
+					return genearteNewToken(">",TK_GT);
+				}
+				break;
+			case 5:
+				if(curr>='a' && curr<='z'){
+					currVariables.state=6;
+					break;
+				}
+				else{
+					return NULL;	// TODO error handling					
+				}
+				break;
+			case 6:
+				if(curr>='a' && curr<='z'){
+					currVariables.state=6;
+					break;
+				}
+				else{
+					buffer2[buffer2Pos] = '\0';
+					currVariables.offset--;
+					return genearteNewToken(buffer2, TK_RECORDID);
+				}
+				break;
+			case 7:
+				if(curr=='='){
+					currVariables.offset--;
+					return genearteNewToken('!=', TK_NE);
+				}
+				else{
+					return NULL;	// TODO error handling					
+				}
+				break;
+			case 8:
+				if(curr=='='){
+					currVariables.offset--;
+					return genearteNewToken('==', TK_EQ);
+				}
+				else{
+					return NULL;	// TODO error handling					
 				}
 				break;
 
-				
+			case 9:
+				if(curr=='&')
+					currVariables.state=10;
+				else{
+					return NULL;	// TODO error handling					
+				}
+				break;
+			case 10:
+				if(curr=='&')
+					return genearteNewToken("&&&", TK_AND);
+				else{
+					return NULL;	// TODO error handling					
+				}
+				break;
+
+			case 11:
+				if(curr=='@')
+					currVariables.state=12;
+				else{
+					return NULL;	// TODO error handling					
+				}
+				break;
+			case 12:
+				if(curr=='@')
+					return genearteNewToken("@@@", TK_OR);
+				else{
+					return NULL;	// TODO error handling					
+				}
+				break;
+			case 13:
+				if((curr>='a' && curr<='z') || (curr>='A' && curr<='Z'))
+					currVariables.state=14;
+				else{
+					return NULL;	// TODO error handling					
+				}
+				break;
+			case 14:
+				if((curr>='a' && curr<='z') || (curr>='A' && curr<='Z'));
+				else if(curr<='9' && curr>='0')
+					currVariables.state=15;
+				else{
+					//TODO
+					//discard state 16
+					//implement lookup here only
+					// currVariables.state=16;
+				}
+				break;
+			case 15:
+				if(curr<='9' && curr>='0');
+				else{
+					currVariables.offset--;
+					buffer2[buffer2Pos]=0;
+					return genearteNewToken(buffer2, TK_FUNID);
+				}
+				break;
+			case 16:
+				// TODO LOOKUP
+				break;
+			case 17:
+				if(curr<='9' && curr>='0');
+				else if(curr=='.')
+					currVariables.state=18;
+				else{
+					currVariables.offset--;
+					buffer2[buffer2Pos]=0;
+					return genearteNewToken(buffer2, TK_NUM);
+				}
+			case 18:
+
 		}
 	}
 
