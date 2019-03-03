@@ -66,7 +66,7 @@ struct node{
 	int id;
 	struct node * next;
 };
-typedef struct node Node;
+typedef struct *node Node;
 
 typedef struct {
 	int index;
