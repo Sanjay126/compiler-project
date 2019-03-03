@@ -1,8 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdbool.h>
-#include "lexer.h"
+#include "parserDef.h"
 
 #ifndef PARSER
 #define PARSER
