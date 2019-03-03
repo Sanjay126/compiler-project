@@ -5,15 +5,19 @@
 #include "lexer.h"
 #include "parserDef.h"
 
+Grammar gram;
+
 Node First[no_of_nt+no_of_t+1][2];
 Node Follow[no_of_nt+1];
+
 Node addNode(int id,Node head){
+	// if(head==)
 	Node newNode=(Node)malloc(sizeof(struct node));
 	newNode->id=id;
 	newNode->next=head;
 	return newNode;
 }
-Node getFirstOfNT(Grammer gram,int i){
+Node getFirstOfNT(Grammar gram,int i){
 	if(First[i][0]==NULL&&First[j][0]==NULL){
 		RuleRHS rule=gram.rules[i-no_of_t];
 			while(rule){
@@ -29,7 +33,7 @@ Node getFirstOfNT(Grammer gram,int i){
 	else
 		return First[i][1];
 }
-void populateFirst(Grammer gram){
+void populateFirst(Grammar gram){
 	
 	for(int i=1;i<=no_of_nt;i++){
 		First[i]=getFirstOfNT(gram,i);
@@ -39,9 +43,9 @@ void populateFirst(Grammer gram){
 	}
 }
 
-void FirstAndFollow(Grammer gram){
-	populateFirst(Grammer);
-	populateFollow(Grammer);
+void FirstAndFollow(Grammar gram){
+	populateFirst(Grammar);
+	populateFollow(Grammar);
 }
 
 int size_table = 102;
@@ -54,7 +58,7 @@ int hash(char *v, int M){
     return h;
 }
 
-void pupulateHashTable(){
+void populateHashTable(){
 
 	Table = (hashTable)malloc(size_table*sizeof(hashNode*));
 	for(int i = 0;i < size_table;i++)
@@ -66,7 +70,7 @@ void pupulateHashTable(){
 
 	int i = 0;
 
-	for(;i < num_of_nt;i++)
+	for(;i < no_of_nt;i++)
 	{
 		int hval = hash(ntArray[i],size_table);
 		if(Table[hval]->next == NULL)
@@ -92,12 +96,12 @@ void pupulateHashTable(){
 
 	for(;i<size_table;i++)
 	{
-		int hval = hash(tokenArray[i-num_of_nt],size_table);
+		int hval = hash(tokenArray[i-no_of_nt],size_table);
 		if(Table[hval]->next == NULL)
 		{
 			Table[hval]->next = (hashNode*)malloc(sizeof(hashNode));
 			Table[hval]->next->index = i;
-			strcpy(Table[hval]->next->s, tokenArray[i-num_of_nt]);
+			strcpy(Table[hval]->next->s, tokenArray[i-no_of_nt]);
 			Table[hval]->next->next = NULL;
 		}
 
@@ -109,7 +113,7 @@ void pupulateHashTable(){
 
 			ptr->next = (hashNode*)malloc(sizeof(hashNode));
 			ptr->next->index = i;
-			strcpy(ptr->next->s, tokenArray[i-num_of_nt]);
+			strcpy(ptr->next->s, tokenArray[i-no_of_nt]);
 			ptr->next->next = NULL;
 		}
 	}
@@ -131,6 +135,48 @@ int findIndex(char* s)
 	return -1;
 }
 
+
+void buildRules(){
+	FILE *gramFile = fopen("Grammar.txt","r");
+	for(int i=0; i<no_of_nt; i++)
+		gram.rules[i]=NULL;
+	
+
+	int ruleNo=1;
+	char buff[MAX_LENGTH];
+	while(!feof(gramFile))
+	{
+		fscanf(gramFile,"%[^\n]", buff);
+		char* lhs = strtok(buff, " ");
+		int lhsIndex = findIndex(lhs);
+		// Node lhsNode = (Node)malloc(sizeof(struct node));
+		// lhsNode->
+		char* token = strtok(NULL, " ");
+		RuleRHS r = (RuleRHS)malloc(sizeof(struct ruleRHS));
+		r->next = NULL;
+		r->head = NULL;
+		r->size = 0;
+		r->ruleNo = ruleNo;
+		while(token!=NULL){
+			tokenIndex = findIndex(token);
+			r->head = addNode(tokenIndex, r->head);
+			r->size++;
+		}
+		if(gram.rules[lhsIndex]==NULL){
+			gram.rules[lhsIndex] = r;
+		}
+		else{
+			RuleRHS h = gram.rules[lhsIndex];
+			while(h!=NULL && h->next!=NULL){
+				h = h->next;
+			}
+			h->next = r;
+		}
+		ruleNo++;
+	}
+}
+
+
 void createParseTable(char* F, table T){
 	T = (table)malloc(no_of_nt*sizeof(int));
 
@@ -141,25 +187,9 @@ void createParseTable(char* F, table T){
 		for(int j = 0;j < no_of_t;j++)
 			T[i][j] = -1;
 
-	FILE *gramFile = fopen("grammer.txt","r");
-
-	char buff[MAX_LENGTH];
 
 
-	while(!feof(gramFile))
-	{
-		fscanf(gramFile,"%[^\n]", buff);
-		
-		char lhs[MAX_LENGTH];
-		int i = 0;
-		while(buff[i] != ' ')
-		{
-			lhs[i] = buff[i];
-			i++;
-		}	
-
-		buff[i] = '\0';
-	}
+	
 	
 
 
