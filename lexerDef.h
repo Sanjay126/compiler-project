@@ -59,8 +59,7 @@ typedef enum {
     TK_GT,
     TK_GE,
     TK_NE,
-    TK_EOF,
-    TK_ERROR,
+    // TK_EOF, //to be or not to be
     TK_DOLLAR,
     eps,
 } tokenId;
@@ -77,6 +76,7 @@ typedef struct{
     int offset;
     int flag;
     int bufferSize;
+    int lexicalError;
 }currentInfo;
 
 
