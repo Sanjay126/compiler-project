@@ -73,7 +73,7 @@ struct ruleRHS{
 	int size;
 	struct ruleRHS* next;
 };
-typedef struct ruleRHS RuleRHS;
+typedef struct *ruleRHS RuleRHS;
 
 struct grammar{
 	RuleRHS rules[no_of_nt];
