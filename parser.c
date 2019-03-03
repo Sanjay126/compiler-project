@@ -7,8 +7,8 @@
 
 Grammar gram;
 
-Node First[no_of_nt+no_of_t+1][2];
-Node Follow[no_of_nt+1];
+Node **First;
+Node *Follow;
 
 Node addNode(int id,Node head){
 	// if(head==)
@@ -17,36 +17,41 @@ Node addNode(int id,Node head){
 	newNode->next=head;
 	return newNode;
 }
-Node getFirstOfNT(Grammar gram,int i){
-	if(First[i][0]==NULL&&First[j][0]==NULL){
-		RuleRHS rule=gram.rules[i-no_of_t];
-			while(rule){
-				Node temp=rule->head;
-				while(temp){
-					int j=temp->id;
-					if(First[j][0]!=NULL)
-				}
-			}
-	}
-	else if(First[i][0]!=NULL)
-		return First[i][0];
-	else
-		return First[i][1];
-}
-void populateFirst(Grammar gram){
+// Node getFirstOfNT(Grammar gram,int i){
+// 	if(First[i][0]==NULL&&First[i][1]==NULL){
+// 		RuleRHS rule=gram.rules[i-no_of_t];
+// 			while(rule){
+// 				Node temp=rule->head;
+// 				while(temp){
+// 					int j=temp->id;
+// 					if(First[j][0]!=NULL)
+// 				}
+// 			}
+// 	}
+// 	else if(First[i][0]!=NULL)
+// 		return First[i][0];
+// 	else
+// 		return First[i][1];
+// }
+// void populateFirst(Grammar gram){
 	
-	for(int i=1;i<=no_of_nt;i++){
-		First[i]=getFirstOfNT(gram,i);
-	}
-	for(int i=no_of_nt+1;i<=no_of_t+no_of_nt;i++){
-		First[i][0]=addNode(i,First[i][0]);
-	}
-}
+// 	for(int i=1;i<=no_of_nt;i++){
+// 		First[i]=getFirstOfNT(gram,i);
+// 	}
+// 	for(int i=no_of_nt+1;i<=no_of_t+no_of_nt;i++){
+// 		First[i][0]=addNode(i,First[i][0]);
+// 	}
+// }
 
-void FirstAndFollow(Grammar gram){
-	populateFirst(Grammar);
-	populateFollow(Grammar);
-}
+// void FirstAndFollow(Grammar gram){
+// 	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
+// 	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
+// 	for(int i=0; i<no_of_nt+no_of_t+1; i++){
+// 		First[i] = (Node*)malloc(sizeof(Node)*2);
+// 	}
+// 	populateFirst(gram);
+// 	populateFollow(gram);
+// }
 
 int size_table = 102;
 hashTable Table; 
@@ -138,6 +143,7 @@ int findIndex(char* s)
 
 void buildRules(){
 	FILE *gramFile = fopen("Grammar.txt","r");
+	gram.rules = (RuleRHS*)malloc(sizeof(RuleRHS)*no_of_nt);
 	for(int i=0; i<no_of_nt; i++)
 		gram.rules[i]=NULL;
 	
@@ -158,7 +164,7 @@ void buildRules(){
 		r->size = 0;
 		r->ruleNo = ruleNo;
 		while(token!=NULL){
-			tokenIndex = findIndex(token);
+			int tokenIndex = findIndex(token);
 			r->head = addNode(tokenIndex, r->head);
 			r->size++;
 		}
@@ -176,9 +182,9 @@ void buildRules(){
 	}
 }
 
-
-void createParseTable(char* F, table T){
-	T = (table)malloc(no_of_nt*sizeof(int));
+//A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
+void createParseTable(parseTable T){
+	T = (parseTable)malloc(no_of_nt*sizeof(int*));
 
 	for(int i = 0;i < no_of_nt;i++)
 		T[i] = (int*)malloc(no_of_t*sizeof(int));
@@ -188,9 +194,52 @@ void createParseTable(char* F, table T){
 			T[i][j] = -1;
 
 
+	for(int i = 0;i < no_of_nt;i++)
+	{
+		RuleRHS ruleIter = gram.rules[i];
+		while(ruleIter != NULL)
+		{
+			Node RHSIter = ruleIter->head;
+			while(RHSIter && RHSIter->next)
+				RHSIter = RHSIter->next;
 
-	
-	
+			Node firstIter;
 
+			if(First[RHSIter->id][0] == NULL)
+				firstIter = First[RHSIter->id][1];
+			else
+				firstIter = First[RHSIter->id][0];
 
+			while(firstIter)
+			{	
+				if(firstIter->id != 101)
+					T[i][firstIter->id] = ruleIter->ruleNo;
+
+				else
+				{
+					Node followIter = Follow[i];
+					while(followIter)
+					{
+						T[i][followIter->id] = ruleIter->ruleNo;
+						followIter = followIter->next;
+					}
+				}
+				firstIter = firstIter->next;
+			}
+			ruleIter = ruleIter->next;
+		}
+
+		//setting parseTable value 0 for all the current error terms to add them to syn set
+		for(int j = 0;j < no_of_t;j++)
+		{
+			Node followIter = Follow[i];
+			while(followIter)
+			{
+				if(T[i][followIter->id] == -1)
+					T[i][followIter->id] = 0;
+
+				followIter = followIter->next;
+			}
+		}
+	}
 }
