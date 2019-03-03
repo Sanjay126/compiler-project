@@ -9,6 +9,7 @@ Node getFirstOfNT(Grammar gram,int i);
 void populateFirst(Grammar gram);
 void FirstAndFollow(Grammar gram);
 
+
 int hash(char *v, int M);
 void populateHashTable();
 int findIndex(char* s);

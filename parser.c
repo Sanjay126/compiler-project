@@ -13,45 +13,137 @@ Node *Follow;
 Node addNode(int id,Node head){
 	// if(head==)
 	Node newNode=(Node)malloc(sizeof(struct node));
+	Node temp=head;
 	newNode->id=id;
-	newNode->next=head;
+	newNode->next=NULL;
+	if(head==NULL)
+		return newNode;
+	while(temp->next){
+		if(temp->id==id){
+			free(newNode);
+			return head;
+		}
+		temp=temp->next;
+	}
+	if(temp->id==id){
+		free(newNode);
+		return head;
+	}
+	temp->next=newNode;
+	return head;
+}
+Node createCopyNodeList(Node head){
+	Node newNode;
+	Node temp=head;
+	while(temp){
+		if(temp->id!=101)
+			newNode=addNode(temp->id,newNode);
+		temp=temp->next;
+	}
 	return newNode;
 }
-// Node getFirstOfNT(Grammar gram,int i){
-// 	if(First[i][0]==NULL&&First[i][1]==NULL){
-// 		RuleRHS rule=gram.rules[i-no_of_t];
-// 			while(rule){
-// 				Node temp=rule->head;
-// 				while(temp){
-// 					int j=temp->id;
-// 					if(First[j][0]!=NULL)
-// 				}
-// 			}
-// 	}
-// 	else if(First[i][0]!=NULL)
-// 		return First[i][0];
-// 	else
-// 		return First[i][1];
-// }
-// void populateFirst(Grammar gram){
-	
-// 	for(int i=1;i<=no_of_nt;i++){
-// 		First[i]=getFirstOfNT(gram,i);
-// 	}
-// 	for(int i=no_of_nt+1;i<=no_of_t+no_of_nt;i++){
-// 		First[i][0]=addNode(i,First[i][0]);
-// 	}
-// }
 
-// void FirstAndFollow(Grammar gram){
-// 	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
-// 	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
-// 	for(int i=0; i<no_of_nt+no_of_t+1; i++){
-// 		First[i] = (Node*)malloc(sizeof(Node)*2);
-// 	}
-// 	populateFirst(gram);
-// 	populateFollow(gram);
-// }
+Node joinNodeList(Node n1,Node n2){
+	Node copy=createCopyNodeList(n2);
+	Node temp=n1;
+	if(n1==NULL)return copy;
+	while(temp){
+		temp=temp->next;
+	}
+	temp->next=copy;
+	return n1;
+}
+
+Node* getFirstOfNT(Grammar gram,int i){
+	if(First[i][0]==NULL&&First[i][1]==NULL){
+		RuleRHS rule=gram.rules[i];
+			while(rule){
+				Node temp=rule->head;
+				int epsFlag=0;
+				while(temp){
+					int j=temp->id;
+					if(j=101){			//case 2 from slides
+						First[i][1]=First[i][0];
+						First[i][0]=NULL;
+						First[i][1]=addNode(j,First[i][1]);
+						return First[i];
+					}
+					Node* firstOfJ=getFirstOfNT(gram,j);
+					First[i][0]=joinNodeList(First[i][0],firstOfJ[0]);
+					First[i][1]=joinNodeList(First[i][1],firstOfJ[1]);
+					if(firstOfJ[1]!=NULL)	//case 3 from slides
+						epsFlag=1;
+					else{
+						epsFlag=0;
+						break;
+					}
+					temp=temp->next;
+				}
+				if(epsFlag=1&&First[i][1]==NULL&&First[i][0]!=NULL){      //last case from slides
+					First[i][1]=First[i][0];
+					First[i][0]=NULL;
+					First[i][1]=addNode(101,First[i][1]);
+				}
+				rule=rule->next;
+
+			}
+		return First[i];
+
+	}
+	else
+		return First[i];
+}
+void populateFirst(Grammar gram){
+
+	for(int i=no_of_nt;i<no_of_t+no_of_nt;i++){
+		First[i][0]=addNode(i,First[i][0]); 	//case 1 from slides.
+	}
+	for(int i=0;i<no_of_nt;i++){
+		Node* newFirst=getFirstOfNT(gram,i);
+		First[i][0]=newFirst[0];
+		First[i][1]=newFirst[1];
+	}
+}
+void populateFollow(Grammar gram){
+	//fill this
+	Follow["index of start(root) non terminal"]=addNode("index of dollar",Follow["index of start non terminal"]);
+	for(int i=0;i<no_of_nt;i++){
+		RuleRHS rule=gram.rules[i];
+		while(rule){
+			Node temp=rule->head;
+			while(temp){
+				if(temp->next!=NULL)
+					if(First[temp->next->id][1]!=NULL){
+						Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp->next->id][1]);
+						Node temp2=temp->next;
+						while(temp2){
+							if(First[temp2->next->id][1]!=NULL){
+								Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp2->next->id][1]);
+								break;
+							}
+							else
+								Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp2->next->id][0]);
+							temp2=temp2->next;
+						}
+					}
+					else{
+						Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp->next->id][0]);
+						break;
+					}
+				else{
+					Follow[temp->id]=joinNodeList(Follow[temp->id],Follow[i]);
+				}
+				temp=temp->next;
+			}
+			rule=rule->next;
+		}
+	}
+}
+
+void FirstAndFollow(Grammar gram){
+	populateFirst(gram);
+	populateFollow(gram);
+}
 
 int size_table = 102;
 hashTable Table; 

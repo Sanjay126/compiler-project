@@ -51,7 +51,8 @@ typedef enum{
 	logicalOp,
 } nonTerminals;
 
-int no_of_t = 55, no_of_nt=47;
+#define no_of_t  55
+#define no_of_nt 47
 
 char* ntArray[] = {"factor","output_par","relationalOp","fieldDefinitions","arithmeticExpression","remaining_list","otherFunctions","typeDefinition","moreFields","declaration","inputParameters","dataType","funCallStmt","singleOrRecId","parameter_list","conditionalStmt","optionalReturn","global_or_not","outputParameters","op1","ioStmt","stmt","primitiveDatatype","function","otherStmts","ex2","declarations","iterativeStmt","constructedDatatype","assignmentStmt","returnStmt","B1","term","more_ids","typeDefinitions","allVar","C1","term2","program","mainFunction","op2","idList","stmts","fieldDefinition","input_par","booleanExpression","logicalOp"};
 
@@ -85,8 +86,6 @@ struct ruleRHS{
 	int ruleNo;
 };
 typedef struct ruleRHS* RuleRHS;
-
-
 
 struct grammar{
 	RuleRHS *rules;
