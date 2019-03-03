@@ -1,4 +1,8 @@
-#include"lexer.h"
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+#include <stdbool.h>
+#include"lexerDef.h"
 currentInfo currVariables = {1,0,0,0,-1,0};
 
 void removeComments(char *testcaseFile, char *cleanFile){
@@ -34,7 +38,7 @@ char getNextChar(FILE *fp){
 
 		if (currVariables.bufferSize==0){
 			currVariables.flag=1;
-			return 1;
+			return 26;
 		}
 		else
 			return buffer[0];
