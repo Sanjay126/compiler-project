@@ -48,9 +48,9 @@ char getNextChar(FILE *fp){
 	// if(currVariables.bufferSize==0) check later
 }
 
-tokenInfo* generateNewToken(char* str,tokenId tid)
+TokenInfo generateNewToken(char* str,tokenId tid)
 {
-	tokenInfo* new =  (tokenInfo*)malloc(sizeof(tokenInfo));
+	TokenInfo new =  (TokenInfo)malloc(sizeof(struct tokenInfo));
 	
 	new->tid = tid;
 	new->name = (char *)malloc(sizeof(char)*(strlen(str)+1));
@@ -61,7 +61,7 @@ tokenInfo* generateNewToken(char* str,tokenId tid)
 }
 
 
-tokenInfo* cmpFunc(char* str){
+TokenInfo cmpFunc(char* str){
 	if(strcmp(str, "with")==0)
 		return generateNewToken(str, TK_WITH);
 	else if(strcmp(str, "parameters")==0)
@@ -114,7 +114,7 @@ tokenInfo* cmpFunc(char* str){
 }
 
 
-tokenInfo* getNextToken(FILE *fp){
+TokenInfo getNextToken(FILE *fp){
 	int buffer2Pos = -1;
 	currVariables.state = 0;
 	char curr = 0;

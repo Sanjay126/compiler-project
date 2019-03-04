@@ -36,7 +36,7 @@ int main(int argc, char *argv[]){
 				FILE *fp = fopen(argv[1],"r");
 
 				while(1){
-					tokenInfo *tk = getNextToken(fp);
+					TokenInfo tk = getNextToken(fp);
 					if(tk==NULL)
 						continue;
 					printf("TOKEN: '%s' VALUE: '%s'  LINENO.: %llu\n", tArray[tk->tid], tk->name, tk->lineNo);

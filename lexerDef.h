@@ -64,11 +64,13 @@ typedef enum {
     eps,
 } tokenId;
 
-typedef struct{
+struct tokenInfo{
     tokenId tid;
     char * name;
     ull lineNo;
-}tokenInfo;
+};
+
+typedef struct tokenInfo* TokenInfo;
 
 typedef struct{
     ull lineNo;
