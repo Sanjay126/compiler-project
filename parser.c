@@ -438,14 +438,14 @@ parseTable createParseTable(parseTable T){
 			while(firstIter)
 			{	
 				if(firstIter->id != 101)
-					T[i][firstIter->id] = ruleIter->ruleNo;
+					T[i][firstIter->id-no_of_nt] = ruleIter->ruleNo;
 
 				else
 				{
 					Node followIter = Follow[i];
 					while(followIter)
 					{
-						T[i][followIter->id] = ruleIter->ruleNo;
+						T[i][followIter->id-no_of_nt] = ruleIter->ruleNo;
 						followIter = followIter->next;
 					}
 				}
@@ -460,8 +460,8 @@ parseTable createParseTable(parseTable T){
 			Node followIter = Follow[i];
 			while(followIter)
 			{
-				if(T[i][followIter->id] == -1)
-					T[i][followIter->id] = 0;
+				if(T[i][followIter->id-no_of_nt] == -1)
+					T[i][followIter->id-no_of_nt] = 0;
 
 				followIter = followIter->next;
 			}
@@ -617,7 +617,9 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 	TokenInfo token = getNextToken(fp);
 	int errorFlag=0;
 	while(1){
-		printf("bla\n");
+		// printf("bla\n");
+		int X = topStack(s)->id;
+		printf("%s\t%s\n", ntArray[X],tokenArray[token->tid]);
 		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR)
 			break;
 		else if(token->tid == topStack(s)->id)
@@ -630,11 +632,10 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 		}
 		else if(topStack(s)->id < no_of_nt)
 		{
-			int X = topStack(s)->id;
-			if(T[X][token->tid+no_of_nt] > 0)
+			if(T[X][token->tid] > 0)
 			{
 				s = popStack(s);
-				int ruleNo = T[X][token->tid+no_of_nt];
+				int ruleNo = T[X][token->tid];
 				RuleRHS ruleIter = gram.rules[X];
 				while(ruleIter && ruleIter->ruleNo != ruleNo)
 				{
@@ -659,16 +660,16 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 
 				ptr = ptr->children;
 			}
-			else if(T[X][token->tid+no_of_nt] == 0) // Panic Mode : syn set
+			else if(T[X][token->tid] == 0) // Panic Mode : syn set
 			{
-				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+				printf("ERROR1 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 				s = popStack(s);
 				ptr = topStack(s)->pt_node;
 				errorFlag = 1;
 			}
 			else //Panic Mode : Error
 			{
-				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+				printf("ERROR2 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 				token = getNextToken(fp);
 				errorFlag = 1;
 			}	
@@ -676,6 +677,7 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 		else
 		{
 			errorFlag = 1;
+			break;
 			//we dont know: token in stack not match current token from input
 		}
 	}

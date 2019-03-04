@@ -123,7 +123,8 @@ TokenInfo getNextToken(FILE *fp){
 	while(1){
 		curr = getNextChar(fp);
 		if(currVariables.flag == 1)
-			return generateNewToken("$",TK_DOLLAR); //$1 or $
+  
+  			return generateNewToken("$",TK_DOLLAR); //$1 or $
 
 		buffer2Pos++;
 		buffer2[buffer2Pos] = curr;
