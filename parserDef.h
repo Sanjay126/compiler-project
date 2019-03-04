@@ -93,5 +93,13 @@ struct grammar{
 // char* tokenArray[no_of_t];
 typedef struct grammar Grammar;
 
+//parsetree Node
+struct parseTree{
+	int non_term_id;
+	tokenInfo* tk;
+	struct parseTree* next;//for looping through children
+	struct parseTree* head;
+};
 
+typedef struct parsetree* ParseTree;
 #endif

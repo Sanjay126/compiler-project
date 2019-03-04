@@ -58,50 +58,68 @@ Node joinNodeList(Node n1,Node n2){
 	temp->next=copy;
 	return n1;
 }
+Node* FirstSetUtil(Node ruleHead);
+void getFirstOfNT(int i){
+	if(First[i][0]!=NULL||First[i][1]!=NULL)return;
+	Node currentFirst[2]={NULL,NULL};
+	RuleRHS rule=gram.rules[i];
+		while(rule){
+			Node temp=rule->head;
+			Node* retrievedFirst=FirstSetUtil(temp);
+			currentFirst[0]=joinNodeList(currentFirst[0],retrievedFirst[0]);
+			currentFirst[1]=joinNodeList(currentFirst[1],retrievedFirst[1]);
+			rule=rule->next;
 
-Node* getFirstOfNT(int i){
-	if(First[i][0]==NULL&&First[i][1]==NULL){
-		RuleRHS rule=gram.rules[i];
-			while(rule){
-				Node temp=rule->head;
-				int epsFlag=0;
-				while(temp){
-					int j=temp->id;
-					if(j==101){			//case 2 from slides
-						First[i][1]=First[i][0];
-						First[i][0]=NULL;
-						First[i][1]=addNode(j,First[i][1]);
-						// return First[i];
-					}
-					else if(j!=i){
-						// printf("\n\nCASE 3\n\n");
-						Node* firstOfJ=getFirstOfNT(temp->id);
-						// printf("%d\n", firstOfJ[0]->id);
-						First[i][0]=joinNodeList(First[i][0],firstOfJ[0]);
-						First[i][1]=joinNodeList(First[i][1],firstOfJ[1]);
-						if(firstOfJ[1]!=NULL)	//case 3 from slides
-							epsFlag=1;
-						else{
-							epsFlag=0;
-							break;
-						}
-					}
-					temp=temp->next;
-				}
-				if(epsFlag==1&&First[i][1]==NULL&&First[i][0]!=NULL){      //last case from slides
-					// printf("\n\nCASE 4\n\n");
-					First[i][1]=First[i][0];
-					First[i][0]=NULL;
-					First[i][1]=addNode(101,First[i][1]);
-				}
-				rule=rule->next;
+		}
+	First[i]=currentFirst;
+	return ;
 
-			}
-		return First[i];
-
-	}
-	else
-		return First[i];
+}
+ull FirstSetUtil(Node ruleHead){
+	ull currentFirst[2];
+	Node temp=ruleHead;
+	if(temp->id>=no_of_nt) return First[temp->id];
+	getFirstOfNT(temp->id);
+	currentFirst[0]=First[temp->id][0];
+	currentFirst[1]=First[temp->id][1];
+	if(currentFirst[1]!=NULL)
+		if(temp->next)
+		{
+			//remove epsilon
+			Node* retrievedFirst=FirstSetUtil(temp->next);
+			currentFirst[0]= joinNodeList(currentFirst[0],retrievedFirst[0]);
+			currentFirst[1]=joinNodeList(currentFirst[1],retrievedFirst[1]);
+		}
+	return currentFirst;
+	// while(temp){
+	// 	int j=temp->id;
+	// 	if(j==101){			//case 2 from slides
+	// 		First[i][1]=First[i][0];
+	// 		First[i][0]=NULL;
+	// 		First[i][1]=addNode(j,First[i][1]);
+	// 		// return First[i];
+	// 	}
+	// 	else if(j!=i){
+	// 		// printf("\n\nCASE 3\n\n");
+	// 		Node* firstOfJ=getFirstOfNT(temp->id);
+	// 		// printf("%d\n", firstOfJ[0]->id);
+	// 		First[i][0]=joinNodeList(First[i][0],firstOfJ[0]);
+	// 		First[i][1]=joinNodeList(First[i][1],firstOfJ[1]);
+	// 		if(firstOfJ[1]!=NULL)	//case 3 from slides
+	// 			epsFlag=1;
+	// 		else{
+	// 			epsFlag=0;
+	// 			break;
+	// 		}
+	// 	}
+	// 	temp=temp->next;
+	// }
+	// if(epsFlag==1&&First[i][1]==NULL&&First[i][0]!=NULL){      //last case from slides
+	// 	// printf("\n\nCASE 4\n\n");
+	// 	First[i][1]=First[i][0];
+	// 	First[i][0]=NULL;
+	// 	First[i][1]=addNode(101,First[i][1]);
+	// }
 }
 void populateFirst(Grammar gram){
 
@@ -109,9 +127,7 @@ void populateFirst(Grammar gram){
 		First[i][0]=addNode(i,First[i][0]); 	//case 1 from slides.
 	}
 	for(int i=0;i<no_of_nt;i++){
-		Node* newFirst=getFirstOfNT(i);
-		First[i][0]=newFirst[0];
-		First[i][1]=newFirst[1];
+		getFirstOfNT(i);
 	}
 	printf("First Done\n");
 }
@@ -333,6 +349,12 @@ void buildRules(){
 	}
 }
 
+parseTree* createPTNode(){
+	parseTree* new = (parseTree*)malloc(sizeof(parseTree));
+	new->next = NULL;
+	new->children = NULL;
+	new->tk = NULL;
+}
 //A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
 void createParseTable(parseTable T){
 	T = (parseTable)malloc(no_of_nt*sizeof(int*));
