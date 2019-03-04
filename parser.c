@@ -264,29 +264,21 @@ void buildRules(){
 	size_t len=0;
 	while(getline(&buff, &len, gramFile) != -1)
 	{
-		// fscanf(gramFile,"%[^\n]", buff);
-
 		char* lhs = strtok(buff, " \n\r");
 		int lhsIndex = findIndex(lhs);
-		// Node lhsNode = (Node)malloc(sizeof(struct node));
-		// lhsNode->
 		char* token = strtok(NULL, " \n\r");
 		RuleRHS r = (RuleRHS)malloc(sizeof(struct ruleRHS));
 		r->next = NULL;
 		r->head = NULL;
 		r->size = 0;
 		r->ruleNo = ruleNo;
-		// printf("%s %d", );
 		while(token!=NULL){
-			// printf("%s",buff);
 			int tokenIndex = findIndex(token);
 			Node newNode = (Node)malloc(sizeof(struct node));
 			newNode->id = tokenIndex;
 			newNode->next = r->head;
 			r->head = newNode;
-			// r->head = addNodeq(tokenIndex, r->head);
 			r->size++;
-			// printf("%s -> %d\n", , tokenIndex);
 			token = strtok(NULL, " \n\r");
 
 		}
@@ -295,8 +287,6 @@ void buildRules(){
 		}
 		else{
 			RuleRHS h = gram.rules[lhsIndex];
-			// if(h==NULL)
-				// return r; 
 			while(h->next!=NULL){
 				h = h->next;
 			}
