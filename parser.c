@@ -48,7 +48,7 @@ Stack pushStack(Stack s, int id,ParseTree pt_node){
 Stack popStack(Stack s){
 	if(s->head==NULL)
 		return s;
-	Node n = s->head;
+	SNode n = s->head;
 	s->head = n->next;
 	free(n);
 	s->size--;
@@ -71,13 +71,13 @@ Node addNode(int id,Node head){
 		return newNode;
 	while(temp->next!=NULL){
 		if(temp->id==id){
-			free(newNode);
+			// free(newNode);
 			return head;
 		}
 		temp=temp->next;
 	}
 	if(temp->id==id){
-		free(newNode);
+		// free(newNode);
 		return head;
 	}
 	temp->next=newNode;
@@ -85,7 +85,7 @@ Node addNode(int id,Node head){
 }
 Node createCopyNodeList(Node head){
 	Node newNode=NULL;
-	Node temp=head;
+	Node temp = head;
 	while(temp){
 		newNode=addNode(temp->id,newNode);
 		temp=temp->next;
@@ -395,6 +395,7 @@ void buildRules(){
 		}
 		ruleNo++;
 	}
+	fclose(gramFile);
 }
 
 ParseTree createPTNode(int id){
@@ -407,7 +408,7 @@ ParseTree createPTNode(int id){
 	return new;
 }
 //A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
-void createParseTable(parseTable T){
+parseTable createParseTable(parseTable T){
 	T = (parseTable)malloc(no_of_nt*sizeof(int*));
 
 	for(int i = 0;i < no_of_nt;i++)
@@ -466,6 +467,18 @@ void createParseTable(parseTable T){
 			}
 		}
 	}
+	return T;
+}
+
+void printParseTable(parseTable T){
+	// int i, j;
+	for(int i=0; i<no_of_nt; i++){
+		// printf("%s\n", );
+		for(int j=0; j<no_of_t; j++){
+			printf("%d ", T[i][j]);
+		}
+		printf("\n");
+	}
 }
 
 void ReadFromFileFirstAndFollow(Grammar gram){
@@ -499,17 +512,66 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 		Node head = intialiseNode(tokenIndex);
 		Node temp = head;
 		while(token!=NULL){
+			token = strtok(NULL," \n\r");
+			if(token==NULL)
+				break;
 			tokenIndex = findIndex(token);
 			if(tokenIndex==-1)
 				break;
-
-			token = strtok(NULL," \n\r");
+			if(tokenIndex==eps)
+				epsFlag=1;
+			temp->next = intialiseNode(tokenIndex);
+			temp = temp->next;
 		}
 		if(tokenIndex==-1)
 			continue;
-
+		First[lhsIndex][epsFlag] = head;
 	}
+	fclose(fp_first);
+
 	FILE* fp_follow = fopen("follow.txt", "r");
+	while(getline(&buff, &len, fp_follow)!=-1){
+		char* token;
+		char* lhs = strtok(buff, " \n\r");
+		int lhsIndex = findIndex(lhs);
+		if(lhsIndex==-1)
+			continue;
+		token = strtok(NULL," \n\r");
+		int tokenIndex=findIndex(token);
+		if(tokenIndex==-1)
+			continue;
+		Node head = intialiseNode(tokenIndex);
+		Node temp = head;
+		while(token!=NULL){
+			token = strtok(NULL," \n\r");
+			if(token==NULL)
+				break;
+			tokenIndex = findIndex(token);
+			if(tokenIndex==-1)
+				break;
+			temp->next = intialiseNode(tokenIndex);
+			temp = temp->next;
+		}
+		if(tokenIndex==-1)
+			continue;
+		Follow[lhsIndex] = head;
+	}
+	fclose(fp_follow);
+	// for(int i=0; i<no_of_nt+1; i++){
+	// 	Node temp;
+	// 	if(Follow[i]!=NULL)
+	// 		temp = Follow[i];
+	// 	else 
+	// 		continue;
+	// 	printf("%s ==> ", getTokenFromId(i));
+
+	// 	while(temp!=NULL){
+	// 		printf("%d\t", temp->id);
+	// 		temp = temp->next;
+	// 	}
+	// 	printf("\n");
+
+	// }
 }
 
 void inorderTraversal(ParseTree PT, FILE* fp1){
@@ -538,6 +600,9 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 	PT = createPTNode(program);
 	s = pushStack(s,program,PT);
 	ParseTree ptr = PT->children;
+	buildRules();
+	// gram = getGrammar();
+	ReadFromFileFirstAndFollow(gram);
 	/*
 	TO CALL
 	build_rules
@@ -545,13 +610,14 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 	*/
 
 	// parseTable T;
-	createParseTable(T);
+	T = createParseTable(T);
 
 	FILE* fp = fopen(testcaseFile,"r");
 
 	tokenInfo* token = getNextToken(fp);
 	int errorFlag=0;
 	while(1){
+		printf("bla\n");
 		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR)
 			break;
 		else if(token->tid == topStack(s)->id)
@@ -613,6 +679,7 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 			//we dont know: token in stack not match current token from input
 		}
 	}
+	fclose(fp);
 	if(!errorFlag)
 		printf("Input source code is syntactically correct...........\n");
 	return;
