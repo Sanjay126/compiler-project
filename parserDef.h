@@ -100,6 +100,11 @@ struct parseTree{
 	struct parseTree* next;//for looping through children
 	struct parseTree* head;
 };
+struct stack{
+	int size;
+	Node head;		
+};
+typedef struct stack* Stack;
 
 typedef struct parsetree* ParseTree;
 #endif
