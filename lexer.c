@@ -61,7 +61,7 @@ TokenInfo generateNewToken(char* str,tokenId tid)
 }
 
 
-TokenInfo cmpFunc(char* str){
+TokenInfo cmpFunc(char* str, int iddd){
 	if(strcmp(str, "with")==0)
 		return generateNewToken(str, TK_WITH);
 	else if(strcmp(str, "parameters")==0)
@@ -110,7 +110,7 @@ TokenInfo cmpFunc(char* str){
 		return generateNewToken(str, TK_ENDRECORD);
 	else if(strcmp(str, "else")==0)
 		return generateNewToken(str, TK_ELSE);
-	return generateNewToken(str,TK_FIELDID);
+	return generateNewToken(str,iddd);
 }
 
 
@@ -129,6 +129,7 @@ TokenInfo getNextToken(FILE *fp){
 		buffer2Pos++;
 		buffer2[buffer2Pos] = curr;
 
+		// printf("%c\n", curr);
 		switch(currVariables.state)
 		{
 			case 0 :
@@ -388,8 +389,9 @@ TokenInfo getNextToken(FILE *fp){
 					//discard state 16
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
+					// printf("\n---%d---\n", buffer2Pos);
 					if(buffer2Pos<=31)
-						return cmpFunc(buffer2);
+						return cmpFunc(buffer2, TK_FUNID);
 					else{
 						printf("Line %llu: Function ID is longer than the prescribed length of 30 characters\n", currVariables.lineNo);
 						return NULL;
@@ -402,6 +404,7 @@ TokenInfo getNextToken(FILE *fp){
 				else{
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
+					printf("\n---%d---\n", buffer2Pos);
 					if(buffer2Pos<=31)
 						return generateNewToken(buffer2, TK_FUNID);
 					else{
@@ -452,6 +455,7 @@ TokenInfo getNextToken(FILE *fp){
 					memset(buffer2, 0, MAX_LENGTH*sizeof(char));
 					currVariables.state=0;
 					currVariables.lineNo++;
+					buffer2Pos=-1;
 				}
 				break;
 			case 21:
@@ -469,7 +473,7 @@ TokenInfo getNextToken(FILE *fp){
 				else{
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
-					return cmpFunc(buffer2);
+					return cmpFunc(buffer2, TK_FIELDID);
 				}
 				break;
 			case 23:

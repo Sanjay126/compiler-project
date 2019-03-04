@@ -6,7 +6,7 @@
 void removeComments(char *testcaseFile, char *cleanFile);
 char getNextChar(FILE *fp);
 TokenInfo generateNewToken(char* str,tokenId tid);
-TokenInfo cmpFunc(char* str);
+TokenInfo cmpFunc(char* str, int iddd);
 TokenInfo getNextToken(FILE *fp);
 
 
