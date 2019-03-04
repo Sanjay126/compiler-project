@@ -387,7 +387,13 @@ tokenInfo* getNextToken(FILE *fp){
 					//discard state 16
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
-					return cmpFunc(buffer2);
+					if(buffer2Pos<=31)
+						return cmpFunc(buffer2);
+					else{
+						printf("Line %llu: Function ID is longer than the prescribed length of 30 characters\n", currVariables.lineNo);
+						return NULL;
+					}
+					
 				}
 				break;
 			case 15:
@@ -395,7 +401,12 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
-					return generateNewToken(buffer2, TK_FUNID);
+					if(buffer2Pos<=31)
+						return generateNewToken(buffer2, TK_FUNID);
+					else{
+						printf("Line %llu: Function ID is longer than the prescribed length of 30 characters\n", currVariables.lineNo);
+						return NULL;
+					}
 				}
 				break;
 			// case 16:
@@ -475,7 +486,12 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
-					return generateNewToken(buffer2, TK_ID);					
+					if(buffer2Pos<=21)
+						return generateNewToken(buffer2, TK_ID);					
+					else{
+						printf("Line %llu: Identifier is longer than the prescribed length of 20 characters\n", currVariables.lineNo);
+						return NULL;
+					}
 				}
 				break;
 		}
