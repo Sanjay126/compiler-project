@@ -7,11 +7,11 @@ Node addNode(int id,Node head, int end);
 Node createCopyNodeList(Node head);
 Node joinNodeList(Node n1,Node n2);
 
-Node getFirstOfNT(Grammar gram,int i);
+Node getFirstOfNT(int i);
 void populateFirst(Grammar gram);
 void populateFollow(Grammar gram);
 void FirstAndFollow(Grammar gram);
-
+void printFirst();
 
 int hash(char *v, int M);
 void populateHashTable();
@@ -20,4 +20,5 @@ void buildRules();
 char* getTokenFromId(int id);
 void createParseTable(parseTable T);
 Grammar getGrammar();
+
 #endif

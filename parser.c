@@ -23,7 +23,7 @@ Node addNode(int id,Node head){
 	newNode->next=NULL;
 	if(head==NULL)
 		return newNode;
-	while(temp->next){
+	while(temp->next!=NULL){
 		if(temp->id==id){
 			free(newNode);
 			return head;
@@ -38,11 +38,10 @@ Node addNode(int id,Node head){
 	return head;
 }
 Node createCopyNodeList(Node head){
-	Node newNode;
+	Node newNode=NULL;
 	Node temp=head;
 	while(temp){
-		if(temp->id!=101)
-			newNode=addNode(temp->id,newNode);
+		newNode=addNode(temp->id,newNode);
 		temp=temp->next;
 	}
 	return newNode;
@@ -50,16 +49,17 @@ Node createCopyNodeList(Node head){
 
 Node joinNodeList(Node n1,Node n2){
 	Node copy=createCopyNodeList(n2);
+	// printf("copy created\n");
 	Node temp=n1;
 	if(n1==NULL)return copy;
-	while(temp){
+	while(temp->next){
 		temp=temp->next;
 	}
 	temp->next=copy;
 	return n1;
 }
 
-Node* getFirstOfNT(Grammar gram,int i){
+Node* getFirstOfNT(int i){
 	if(First[i][0]==NULL&&First[i][1]==NULL){
 		RuleRHS rule=gram.rules[i];
 			while(rule){
@@ -67,24 +67,29 @@ Node* getFirstOfNT(Grammar gram,int i){
 				int epsFlag=0;
 				while(temp){
 					int j=temp->id;
-					if(j=101){			//case 2 from slides
+					if(j==101){			//case 2 from slides
 						First[i][1]=First[i][0];
 						First[i][0]=NULL;
 						First[i][1]=addNode(j,First[i][1]);
-						return First[i];
+						// return First[i];
 					}
-					Node* firstOfJ=getFirstOfNT(gram,j);
-					First[i][0]=joinNodeList(First[i][0],firstOfJ[0]);
-					First[i][1]=joinNodeList(First[i][1],firstOfJ[1]);
-					if(firstOfJ[1]!=NULL)	//case 3 from slides
-						epsFlag=1;
-					else{
-						epsFlag=0;
-						break;
+					else if(j!=i){
+						// printf("\n\nCASE 3\n\n");
+						Node* firstOfJ=getFirstOfNT(temp->id);
+						// printf("%d\n", firstOfJ[0]->id);
+						First[i][0]=joinNodeList(First[i][0],firstOfJ[0]);
+						First[i][1]=joinNodeList(First[i][1],firstOfJ[1]);
+						if(firstOfJ[1]!=NULL)	//case 3 from slides
+							epsFlag=1;
+						else{
+							epsFlag=0;
+							break;
+						}
 					}
 					temp=temp->next;
 				}
-				if(epsFlag=1&&First[i][1]==NULL&&First[i][0]!=NULL){      //last case from slides
+				if(epsFlag==1&&First[i][1]==NULL&&First[i][0]!=NULL){      //last case from slides
+					// printf("\n\nCASE 4\n\n");
 					First[i][1]=First[i][0];
 					First[i][0]=NULL;
 					First[i][1]=addNode(101,First[i][1]);
@@ -104,14 +109,15 @@ void populateFirst(Grammar gram){
 		First[i][0]=addNode(i,First[i][0]); 	//case 1 from slides.
 	}
 	for(int i=0;i<no_of_nt;i++){
-		Node* newFirst=getFirstOfNT(gram,i);
+		Node* newFirst=getFirstOfNT(i);
 		First[i][0]=newFirst[0];
 		First[i][1]=newFirst[1];
 	}
+	printf("First Done\n");
 }
 void populateFollow(Grammar gram){
 	//fill this
-	//Follow["index of start(root) non terminal"]=addNode("index of dollar",Follow["index of start non terminal"]);
+	Follow[program]=addNode(TK_DOLLAR+no_of_nt,Follow[program]);
 	for(int i=0;i<no_of_nt;i++){
 		RuleRHS rule=gram.rules[i];
 		while(rule){
@@ -121,7 +127,7 @@ void populateFollow(Grammar gram){
 					if(First[temp->next->id][1]!=NULL){
 						Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp->next->id][1]);
 						Node temp2=temp->next;
-						while(temp2){
+						while(temp2->next){
 							if(First[temp2->next->id][1]!=NULL){
 								Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp2->next->id][1]);
 								break;
@@ -144,15 +150,53 @@ void populateFollow(Grammar gram){
 		}
 	}
 }
+char* getTokenFromId(int id){
+	return symbolArray[id];
+}
 
+Grammar getGrammar(){
+	return gram;
+}
 void FirstAndFollow(Grammar gram){
 	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
 	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
+	for(int i=0; i<no_of_nt+1; i++){
+		Follow[i]=NULL;
+	}
 	for(int i=0; i<no_of_nt+no_of_t+1; i++){
 		First[i] = (Node*)malloc(sizeof(Node)*2);
+		First[i][0]=NULL;
+		First[i][1]=NULL;
 	}
 	populateFirst(gram);
-	populateFollow(gram);
+	// populateFollow(gram);
+}
+void printFirst(){
+	for(int i=0; i<no_of_nt+no_of_t+1; i++){
+		Node temp, temp2;
+		printf("First of %s %d ==>\n", getTokenFromId(i), i);
+		if(First[i][0]!=NULL){
+			temp = First[i][0];
+			printf("\ntemp started ==>");
+			while(temp!=NULL){
+				printf("%s\t",getTokenFromId(temp->id));
+				temp=temp->next;
+			}
+		}
+		if(First[i][1]!=NULL){
+			temp2 = First[i][1];
+			printf("\ntemp2 started ==>");
+			while(temp2!=NULL){
+				printf("%s\t",getTokenFromId(temp2->id));
+				temp2=temp2->next;
+			}
+		}
+		if(First[i][0]!=NULL && First[i][1]!=NULL){
+			printf("ERROR\n");
+			continue;
+		}
+		printf("\n");
+	}				
 }
 
 int size_table = 102;
@@ -242,13 +286,6 @@ int findIndex(char* s)
 	return -1;
 }
 
-char* getTokenFromId(int id){
-	return symbolArray[id];
-}
-
-Grammar getGrammar(){
-	return gram;
-}
 
 void buildRules(){
 	populateHashTable();

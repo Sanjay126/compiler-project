@@ -47,25 +47,29 @@ int main(int argc, char *argv[]){
 			case 3:{
 				buildRules();
 				gram = getGrammar();
-				for(int i=0; i<no_of_nt; i++){
-					// printf("%s\n", );
-					// for(int )
+				FirstAndFollow(gram);
+				printFirst();
+				// for(int i=0; i<no_of_nt; i++){
+				// 	// printf("%s\n", );
+				// 	// for(int )
 
-					RuleRHS r = gram.rules[i];
-					while(r!=NULL){
-						Node h = r->head;
-						// printf("%s\n", );
-						printf("RuleNo. - %d \t%s\t%d ==> \n", r->ruleNo, getTokenFromId(i), r->size);
-						while(h!=NULL){
-							printf("%d\t\n", h->id);
-							h = h->next;
-						}
-						printf("\n");
-						r = r->next;
-					}
-				}
+				// 	RuleRHS r = gram.rules[i];
+				// 	while(r!=NULL){
+				// 		Node h = r->head;
+				// 		// printf("%s\n", );
+				// 		printf("RuleNo. - %d \t%s\t ==> ", r->ruleNo, getTokenFromId(i));
+				// 		while(h!=NULL){
+				// 			printf("%s\t", getTokenFromId(h->id));
+				// 			h = h->next;
+				// 		}
+				// 		printf("\n");
+				// 		r = r->next;
+				// 	}
+				// }
 			}break;
-
+			default :
+				printf("invalid option");
+				return 0;
 		}
 	}
 	return 0;
