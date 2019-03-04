@@ -14,13 +14,25 @@ void populateFollow(Grammar gram);
 void FirstAndFollow(Grammar gram);
 void printFirst();
 
+
+Node intialiseNode(int id);
+SNode intialiseSNode(int id,ParseTree pt_node);
+Stack intialiseStack();
+Stack pushStack(Stack s, int id,ParseTree pt_node);
+Stack popStack(Stack s);
+SNode topStack(Stack s);
+
+
 int hash(char *v, int M);
 void populateHashTable();
 int findIndex(char* s);
 void buildRules();
 char* getTokenFromId(int id);
+ParseTree createPTNode(int id);
 void createParseTable(parseTable T);
 Grammar getGrammar();
-void printParseTree(parseTree PT, char *outfile);
-void parseInputSourceCode(char *testcaseFile, table T);
+void inorderTraversal(ParseTree PT, FILE* fp1);
+void printParseTree(ParseTree PT, char *outfile);
+void ReadFromFileFirstAndFollow(Grammar gram);
+void parseInputSourceCode(char *testcaseFile, parseTable T);
 #endif

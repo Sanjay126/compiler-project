@@ -22,15 +22,23 @@ Node intialiseNode(int id){
 	return n;
 }
 
+SNode intialiseSNode(int id,ParseTree pt_node){
+	SNode n = (SNode)malloc(sizeof(struct snode));
+	n->id = id;
+	n->next = NULL;
+	n->pt_node = pt_node;
+	return n;	
+}
 Stack intialiseStack(){
-	Stack s = (Stack)malloc(sizeof(struct satck));
+	Stack s = (Stack)malloc(sizeof(struct stack));
 	s->size = 0;
 	s->head = NULL;
+	// s->pt_node = NULL;
 	return s;
 }
 
-Stack pushStack(Stack s, int id){
-	Node n = intialiseNode(id);
+Stack pushStack(Stack s, int id,ParseTree pt_node){
+	SNode n = intialiseSNode(id,pt_node);
 	n->next = s->head;
 	s->size++;
 	s->head = n;
@@ -47,10 +55,10 @@ Stack popStack(Stack s){
 	return s;
 }
 
-int topStack(Stack s){
+SNode topStack(Stack s){
 	if (s->head==NULL)
-		return -1;
-	return s->head->id;
+		return NULL;
+	return s->head;
 }
 
 Node addNode(int id,Node head){
@@ -96,6 +104,7 @@ Node joinNodeList(Node n1,Node n2){
 	temp->next=copy;
 	return n1;
 }
+Node returningNode[2];
 Node* FirstSetUtil(Node ruleHead);
 void getFirstOfNT(int i){
 	if(First[i][0]!=NULL||First[i][1]!=NULL)return;
@@ -128,7 +137,9 @@ Node* FirstSetUtil(Node ruleHead){
 			currentFirst[0]= joinNodeList(currentFirst[0],retrievedFirst[0]);
 			currentFirst[1]=joinNodeList(currentFirst[1],retrievedFirst[1]);
 		}
-	return currentFirst;
+	returningNode[0]=joinNodeList(NULL,currentFirst[0]);
+	returningNode[0]=joinNodeList(NULL,currentFirst[0]);
+	return returningNode;
 	// while(temp){
 	// 	int j=temp->id;
 	// 	if(j==101){			//case 2 from slides
@@ -170,7 +181,6 @@ void populateFirst(Grammar gram){
 	printf("First Done\n");
 }
 void populateFollow(Grammar gram){
-	//fill this
 	Follow[program]=addNode(TK_DOLLAR+no_of_nt,Follow[program]);
 	for(int i=0;i<no_of_nt;i++){
 		RuleRHS rule=gram.rules[i];
@@ -387,13 +397,14 @@ void buildRules(){
 	}
 }
 
-parseTree* createPTNode(){
-	parseTree* new = (parseTree*)malloc(sizeof(parseTree));
+ParseTree createPTNode(int id){
+	ParseTree new = (ParseTree)malloc(sizeof(struct parseTree));
 	new->next = NULL;
 	new->children = NULL;
 	new->tk = NULL;
 	new->parent = NULL;
-	new->non_term_id = 0;
+	new->non_term_id = id;
+	return new;
 }
 //A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
 void createParseTable(parseTable T){
@@ -469,8 +480,8 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 		First[i][1]=NULL;
 	}
 	FILE* fp_first = fopen("first.txt", "r");
-	char *buff;
-	int len;
+	char *buff=NULL;
+	size_t len;
 	while(getline(&buff, &len, fp_first)!=-1){
 		char* token;
 		char* lhs = strtok(buff, " \n\r");
@@ -488,7 +499,7 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 		Node head = intialiseNode(tokenIndex);
 		Node temp = head;
 		while(token!=NULL){
-			tokenIndex = findIndex(tokenIndex);
+			tokenIndex = findIndex(token);
 			if(tokenIndex==-1)
 				break;
 
@@ -501,37 +512,39 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 	FILE* fp_follow = fopen("follow.txt", "r");
 }
 
-void inorderTraversal(parseTree PT, FILE* fp1){
+void inorderTraversal(ParseTree PT, FILE* fp1){
 	if(PT==NULL)
 		return;
 	if(PT->non_term_id)
 		printf("----\t----\t");
 	else
-		printf("%s\t%d\t", PT->tk->name, PT->tk->lineNo);
-	printf("");
-	inorderTraversal(PT->children);
-	inorderTraversal(PT->next);
+		printf("%s\t%llu\t", PT->tk->name, PT->tk->lineNo);
+	// printf("");
+	inorderTraversal(PT->children, fp1);
+	inorderTraversal(PT->next, fp1);
 }
 
-void printParseTree(parseTree PT, char *outfile){
+void printParseTree(ParseTree PT, char *outfile){
 	FILE* fp1 = fopen(outfile, "w");
 	// printf("")
-	inorderTraversal(fp1);
+	inorderTraversal(PT, fp1);
 	fclose(fp1);
 }
 
-void parseInputSourceCode(char *testcaseFile, table T){
+void parseInputSourceCode(char *testcaseFile, parseTable T){
 	Stack s = intialiseStack();
-	s = push(s,TK_DOLLAR+no_of_nt);
-	s = push(s,program);
-
+	s = pushStack(s,TK_DOLLAR+no_of_nt,NULL);
+	ParseTree PT = NULL;
+	PT = createPTNode(program);
+	s = pushStack(s,program,PT);
+	ParseTree ptr = PT->children;
 	/*
 	TO CALL
 	build_rules
 	first and follow
 	*/
 
-	parseTable T;
+	// parseTable T;
 	createParseTable(T);
 
 	FILE* fp = fopen(testcaseFile,"r");
@@ -539,20 +552,23 @@ void parseInputSourceCode(char *testcaseFile, table T){
 	tokenInfo* token = getNextToken(fp);
 	int errorFlag=0;
 	while(1){
-		if(token->id == TK_DOLLAR && topStack(s) == TK_DOLLAR)
+		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR)
 			break;
-		else if(token->id == topStack(s))
+		else if(token->tid == topStack(s)->id)
 		{
-			s = pop(s);
+			s = popStack(s);
+			ptr = createPTNode(-1);
+			ptr->tk = token;
+			ptr = topStack(s)->pt_node;
 			token = getNextToken(fp);
 		}
-		else if(topStack(s) < no_of_nt)
+		else if(topStack(s)->id < no_of_nt)
 		{
-			int X = topStack(s);
-			if(T[X][token->id+no_of_nt] > 0)
+			int X = topStack(s)->id;
+			if(T[X][token->tid+no_of_nt] > 0)
 			{
-				s = pop(s);
-				int ruleNo = T[X][token->id+no_of_nt];
+				s = popStack(s);
+				int ruleNo = T[X][token->tid+no_of_nt];
 				RuleRHS ruleIter = gram.rules[X];
 				while(ruleIter && ruleIter->ruleNo != ruleNo)
 				{
@@ -563,19 +579,30 @@ void parseInputSourceCode(char *testcaseFile, table T){
 
 				while(rhsIter)
 				{
-					s = push(s,rhsIter->id);
+					ParseTree newNode = createPTNode(rhsIter->id);
+					s = pushStack(s,rhsIter->id,newNode);
+					if(ptr == NULL)
+						ptr = newNode;
+					else
+					{
+						newNode->next = ptr;
+						ptr = newNode;
+					}
 					rhsIter = rhsIter->next;
 				}
+
+				ptr = ptr->children;
 			}
-			else if(T[X][token->id+no_of_nt] == 0) // Panic Mode : syn set
+			else if(T[X][token->tid+no_of_nt] == 0) // Panic Mode : syn set
 			{
-				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->id], token->lineNo);
-				s = pop(s);
+				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+				s = popStack(s);
+				ptr = topStack(s)->pt_node;
 				errorFlag = 1;
 			}
 			else //Panic Mode : Error
 			{
-				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->id], token->lineNo);
+				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 				token = getNextToken(fp);
 				errorFlag = 1;
 			}	
