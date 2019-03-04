@@ -19,5 +19,5 @@ int findIndex(char* s);
 void buildRules();
 char* getTokenFromId(int id);
 void createParseTable(parseTable T);
-Grammar* getGrammar();
+Grammar getGrammar();
 #endif
