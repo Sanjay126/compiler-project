@@ -22,15 +22,24 @@ Node intialiseNode(int id){
 	return n;
 }
 
+SNode intialiseSNode(int id,ParseTree* pt_node)
+{
+	SNode n = (SNode)malloc(sizeof(struct snode));
+	n->id = id;
+	n->next = NULL;
+	n->pt_node = pt_node
+	return n;	
+}
 Stack intialiseStack(){
 	Stack s = (Stack)malloc(sizeof(struct satck));
 	s->size = 0;
 	s->head = NULL;
+	// s->pt_node = NULL;
 	return s;
 }
 
-Stack pushStack(Stack s, int id){
-	Node n = intialiseNode(id);
+Stack pushStack(Stack s, int id,ParseTree* pt_node){
+	SNode n = intialiseSNode(id,pt_node);
 	n->next = s->head;
 	s->size++;
 	s->head = n;
@@ -47,10 +56,10 @@ Stack popStack(Stack s){
 	return s;
 }
 
-int topStack(Stack s){
+SNode topStack(Stack s){
 	if (s->head==NULL)
-		return -1;
-	return s->head->id;
+		return NULL;
+	return s->head;
 }
 
 Node addNode(int id,Node head){
@@ -96,6 +105,7 @@ Node joinNodeList(Node n1,Node n2){
 	temp->next=copy;
 	return n1;
 }
+Node returningNode[2];
 Node* FirstSetUtil(Node ruleHead);
 void getFirstOfNT(int i){
 	if(First[i][0]!=NULL||First[i][1]!=NULL)return;
@@ -113,8 +123,8 @@ void getFirstOfNT(int i){
 	return ;
 
 }
-ull FirstSetUtil(Node ruleHead){
-	ull currentFirst[2];
+Node* FirstSetUtil(Node ruleHead){
+	Node* currentFirst[2];
 	Node temp=ruleHead;
 	if(temp->id>=no_of_nt) return First[temp->id];
 	getFirstOfNT(temp->id);
@@ -128,7 +138,9 @@ ull FirstSetUtil(Node ruleHead){
 			currentFirst[0]= joinNodeList(currentFirst[0],retrievedFirst[0]);
 			currentFirst[1]=joinNodeList(currentFirst[1],retrievedFirst[1]);
 		}
-	return currentFirst;
+	returningNode[0]=joinNodeList(NULL,currentFirst[0]);
+	returningNode[0]=joinNodeList(NULL,currentFirst[0]);
+	return returningNode;
 	// while(temp){
 	// 	int j=temp->id;
 	// 	if(j==101){			//case 2 from slides
@@ -170,7 +182,6 @@ void populateFirst(Grammar gram){
 	printf("First Done\n");
 }
 void populateFollow(Grammar gram){
-	//fill this
 	Follow[program]=addNode(TK_DOLLAR+no_of_nt,Follow[program]);
 	for(int i=0;i<no_of_nt;i++){
 		RuleRHS rule=gram.rules[i];
@@ -387,11 +398,13 @@ void buildRules(){
 	}
 }
 
-parseTree* createPTNode(){
+parseTree* createPTNode(int id){
 	parseTree* new = (parseTree*)malloc(sizeof(parseTree));
 	new->next = NULL;
 	new->children = NULL;
 	new->tk = NULL;
+	new->non_term_id = id;
+	return new;
 }
 //A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
 void createParseTable(parseTable T){
@@ -461,9 +474,11 @@ void printParseTree(parseTree PT, char *outfile){
 
 void parseInputSourceCode(char *testcaseFile, table T){
 	Stack s = intialiseStack();
-	s = push(s,TK_DOLLAR+no_of_nt);
-	s = push(s,program);
-
+	s = push(s,TK_DOLLAR+no_of_nt,NULL);
+	ParseTress PT = NULL;
+	PT = createPTNode(program);
+	s = push(s,program,PT);
+	ParseTree ptr = PT->children;
 	/*
 	TO CALL
 	build_rules
@@ -478,16 +493,19 @@ void parseInputSourceCode(char *testcaseFile, table T){
 	tokenInfo* token = getNextToken(fp);
 	int errorFlag=0;
 	while(1){
-		if(token->id == TK_DOLLAR && topStack(s) == TK_DOLLAR)
+		if(token->id == TK_DOLLAR && topStack(s)->id == TK_DOLLAR)
 			break;
-		else if(token->id == topStack(s))
+		else if(token->id == topStack(s)->id)
 		{
 			s = pop(s);
+			ptr = createPTNode(-1);
+			ptr->tk = token;
+			ptr = topStack(s)->pt_node;
 			token = getNextToken(fp);
 		}
-		else if(topStack(s) < no_of_nt)
+		else if(topStack(s)->id < no_of_nt)
 		{
-			int X = topStack(s);
+			int X = topStack(s)->id;
 			if(T[X][token->id+no_of_nt] > 0)
 			{
 				s = pop(s);
@@ -502,14 +520,25 @@ void parseInputSourceCode(char *testcaseFile, table T){
 
 				while(rhsIter)
 				{
-					s = push(s,rhsIter->id);
+					ParseTree newNode = createPTNode(rhsIter->id);
+					s = push(s,rhsIter->id,newNode);
+					if(ptr == NULL)
+						ptr = newNode;
+					else
+					{
+						newNode->next = ptr;
+						ptr = newNode;
+					}
 					rhsIter = rhsIter->next;
 				}
+
+				ptr = ptr->children;
 			}
 			else if(T[X][token->id+no_of_nt] == 0) // Panic Mode : syn set
 			{
 				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->id], token->lineNo);
 				s = pop(s);
+				ptr = topStack(s)->pt_node;
 				errorFlag = 1;
 			}
 			else //Panic Mode : Error
