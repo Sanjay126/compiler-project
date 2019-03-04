@@ -235,7 +235,7 @@ tokenInfo* getNextToken(FILE *fp){
 						currVariables.state=22;
 						break;
 					default :
-						printf("ERROR : Undefined Symbol '%d' at line number %llu", curr,currVariables.lineNo);
+						printf("Line %llu: Unknown Symbol %c\n", currVariables.lineNo,curr);
 						return NULL;	//// TODO  error handling 
 				}
 				break;
@@ -258,7 +258,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '-'\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern <-\n", currVariables.lineNo);	// TODO error handling
 					return NULL;
 				}
 				break;
@@ -269,7 +269,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '-'\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern <--\n", currVariables.lineNo);	// TODO error handling
 					return NULL;
 				}
 				break;
@@ -290,7 +290,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : [a-z]\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern #", currVariables.lineNo);	// TODO error handling
 					return NULL;
 				}
 				break;
@@ -312,7 +312,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '='\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern !\n", currVariables.lineNo);	// TODO error handling
 					return NULL;
 				}
 				break;
@@ -323,7 +323,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '='\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern =\n", currVariables.lineNo);	// TODO error handling
 					return NULL;
 				}
 				break;
@@ -334,7 +334,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '&'\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern &", currVariables.lineNo);
 					return NULL;
 				}
 				break;
@@ -344,7 +344,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '&'\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern &&\n", currVariables.lineNo);
 					return NULL;
 				}
 				break;
@@ -355,7 +355,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '@'\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern @\n", currVariables.lineNo);
 					return NULL;
 				}
 				break;
@@ -365,7 +365,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '@'\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern @@\n", currVariables.lineNo);
 					return NULL;
 				}
 				break;
@@ -375,7 +375,7 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '[a-z|A-Z]'\n", curr,currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern _\n", currVariables.lineNo);
 					return NULL;
 				}
 				break;
@@ -430,7 +430,8 @@ tokenInfo* getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("ERROR : Unexpected Symbol '%c' at line number %llu.EXPECTED : '[0-9]'\n", curr,currVariables.lineNo);	// TODO error handling
+					buffer2[buffer2Pos]=0;
+					printf("Line %llu: Unknown Pattern %c\n", currVariables.lineNo,curr);
 					return NULL;
 				}
 				break;
