@@ -123,7 +123,7 @@ void getFirstOfNT(int i){
 
 }
 Node* FirstSetUtil(Node ruleHead){
-	Node* currentFirst[2];
+	Node currentFirst[2];
 	Node temp=ruleHead;
 	if(temp->id>=no_of_nt) return First[temp->id];
 	getFirstOfNT(temp->id);
