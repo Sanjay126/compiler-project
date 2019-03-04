@@ -6,6 +6,11 @@
 #include "parserDef.h"
 
 Grammar gram;
+char* ntArray[] = {"factor","output_par","relationalOp","fieldDefinitions","arithmeticExpression","remaining_list","otherFunctions","typeDefinition","moreFields","declaration","inputParameters","dataType","funCallStmt","singleOrRecId","parameter_list","conditionalStmt","optionalReturn","global_or_not","outputParameters","op1","ioStmt","stmt","primitiveDatatype","function","otherStmts","ex2","declarations","iterativeStmt","constructedDatatype","assignmentStmt","returnStmt","B1","term","more_ids","typeDefinitions","allVar","C1","term2","program","mainFunction","op2","idList","stmts","fieldDefinition","input_par","booleanExpression","logicalOp"};
+
+char* symbolArray[] = {"factor","output_par","relationalOp","fieldDefinitions","arithmeticExpression","remaining_list","otherFunctions","typeDefinition","moreFields","declaration","inputParameters","dataType","funCallStmt","singleOrRecId","parameter_list","conditionalStmt","optionalReturn","global_or_not","outputParameters","op1","ioStmt","stmt","primitiveDatatype","function","otherStmts","ex2","declarations","iterativeStmt","constructedDatatype","assignmentStmt","returnStmt","B1","term","more_ids","typeDefinitions","allVar","C1","term2","program","mainFunction","op2","idList","stmts","fieldDefinition","input_par","booleanExpression","logicalOp","TK_ASSIGNOP",    "TK_COMMENT",    "TK_FIELDID",    "TK_ID",    "TK_NUM",    "TK_RNUM",    "TK_FUNID",    "TK_RECORDID",    "TK_WITH",    "TK_PARAMETERS",    "TK_END",    "TK_WHILE",    "TK_INT",    "TK_REAL",    "TK_TYPE",    "TK_MAIN",    "TK_GLOBAL",    "TK_PARAMETER",    "TK_LIST",    "TK_SQL",    "TK_SQR",    "TK_INPUT",    "TK_OUTPUT",    "TK_SEM",    "TK_COLON",    "TK_DOT",    "TK_COMMA",    "TK_ENDWHILE",    "TK_OP",    "TK_CL",    "TK_IF",    "TK_THEN",    "TK_ENDIF",    "TK_READ",    "TK_WRITE",    "TK_RETURN",    "TK_PLUS",    "TK_MINUS",    "TK_MUL",    "TK_DIV",    "TK_CALL",    "TK_RECORD",    "TK_ENDRECORD",    "TK_ELSE",    "TK_AND",    "TK_OR",    "TK_NOT",    "TK_LT",    "TK_LE",    "TK_EQ",    "TK_GT",    "TK_GE",    "TK_NE",    "TK_DOLLAR",    "eps"};
+
+char* tokenArray[] = {   "TK_ASSIGNOP",    "TK_COMMENT",    "TK_FIELDID",    "TK_ID",    "TK_NUM",    "TK_RNUM",    "TK_FUNID",    "TK_RECORDID",    "TK_WITH",    "TK_PARAMETERS",    "TK_END",    "TK_WHILE",    "TK_INT",    "TK_REAL",    "TK_TYPE",    "TK_MAIN",    "TK_GLOBAL",    "TK_PARAMETER",    "TK_LIST",    "TK_SQL",    "TK_SQR",    "TK_INPUT",    "TK_OUTPUT",    "TK_SEM",    "TK_COLON",    "TK_DOT",    "TK_COMMA",    "TK_ENDWHILE",    "TK_OP",    "TK_CL",    "TK_IF",    "TK_THEN",    "TK_ENDIF",    "TK_READ",    "TK_WRITE",    "TK_RETURN",    "TK_PLUS",    "TK_MINUS",    "TK_MUL",    "TK_DIV",    "TK_CALL",    "TK_RECORD",    "TK_ENDRECORD",    "TK_ELSE",    "TK_AND",    "TK_OR",    "TK_NOT",    "TK_LT",    "TK_LE",    "TK_EQ",    "TK_GT",    "TK_GE",    "TK_NE",    "TK_DOLLAR",    "eps"};
 
 Node **First;
 Node *Follow;
@@ -237,44 +242,62 @@ int findIndex(char* s)
 	return -1;
 }
 
+char* getTokenFromId(int id){
+	return symbolArray[id];
+}
+
+Grammar* getGrammar(){
+	return &gram;
+}
 
 void buildRules(){
-	FILE *gramFile = fopen("Grammar.txt","r");
+	populateHashTable();
+	FILE *gramFile = fopen("grammar.txt","r");
+
 	gram.rules = (RuleRHS*)malloc(sizeof(RuleRHS)*no_of_nt);
 	for(int i=0; i<no_of_nt; i++)
 		gram.rules[i]=NULL;
 	
 
 	int ruleNo=1;
-	char buff[MAX_LENGTH];
-	while(!feof(gramFile))
+	char* buff=NULL;
+	size_t len=0;
+	while(getline(&buff, &len, gramFile) != -1)
 	{
-		fscanf(gramFile,"%[^\n]", buff);
-		char* lhs = strtok(buff, " ");
+		// fscanf(gramFile,"%[^\n]", buff);
+
+		char* lhs = strtok(buff, " \n\r");
 		int lhsIndex = findIndex(lhs);
 		// Node lhsNode = (Node)malloc(sizeof(struct node));
 		// lhsNode->
-		char* token = strtok(NULL, " ");
+		char* token = strtok(NULL, " \n\r");
 		RuleRHS r = (RuleRHS)malloc(sizeof(struct ruleRHS));
 		r->next = NULL;
 		r->head = NULL;
 		r->size = 0;
 		r->ruleNo = ruleNo;
+		// printf("%s %d", );
 		while(token!=NULL){
+			// printf("%s",buff);
 			int tokenIndex = findIndex(token);
 			Node newNode = (Node)malloc(sizeof(struct node));
 			newNode->id = tokenIndex;
 			newNode->next = r->head;
 			r->head = newNode;
-			r->head = addNode(tokenIndex, r->head);
+			// r->head = addNodeq(tokenIndex, r->head);
 			r->size++;
+			// printf("%s -> %d\n", , tokenIndex);
+			token = strtok(NULL, " \n\r");
+
 		}
 		if(gram.rules[lhsIndex]==NULL){
 			gram.rules[lhsIndex] = r;
 		}
 		else{
 			RuleRHS h = gram.rules[lhsIndex];
-			while(h!=NULL && h->next!=NULL){
+			// if(h==NULL)
+				// return r; 
+			while(h->next!=NULL){
 				h = h->next;
 			}
 			h->next = r;

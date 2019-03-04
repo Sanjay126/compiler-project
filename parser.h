@@ -17,6 +17,7 @@ int hash(char *v, int M);
 void populateHashTable();
 int findIndex(char* s);
 void buildRules();
-
+char* getTokenFromId(int id);
 void createParseTable(parseTable T);
+Grammar* getGrammar();
 #endif
