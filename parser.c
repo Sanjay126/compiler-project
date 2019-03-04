@@ -175,7 +175,7 @@ void populateFirst(Grammar gram){
 	for(int i=no_of_nt;i<no_of_t+no_of_nt;i++){
 		First[i][0]=addNode(i,First[i][0]); 	//case 1 from slides.
 	}
-	for(int i=0;i<no_of_nt;i++){
+	for(int i=0;i<1;i++){
 		getFirstOfNT(i);
 	}
 	printf("First Done\n");
