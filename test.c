@@ -18,9 +18,6 @@ typedef struct hashNode{
 
 typedef hashNode** hashTable;
 
-int size_table = 102;
-hashTable Table; 
-
 int hash(char *v, int M){ 
 	int h = 0, a = 257;
     for (; *v != 0; v++)

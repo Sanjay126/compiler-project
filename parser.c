@@ -106,7 +106,7 @@ void populateFirst(Grammar gram){
 }
 void populateFollow(Grammar gram){
 	//fill this
-	Follow["index of start(root) non terminal"]=addNode("index of dollar",Follow["index of start non terminal"]);
+	//Follow["index of start(root) non terminal"]=addNode("index of dollar",Follow["index of start non terminal"]);
 	for(int i=0;i<no_of_nt;i++){
 		RuleRHS rule=gram.rules[i];
 		while(rule){
@@ -141,6 +141,11 @@ void populateFollow(Grammar gram){
 }
 
 void FirstAndFollow(Grammar gram){
+	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
+	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
+	for(int i=0; i<no_of_nt+no_of_t+1; i++){
+		First[i] = (Node*)malloc(sizeof(Node)*2);
+	}
 	populateFirst(gram);
 	populateFollow(gram);
 }
@@ -257,6 +262,10 @@ void buildRules(){
 		r->ruleNo = ruleNo;
 		while(token!=NULL){
 			int tokenIndex = findIndex(token);
+			Node newNode = (Node)malloc(sizeof(struct node));
+			newNode->id = tokenIndex;
+			newNode->next = r->head;
+			r->head = newNode;
 			r->head = addNode(tokenIndex, r->head);
 			r->size++;
 		}
