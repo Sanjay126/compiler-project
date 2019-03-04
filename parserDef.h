@@ -93,5 +93,11 @@ struct grammar{
 // char* tokenArray[no_of_t];
 typedef struct grammar Grammar;
 
+struct stack{
+	int size;
+	Node head;		
+};
+typedef struct stack* Stack;
+
 
 #endif

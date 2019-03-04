@@ -15,6 +15,44 @@ char* tokenArray[] = {   "TK_ASSIGNOP",    "TK_COMMENT",    "TK_FIELDID",    "TK
 Node **First;
 Node *Follow;
 
+Node intialiseNode(int id){
+	Node n = (Node)malloc(sizeof(struct node));
+	n->id = id;
+	n->next = NULL;
+	return n;
+}
+
+Stack intialiseStack(){
+	Stack s = (Stack)malloc(sizeof(struct satck));
+	s->size = 0;
+	s->head = NULL;
+	return s;
+}
+
+Stack pushStack(Stack s, int id){
+	Node n = intialiseNode(id);
+	n->next = s->head;
+	s->size++;
+	s->head = n;
+	return s;
+}
+
+Stack popStack(Stack s){
+	if(s->head==NULL)
+		return s;
+	Node n = s->head;
+	s->head = n->next;
+	free(n);
+	s->size--;
+	return s;
+}
+
+int topStack(Stack s){
+	if (s->head==NULL)
+		return -1;
+	return s->head->id;
+}
+
 Node addNode(int id,Node head){
 	// if(head==)
 	Node newNode=(Node)malloc(sizeof(struct node));
@@ -393,4 +431,79 @@ void createParseTable(parseTable T){
 			}
 		}
 	}
+}
+
+void printParseTree(parseTree PT, char *outfile){
+
+}
+
+void parseInputSourceCode(char *testcaseFile, table T){
+	Stack s = intialiseStack();
+	s = push(s,TK_DOLLAR+no_of_nt);
+	s = push(s,program);
+
+	/*
+	TO CALL
+	build_rules
+	first and follow
+	*/
+
+	parseTable T;
+	createParseTable(T);
+
+	FILE* fp = fopen(testcaseFile,"r");
+
+	tokenInfo* token = getNextToken(fp);
+	int errorFlag=0;
+	while(1){
+		if(token->id == TK_DOLLAR && topStack(s) == TK_DOLLAR)
+			break;
+		else if(token->id == topStack(s))
+		{
+			s = pop(s);
+			token = getNextToken(fp);
+		}
+		else if(topStack(s) < no_of_nt)
+		{
+			int X = topStack(s);
+			if(T[X][token->id+no_of_nt] > 0)
+			{
+				s = pop(s);
+				int ruleNo = T[X][token->id+no_of_nt];
+				RuleRHS ruleIter = gram.rules[X];
+				while(ruleIter && ruleIter->ruleNo != ruleNo)
+				{
+					ruleIter = ruleIter->next;
+				}
+
+				Node rhsIter = ruleIter->head;
+
+				while(rhsIter)
+				{
+					s = push(s,rhsIter->id);
+					rhsIter = rhsIter->next;
+				}
+			}
+			else if(T[X][token->id+no_of_nt] == 0) // Panic Mode : syn set
+			{
+				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->id], token->lineNo);
+				s = pop(s);
+				errorFlag = 1;
+			}
+			else //Panic Mode : Error
+			{
+				printf("ERROR! Unexpected Token: %s at line no. %llu\n",tokenArray[token->id], token->lineNo);
+				token = getNextToken(fp);
+				errorFlag = 1;
+			}	
+		}
+		else
+		{
+			errorFlag = 1;
+			//we dont know: token in stack not match current token from input
+		}
+	}
+	if(!errorFlag)
+		printf("Input source code is syntactically correct...........\n");
+	return;
 }

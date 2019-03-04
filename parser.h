@@ -20,5 +20,6 @@ void buildRules();
 char* getTokenFromId(int id);
 void createParseTable(parseTable T);
 Grammar getGrammar();
-
+void printParseTree(parseTree PT, char *outfile);
+void parseInputSourceCode(char *testcaseFile, table T);
 #endif
