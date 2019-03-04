@@ -10,7 +10,6 @@ int main(int argc, char *argv[]){
 		printf("Invalid Arguements.\n");
 		return 1;
 	}
-	FILE *fp = fopen(argv[1],"r");
 	int opt;
 
 	while(1){
@@ -34,6 +33,8 @@ int main(int argc, char *argv[]){
 			}break;
 			case 2:
 			{
+				FILE *fp = fopen(argv[1],"r");
+
 				while(1){
 					tokenInfo *tk = getNextToken(fp);
 					if(tk==NULL)
@@ -42,13 +43,15 @@ int main(int argc, char *argv[]){
 					if(tk->tid==TK_DOLLAR)
 						break;
 				}
+				fclose(fp);
 				// printf("\n");
 			}break;
 			case 3:{
-				buildRules();
-				gram = getGrammar();
-				FirstAndFollow(gram);
-				printFirst();
+				// FirstAndFollow(gram);
+				parseTable T;// = createParseTable(T);
+				// ReadFromFileFirstAndFollow(gram);
+				parseInputSourceCode(argv[1], T);
+				// printParseTable(T);
 				// for(int i=0; i<no_of_nt; i++){
 				// 	// printf("%s\n", );
 				// 	// for(int )
