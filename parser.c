@@ -614,7 +614,7 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 
 	FILE* fp = fopen(testcaseFile,"r");
 
-	tokenInfo* token = getNextToken(fp);
+	TokenInfo token = getNextToken(fp);
 	int errorFlag=0;
 	while(1){
 		printf("bla\n");
