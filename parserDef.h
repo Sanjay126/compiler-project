@@ -98,7 +98,8 @@ struct parseTree{
 	int non_term_id;
 	tokenInfo* tk;
 	struct parseTree* next;//for looping through children
-	struct parseTree* head;
+	struct parseTree* children;
+	struct parseTree* parent;
 };
 struct stack{
 	int size;

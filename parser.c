@@ -113,8 +113,8 @@ void getFirstOfNT(int i){
 	return ;
 
 }
-ull FirstSetUtil(Node ruleHead){
-	ull currentFirst[2];
+Node* FirstSetUtil(Node ruleHead){
+	Node* currentFirst[2];
 	Node temp=ruleHead;
 	if(temp->id>=no_of_nt) return First[temp->id];
 	getFirstOfNT(temp->id);
@@ -392,6 +392,8 @@ parseTree* createPTNode(){
 	new->next = NULL;
 	new->children = NULL;
 	new->tk = NULL;
+	new->parent = NULL;
+	new->non_term_id = 0;
 }
 //A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
 void createParseTable(parseTable T){
@@ -455,8 +457,67 @@ void createParseTable(parseTable T){
 	}
 }
 
-void printParseTree(parseTree PT, char *outfile){
+void ReadFromFileFirstAndFollow(Grammar gram){
+	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
+	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
+	for(int i=0; i<no_of_nt+1; i++){
+		Follow[i]=NULL;
+	}
+	for(int i=0; i<no_of_nt+no_of_t+1; i++){
+		First[i] = (Node*)malloc(sizeof(Node)*2);
+		First[i][0]=NULL;
+		First[i][1]=NULL;
+	}
+	FILE* fp_first = fopen("first.txt", "r");
+	char *buff;
+	int len;
+	while(getline(&buff, &len, fp_first)!=-1){
+		char* token;
+		char* lhs = strtok(buff, " \n\r");
+		int lhsIndex = findIndex(lhs);
+		if(lhsIndex==-1)
+			continue;
+		token = strtok(NULL," \n\r");
+		// int f=0;
+		int tokenIndex=findIndex(token);
+		if(tokenIndex==-1)
+			continue;
+		int epsFlag=0;
+		if(tokenIndex==eps)
+			epsFlag=1;
+		Node head = intialiseNode(tokenIndex);
+		Node temp = head;
+		while(token!=NULL){
+			tokenIndex = findIndex(tokenIndex);
+			if(tokenIndex==-1)
+				break;
 
+			token = strtok(NULL," \n\r");
+		}
+		if(tokenIndex==-1)
+			continue;
+
+	}
+	FILE* fp_follow = fopen("follow.txt", "r");
+}
+
+void inorderTraversal(parseTree PT, FILE* fp1){
+	if(PT==NULL)
+		return;
+	if(PT->non_term_id)
+		printf("----\t----\t");
+	else
+		printf("%s\t%d\t", PT->tk->name, PT->tk->lineNo);
+	printf("");
+	inorderTraversal(PT->children);
+	inorderTraversal(PT->next);
+}
+
+void printParseTree(parseTree PT, char *outfile){
+	FILE* fp1 = fopen(outfile, "w");
+	// printf("")
+	inorderTraversal(fp1);
+	fclose(fp1);
 }
 
 void parseInputSourceCode(char *testcaseFile, table T){
