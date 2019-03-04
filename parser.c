@@ -246,8 +246,8 @@ char* getTokenFromId(int id){
 	return symbolArray[id];
 }
 
-Grammar* getGrammar(){
-	return &gram;
+Grammar getGrammar(){
+	return gram;
 }
 
 void buildRules(){
