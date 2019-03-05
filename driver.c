@@ -90,7 +90,8 @@ int main(int argc, char *argv[]){
 				// ReadFromFileFirstAndFollow(gram);
 				// printFirst();
 				parseTable T;// = createParseTable(T);
-				parseInputSourceCode(argv[1], T);
+				ParseTree PT = parseInputSourceCode(argv[1], T, PT);
+				printParseTree(PT,"a.txt");
 				// printParseTable(T);
 				// for(int i=0; i<no_of_nt; i++){
 				// 	// printf("%s\n", );
