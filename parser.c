@@ -24,10 +24,14 @@ char* symbolArray[] = {"assignmentStmt","global_or_not","booleanExpression","hig
 char* tokenArray[] = {"TK_WITH","TK_THEN","TK_TYPE","TK_EQ","TK_DOLLAR","TK_COMMA","TK_RNUM","TK_CL","TK_AND","TK_PARAMETER","TK_DIV","TK_ID","TK_GLOBAL","TK_GE","TK_LIST","TK_IF","TK_RECORD","TK_NUM","TK_NE","TK_LE","TK_DOT","TK_INPUT","TK_MAIN","TK_CALL","TK_PLUS","TK_ELSE","TK_COMMENT","TK_ASSIGNOP","TK_WRITE","TK_COLON","TK_WHILE","TK_REAL","TK_READ","TK_NOT","TK_SQL","TK_OUTPUT","TK_SQR","TK_ENDIF","TK_MINUS","TK_SEM","TK_FIELDID","TK_PARAMETERS","TK_OP","TK_ENDWHILE","TK_MUL","TK_FUNID","TK_INT","TK_RETURN","TK_GT","TK_END","TK_LT","TK_OR","TK_ENDRECORD","eps","TK_RECORDID"};
 
 //Data structures for storing first and follows sets
-Node **First;
-Node *Follow;
+Node **First=NULL;
+Node *Follow=NULL;
 
-hashTable Table; //hashtable global variable for storing all the symbols -> Non-terminals followed by tokens(Used for fast retreival of their ID)           
+hashTable Table = NULL; //hashtable global variable for storing all the symbols -> Non-terminals followed by tokens(Used for fast retreival of their ID)           
+
+// void freeParseTree()
+
+
 Node intialiseNode(int id){
 	Node n = (Node)malloc(sizeof(struct node));
 	n->id = id;
@@ -121,31 +125,6 @@ Node joinNodeList(Node n1,Node n2){
 char* getTokenFromId(int id){
 	return symbolArray[id];
 }
-// void printFirst(){
-// 	for(int i=0; i<no_of_nt+no_of_t+1; i++){
-// 		Node temp, temp2;
-// 		printf("First of %s %d ==> ", getTokenFromId(i), i);
-// 		if(First[i][0]!=NULL){
-// 			temp = First[i][0];
-// 			while(temp!=NULL){
-// 				printf("%s\t",getTokenFromId(temp->id));
-// 				temp=temp->next;
-// 			}
-// 		}
-// 		else if(First[i][1]!=NULL){
-// 			temp2 = First[i][1];
-// 			while(temp2!=NULL){
-// 				printf("%s\t",getTokenFromId(temp2->id));
-// 				temp2=temp2->next;
-// 			}
-// 		}
-// 		else{
-// 			printf("ERROR\n");
-// 			continue;
-// 		}
-// 		printf("\n");
-// 	}				
-// }
 
 //HashTable ADT
 int hash(char *v, int M){ 
@@ -157,26 +136,16 @@ int hash(char *v, int M){
 void populateHashTable(){
 	Table = (hashTable)malloc(no_of_sym*sizeof(hashNode*));
 	for(int i = 0;i < no_of_sym;i++){
-		Table[i] = (hashNode*)malloc(sizeof(hashNode));
-		Table[i]->next == NULL;
+		// Table[i] = (hashNode*)malloc(sizeof(hashNode));
+		Table[i] == NULL;
 	}
 	for(int i = 0;i < no_of_sym;i++){
 		int hval = hash(symbolArray[i],no_of_sym);
-		if(Table[hval]->next == NULL){
-			Table[hval]->next = (hashNode*)malloc(sizeof(hashNode));
-			Table[hval]->next->index = i;
-			strcpy(Table[hval]->next->s, symbolArray[i]);
-			Table[hval]->next->next = NULL;
-		}
-		else{
-			hashNode* ptr = Table[hval]->next;
-			while(ptr != NULL && ptr->next != NULL)
-				ptr = ptr->next;
-			ptr->next = (hashNode*)malloc(sizeof(hashNode));
-			ptr->next->index = i;
-			strcpy(ptr->next->s, symbolArray[i]);
-			ptr->next->next = NULL;
-		}
+		hashNode* newNode = (hashNode*)malloc(sizeof(hashNode));
+		newNode->index = i;		
+		strcpy(newNode->s, symbolArray[i]);
+		newNode->next = Table[hval];
+		Table[hval] = newNode;
 	}
 }
 int findIndex(char* s){
@@ -319,6 +288,8 @@ parseTable createParseTable(parseTable T){
 					followIter = followIter->next;
 				}
 			}
+			freeNodeList(firstIter);
+			freeNodeList(revList);
 			ruleIter = ruleIter->next;
 		}
 		for(int j = 0;j < no_of_t;j++){
@@ -434,7 +405,7 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 
 void printNumber(char* str, FILE* fp1){
 	int d=0;
-	while(str!=NULL){
+	while(*str!=0){
 		d = d*10 + ((*str)-48);
 		str++;
 	}
@@ -442,7 +413,7 @@ void printNumber(char* str, FILE* fp1){
 }
 void printReal(char* str, FILE* fp1){
 	int d = 0;
-	while(str!=NULL && *str!='.'){
+	while(*str!=0 && *str!='.'){
 		d = d*10 + ((*str)-48);
 		str++;
 	}
@@ -467,10 +438,13 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 		fprintf(fp1, "%23s\t%23s\n", no, symbolArray[PT->non_term_id]);
 	}
 	else{
-		fprintf(fp1,"%23s\t%23llu\t%23s", PT->tk->name, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);
-		if(PT->tk->tid==TK_NUM)
+		if(strcmp("", PT->tk->name)!=0)
+			fprintf(fp1,"%23s\t%23llu\t%23s", PT->tk->name, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);
+		else
+			fprintf(fp1,"%23s\t%23llu\t%23s", dash, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);			
+		if(PT->tk->tid==TK_NUM && strcmp("", PT->tk->name)!=0)
 			printNumber(PT->tk->name, fp1);
-		else if(PT->tk->tid==TK_RNUM)
+		else if(PT->tk->tid==TK_RNUM && strcmp("", PT->tk->name)!=0)
 			printReal(PT->tk->name, fp1);
 		else
 			fprintf(fp1, "%23s\t", dash);
@@ -524,7 +498,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	while(1){
 		int X = topStack(s)->id;
 
-		printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
+		// printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
 		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt){ //Case 1 : Top of stack is current token is equal to '$'
 			break;
 		}

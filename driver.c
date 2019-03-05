@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "lexer.h"
 #include "parser.h"
 
@@ -12,6 +13,9 @@ int main(int argc, char *argv[]){
 		return 1;
 	}
 	int opt;
+    clock_t    start_time, end_time;
+
+    double total_CPU_time, total_CPU_time_in_seconds;
 
 	while(1){
 		printf("\n---------------------------------------------------\n");
@@ -34,6 +38,7 @@ int main(int argc, char *argv[]){
 			}break;
 			case 2:
 			{
+				intialiseGlobalVariablesLexer();
 				FILE *fp = fopen(argv[1],"r");
 
 				while(1){
@@ -47,10 +52,28 @@ int main(int argc, char *argv[]){
 				fclose(fp);
 			}break;
 			case 3:{
+				intialiseGlobalVariablesLexer();
+				// initialiseGlobalVariablesParser();
 				parseTable T;
 				ParseTree PT = parseInputSourceCode(argv[1], T, PT);
 				printParseTree(PT,"parsetree.txt");
 			}break;
+			case 4:
+                start_time = clock();
+				{
+					intialiseGlobalVariablesLexer();
+					parseTable T;
+					ParseTree PT = parseInputSourceCode(argv[1], T, PT);
+                }
+
+                end_time = clock();
+
+                total_CPU_time  =  (double) (end_time - start_time);
+                total_CPU_time_in_seconds =   total_CPU_time / CLOCKS_PER_SEC;
+
+                printf("TOTAL_CPU_TIME:\t%lf\nTOTAL_CPU_TIME_IN_SECONDS:\t%lf\n\n", total_CPU_time, total_CPU_time_in_seconds);
+                break;
+             // Print both total_CPU_time and total_CPU_time_in_seconds 
 			default :
 				printf("invalid option");
 				return 0;

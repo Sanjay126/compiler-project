@@ -25,5 +25,6 @@ TokenInfo cmpFunc(char* str, int id);
 //retreiving next token from file
 TokenInfo getNextToken(FILE *fp);
 
+void intialiseGlobalVariablesLexer();
 
 #endif
