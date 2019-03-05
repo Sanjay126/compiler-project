@@ -512,18 +512,43 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 	// }
 }
 
+
+
+void printNumber(char* str){
+	// if(strcmp(str, "0"))
+	int d=0;
+
+	while(str!=NULL){
+		d = d*10 + ((*str)-48);
+		str++;
+	}
+	printf("%d\t", d);
+}
+
+void printReal(char* str){
+	int d = 0;
+	while(str!=NULL && *str!='.'){
+		d = d*10 + ((*str)-48);
+		str++;
+	}
+	printf("%d%s\t", d, str);
+}
+
 void inorderTraversal(ParseTree PT, FILE* fp1, int level){
 	if(PT==NULL)
 		return;
 	//traverse left
 	inorderTraversal(PT->children, fp1, level+1);
 
-	//print current
-	// fprintf(fp1, "LEVEL: %d\t", level);
 	if(PT->tk == NULL)
-		fprintf(fp1,"LEVEL: %d\t----\t----\t %d %s\n",level, PT->non_term_id, symbolArray[PT->non_term_id]);
-	else
-		fprintf(fp1,"LEVEL: %d\t%s\t%llu\t\n", level, PT->tk->name, PT->tk->lineNo);
+		fprintf(fp1,"----\t----\t %d %s\n", PT->non_term_id, symbolArray[PT->non_term_id]);
+	else{
+		fprintf(fp1,"%s\t%llu\t%s", PT->tk->name, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt], );
+		if(PT-tk->tid==TK_NUM)
+			printNumber(PT->tk->name);
+		else if(PT-tk->tid==TK_RNUM)
+			printReal(PT->tk->name);
+	}
 	
 	//traverse right
 	inorderTraversal(PT->next, fp1, level);
