@@ -122,10 +122,6 @@ TokenInfo getNextToken(FILE *fp){
 
 	while(1){
 		curr = getNextChar(fp);
-		if(currVariables.flag == 1)
-  
-  			return generateNewToken("$",TK_DOLLAR); //$1 or $
-
 		buffer2Pos++;
 		buffer2[buffer2Pos] = curr;
 
@@ -237,8 +233,12 @@ TokenInfo getNextToken(FILE *fp){
 						currVariables.state=22;
 						break;
 					default :
-						printf("Line %llu: Unknown Symbol %c\n", currVariables.lineNo,curr);
-						return NULL;	//// TODO  error handling 
+						if(currVariables.flag == 1)
+  							return generateNewToken("$",TK_DOLLAR); //$1 or $
+						else{
+							printf("Line %llu: Unknown Symbol %c\n", currVariables.lineNo,curr);
+							return NULL;	//// TODO  error handling 
+						}
 				}
 				break;
 			case 1:
@@ -487,7 +487,7 @@ TokenInfo getNextToken(FILE *fp){
 				}
 				break;
 			case 24:
-				if(curr=='b' || curr=='c' || curr=='d');
+				if(curr>='2' && curr<='7');
 				else{
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;

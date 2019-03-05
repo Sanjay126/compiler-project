@@ -60,7 +60,7 @@ SNode topStack(Stack s){
 	return s->head;
 }
 
-Node addNode(int id,Node head){
+Node addNode(int id,Node head, int dupAllowed){
 	// if(head==)
 	Node newNode=(Node)malloc(sizeof(struct node));
 	Node temp=head;
@@ -69,7 +69,7 @@ Node addNode(int id,Node head){
 	if(head==NULL)
 		return newNode;
 	while(temp->next!=NULL){
-		if(temp->id==id){
+		if(temp->id==id && !dupAllowed){
 			// free(newNode);
 			return head;
 		}
@@ -82,18 +82,18 @@ Node addNode(int id,Node head){
 	temp->next=newNode;
 	return head;
 }
-Node createCopyNodeList(Node head){
+Node createCopyNodeList(Node head, int dupAllowed){
 	Node newNode=NULL;
 	Node temp = head;
 	while(temp){
-		newNode=addNode(temp->id,newNode);
+		newNode=addNode(temp->id,newNode, dupAllowed);
 		temp=temp->next;
 	}
 	return newNode;
 }
 
 Node joinNodeList(Node n1,Node n2){
-	Node copy=createCopyNodeList(n2);
+	Node copy=createCopyNodeList(n2, 0);
 	// printf("copy created\n");
 	Node temp=n1;
 	if(n1==NULL)return copy;
@@ -103,116 +103,7 @@ Node joinNodeList(Node n1,Node n2){
 	temp->next=copy;
 	return n1;
 }
-Node returningNode[2];
-Node* FirstSetUtil(Node ruleHead);
-void getFirstOfNT(int i){
-	if(First[i][0]!=NULL||First[i][1]!=NULL)return;
-	Node currentFirst[2]={NULL,NULL};
-	RuleRHS rule=gram.rules[i];
-		while(rule){
-			Node temp=rule->head;
-			Node* retrievedFirst=FirstSetUtil(temp);
-			currentFirst[0]=joinNodeList(currentFirst[0],retrievedFirst[0]);
-			currentFirst[1]=joinNodeList(currentFirst[1],retrievedFirst[1]);
-			rule=rule->next;
 
-		}
-	First[i]=currentFirst;
-	return ;
-
-}
-Node* FirstSetUtil(Node ruleHead){
-	Node currentFirst[2];
-	Node temp=ruleHead;
-	if(temp->id>=no_of_nt) return First[temp->id];
-	getFirstOfNT(temp->id);
-	currentFirst[0]=First[temp->id][0];
-	currentFirst[1]=First[temp->id][1];
-	if(currentFirst[1]!=NULL)
-		if(temp->next)
-		{
-			//remove epsilon
-			Node* retrievedFirst=FirstSetUtil(temp->next);
-			currentFirst[0]= joinNodeList(currentFirst[0],retrievedFirst[0]);
-			currentFirst[1]=joinNodeList(currentFirst[1],retrievedFirst[1]);
-		}
-	returningNode[0]=joinNodeList(NULL,currentFirst[0]);
-	returningNode[0]=joinNodeList(NULL,currentFirst[0]);
-	return returningNode;
-	// while(temp){
-	// 	int j=temp->id;
-	// 	if(j==101){			//case 2 from slides
-	// 		First[i][1]=First[i][0];
-	// 		First[i][0]=NULL;
-	// 		First[i][1]=addNode(j,First[i][1]);
-	// 		// return First[i];
-	// 	}
-	// 	else if(j!=i){
-	// 		// printf("\n\nCASE 3\n\n");
-	// 		Node* firstOfJ=getFirstOfNT(temp->id);
-	// 		// printf("%d\n", firstOfJ[0]->id);
-	// 		First[i][0]=joinNodeList(First[i][0],firstOfJ[0]);
-	// 		First[i][1]=joinNodeList(First[i][1],firstOfJ[1]);
-	// 		if(firstOfJ[1]!=NULL)	//case 3 from slides
-	// 			epsFlag=1;
-	// 		else{
-	// 			epsFlag=0;
-	// 			break;
-	// 		}
-	// 	}
-	// 	temp=temp->next;
-	// }
-	// if(epsFlag==1&&First[i][1]==NULL&&First[i][0]!=NULL){      //last case from slides
-	// 	// printf("\n\nCASE 4\n\n");
-	// 	First[i][1]=First[i][0];
-	// 	First[i][0]=NULL;
-	// 	First[i][1]=addNode(101,First[i][1]);
-	// }
-}
-void populateFirst(Grammar gram){
-
-	for(int i=no_of_nt;i<no_of_t+no_of_nt;i++){
-		First[i][0]=addNode(i,First[i][0]); 	//case 1 from slides.
-	}
-	for(int i=0;i<1;i++){
-		getFirstOfNT(i);
-	}
-	printf("First Done\n");
-}
-void populateFollow(Grammar gram){
-	Follow[program]=addNode(TK_DOLLAR+no_of_nt,Follow[program]);
-	for(int i=0;i<no_of_nt;i++){
-		RuleRHS rule=gram.rules[i];
-		while(rule){
-			Node temp=rule->head;
-			while(temp){
-				if(temp->next!=NULL)
-					if(First[temp->next->id][1]!=NULL){
-						Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp->next->id][1]);
-						Node temp2=temp->next;
-						while(temp2->next){
-							if(First[temp2->next->id][1]!=NULL){
-								Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp2->next->id][1]);
-								break;
-							}
-							else
-								Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp2->next->id][0]);
-							temp2=temp2->next;
-						}
-					}
-					else{
-						Follow[temp->id]=joinNodeList(Follow[temp->id],First[temp->next->id][0]);
-						break;
-					}
-				else{
-					Follow[temp->id]=joinNodeList(Follow[temp->id],Follow[i]);
-				}
-				temp=temp->next;
-			}
-			rule=rule->next;
-		}
-	}
-}
 char* getTokenFromId(int id){
 	return symbolArray[id];
 }
@@ -220,27 +111,14 @@ char* getTokenFromId(int id){
 Grammar getGrammar(){
 	return gram;
 }
-void FirstAndFollow(Grammar gram){
-	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
-	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
-	for(int i=0; i<no_of_nt+1; i++){
-		Follow[i]=NULL;
-	}
-	for(int i=0; i<no_of_nt+no_of_t+1; i++){
-		First[i] = (Node*)malloc(sizeof(Node)*2);
-		First[i][0]=NULL;
-		First[i][1]=NULL;
-	}
-	populateFirst(gram);
-	// populateFollow(gram);
-}
+
 void printFirst(){
 	for(int i=0; i<no_of_nt+no_of_t+1; i++){
 		Node temp, temp2;
 		printf("First of %s %d ==>\n", getTokenFromId(i), i);
 		if(First[i][0]!=NULL){
 			temp = First[i][0];
-			printf("\ntemp started ==>");
+			// printf("\ntemp started ==>");
 			while(temp!=NULL){
 				printf("%s\t",getTokenFromId(temp->id));
 				temp=temp->next;
@@ -248,7 +126,7 @@ void printFirst(){
 		}
 		if(First[i][1]!=NULL){
 			temp2 = First[i][1];
-			printf("\ntemp2 started ==>");
+			// printf("\ntemp2 started ==>");
 			while(temp2!=NULL){
 				printf("%s\t",getTokenFromId(temp2->id));
 				temp2=temp2->next;
@@ -408,7 +286,7 @@ ParseTree createPTNode(int id){
 }
 //A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
 Node reverseList(Node ls){
-	Node curr = createCopyNodeList(ls);
+	Node curr = createCopyNodeList(ls, 1);
 	Node prev = NULL, next = NULL;
 	while(curr!=NULL){
 		next = curr->next;
@@ -425,16 +303,27 @@ Node getFirst(Node head,int* epsFlag){
 	Node calculatedFirst=NULL;
 	Node temp=head;
 	while(temp){
+		printf("%s\n",symbolArray[temp->id]);
 		if(First[temp->id][1]==NULL){
 			calculatedFirst=joinNodeList(calculatedFirst,First[temp->id][0]);
+			// printf("\n-----in if-----\n");
 			return calculatedFirst;
 		}
-		else
+		else{
+			// printf("\n-----in else-----\n");
 			calculatedFirst=joinNodeList(calculatedFirst,First[temp->id][1]);
+		}
 		temp=temp->next;
 	}
 	*epsFlag=1;
 	return calculatedFirst;
+}
+void printNodeList(Node list){
+	Node temp=list;
+	while(temp){
+		printf("%s\n",symbolArray[temp->id] );
+		temp=temp->next;
+	}
 }
 parseTable createParseTable(parseTable T){
 	T = (parseTable)malloc(no_of_nt*sizeof(int*));
@@ -448,7 +337,7 @@ parseTable createParseTable(parseTable T){
 
 	for(int i = 0;i < no_of_nt;i++)
 	{
-		// int i=38;
+		// int i=2;
 		RuleRHS ruleIter = gram.rules[i];
 		while(ruleIter != NULL)
 		{
@@ -458,9 +347,15 @@ parseTable createParseTable(parseTable T){
 			int epsFlag=0;
 			Node firstIter;
 			Node revList = reverseList(RHSIter);
+			// printf("-----\n");
+			// printNodeList(revList);
+			// printf("-----\n");
+			// printNodeList(RHSIter);
+			// printf("-----\n");
 			firstIter=getFirst(revList,&epsFlag);
 			// if(First[RHSIter->id-1][0] != NULL)
 			// 	firstIter = First[RHSIter->id-1][0];
+			printNodeList(firstIter);
 
 			while(firstIter)
 			{	
@@ -506,18 +401,22 @@ parseTable createParseTable(parseTable T){
 
 void printParseTable(parseTable T){
 	// int i, j;
-	printf("aabbaabbaabbaabbaabb\t");
+	char* filename = "parseTable.txt";
+	FILE* fp23 = fopen(filename, "w");
+	char * a = "A";
+	fprintf(fp23, "%23s\t", a);
 	for(int i=0;i<no_of_t;i++){
-		printf("%2d ",i+no_of_nt);
+		fprintf(fp23, "%13s",symbolArray[i+no_of_nt]);
 	}
-	printf("\n");
+	fprintf(fp23, "\n");
 	for(int i=0; i<no_of_nt; i++){
-		printf("%20s\t",symbolArray[i] );
+		fprintf(fp23, "%23s\t",symbolArray[i] );
 		for(int j=0; j<no_of_t; j++){
-			printf("%2d ", T[i][j]);
+			fprintf(fp23, "%13d", T[i][j]);
 		}
-		printf("\n");
+		fprintf(fp23, "\n");
 	}
+	fclose(fp23);
 }
 
 void ReadFromFileFirstAndFollow(Grammar gram){
@@ -546,7 +445,7 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 		if(tokenIndex==-1)
 			continue;
 		int epsFlag=0;
-		if(tokenIndex==eps)
+		if(tokenIndex==eps+no_of_nt)
 			epsFlag=1;
 		Node head = intialiseNode(tokenIndex);
 		Node temp = head;
@@ -557,7 +456,7 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 			tokenIndex = findIndex(token);
 			if(tokenIndex==-1)
 				break;
-			if(tokenIndex==eps)
+			if(tokenIndex==eps+no_of_nt)
 				epsFlag=1;
 			temp->next = intialiseNode(tokenIndex);
 			temp = temp->next;
@@ -650,33 +549,44 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 
 	// parseTable T;
 	T = createParseTable(T);
-
+	printParseTable(T);
+	// return;
 	FILE* fp = fopen(testcaseFile,"r");
 
 	TokenInfo token = getNextToken(fp);
+	while(token==NULL){
+		token = getNextToken(fp);
+	}
 	int errorFlag=0;
 	while(1){
 		// printf("bla\n");
 		int X = topStack(s)->id;
-		printf("%s\t%s\n", ntArray[X],tokenArray[token->tid]);
-		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt)//Case 1
-			break;
-		else if(token->tid==TK_DOLLAR){
-			printf("end of file unexpected");
+		printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
+		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt){//Case 1
 			break;
 		}
+		// else if(token->tid==TK_DOLLAR){
+		// 	printf("end of file unexpected");
+		// 	break;
+		// }
 		else if(token->tid + no_of_nt == topStack(s)->id)//Case 2
 		{
+			// printf("-----CASE2-----\n");
 			s = popStack(s);
 			ptr = createPTNode(-1);
 			ptr->tk = token;
 			ptr = topStack(s)->pt_node;
 			token = getNextToken(fp);
+			while(token==NULL){
+				token = getNextToken(fp);
+			}
 		}
 		else if(topStack(s)->id < no_of_nt)//Case 3
 		{
 			if(T[X][token->tid] > 0)//If
 			{
+				// printf("-----CASE3-----\n");
+
 				s = popStack(s);
 				int ruleNo = T[X][token->tid];
 				RuleRHS ruleIter = gram.rules[X];
@@ -690,7 +600,8 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 				while(rhsIter)
 				{
 					ParseTree newNode = createPTNode(rhsIter->id);
-					s = pushStack(s,rhsIter->id,newNode);
+					if(rhsIter->id!=eps+no_of_nt)
+						s = pushStack(s,rhsIter->id,newNode);
 					if(ptr == NULL)
 						ptr = newNode;
 					else
@@ -715,13 +626,18 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 				printf("%s\n",symbolArray[topStack(s)->id] );
 				printf("ERROR2 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 				token = getNextToken(fp);
+				while(token==NULL){
+					token = getNextToken(fp);
+				}
 				errorFlag = 1;
 			}	
 		}
 		else
 		{
 			errorFlag = 1;
-			break;
+			printf("ERROR3 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+			s = popStack(s);
+			// break;
 			//we dont know: token in stack not match current token from input
 		}
 	}

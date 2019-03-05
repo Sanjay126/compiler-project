@@ -3,15 +3,15 @@
 #ifndef PARSER
 #define PARSER
 
-Node addNode(int id,Node head, int end);
+Node addNode(int id,Node head, int end, int dup);
 Node createCopyNodeList(Node head);
 Node joinNodeList(Node n1,Node n2);
 
-void getFirstOfNT(int i);
-Node* FirstSetUtil(Node ruleHead);
-void populateFirst(Grammar gram);
-void populateFollow(Grammar gram);
-void FirstAndFollow(Grammar gram);
+// void getFirstOfNT(int i);
+// Node* FirstSetUtil(Node ruleHead);
+// void populateFirst(Grammar gram);
+// void populateFollow(Grammar gram);
+// void FirstAndFollow(Grammar gram);
 void printFirst();
 
 
