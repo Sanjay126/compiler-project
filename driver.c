@@ -48,7 +48,6 @@ int main(int argc, char *argv[]){
 			}break;
 			case 3:{
 				// FirstAndFollow(gram);
-				// buildRules();
 				gram=getGrammar();
 
 				// int i=38;
@@ -84,10 +83,11 @@ int main(int argc, char *argv[]){
 
 
 
-				// ReadFromFileFirstAndFollow(gram);
-				parseTable T;// = createParseTable(T);
-				parseInputSourceCode(argv[1], T);
-				// printParseTable(T);
+				buildRules();
+				ReadFromFileFirstAndFollow(gram);
+				parseTable T = createParseTable(T);
+				// parseInputSourceCode(argv[1], T);
+				printParseTable(T);
 				// for(int i=0; i<no_of_nt; i++){
 				// 	// printf("%s\n", );
 				// 	// for(int )

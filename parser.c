@@ -662,6 +662,10 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 		
 		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt)//Case 1
 			break;
+		else if(token->tid==TK_DOLLAR){
+			printf("end of file unexpected");
+			break;
+		}
 		else if(token->tid + no_of_nt == topStack(s)->id)//Case 2
 		{
 			s = popStack(s);
@@ -709,6 +713,7 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 			}
 			else //Panic Mode : Error
 			{
+				printf("%s\n",symbolArray[topStack(s)->id] );
 				printf("ERROR2 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 				token = getNextToken(fp);
 				errorFlag = 1;
