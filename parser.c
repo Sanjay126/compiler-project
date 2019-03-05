@@ -620,6 +620,7 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 		// printf("bla\n");
 		int X = topStack(s)->id;
 		printf("%s\t%s\n", ntArray[X],tokenArray[token->tid]);
+		
 		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR)
 			break;
 		else if(token->tid == topStack(s)->id)
