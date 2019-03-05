@@ -5,26 +5,29 @@
 #include"lexerDef.h"
 currentInfo currVariables = {1,0,0,0,-1,0};
 
-void removeComments(char *testcaseFile, char *cleanFile){
-	FILE *fp = fopen(testcaseFile,"r");
-	FILE *nfp = fopen(cleanFile,"w");
+void intialiseGlobalVariablesLexer(){
+	currVariables.lineNo = 1;
+	currVariables.state = 0;
+	currVariables.offset = 0;
+	currVariables.flag = 0;
+	currVariables.bufferSize = -1;
+	currVariables.lexicalError = 0;
+}
 
-	while(!feof(fp))
-	{
-		char c = fgetc(fp);
+void removeComments(char *testcaseFile, char *cleanFile){
+	FILE *fp12 = fopen(testcaseFile,"r");
+	FILE *nfp12 = fopen(cleanFile,"w");
+
+	while(!feof(fp12)){
+		char c = fgetc(fp12);
 		if(c == '%')
-		{
-			while(!feof(fp) && c != '\n')
-				c = fgetc(fp);
-		}
-		else
-		{
-			if(!feof(fp))
-				fputc(c,nfp);
-		}
+			while(!feof(fp12) && c != '\n')
+				c = fgetc(fp12);
+		else if(!feof(fp12))
+			fputc(c,nfp12);
 	}
-	fclose(fp);
-	fclose(nfp);
+	fclose(fp12);
+	fclose(nfp12);
 }
 
 
@@ -50,65 +53,22 @@ char getNextChar(FILE *fp){
 
 TokenInfo generateNewToken(char* str,tokenId tid){
 	TokenInfo new =  (TokenInfo)malloc(sizeof(struct tokenInfo));
-	
 	new->tid = tid;
 	new->name = (char *)malloc(sizeof(char)*(strlen(str)+1));
 	strcpy(new->name,str);
 	new->lineNo = currVariables.lineNo;
-
 	return new;
 }
 
 
 TokenInfo cmpFunc(char* str, int iddd){
-	if(strcmp(str, "with")==0)
-		return generateNewToken(str, TK_WITH);
-	else if(strcmp(str, "parameters")==0)
-		return generateNewToken(str, TK_PARAMETERS);
-	else if(strcmp(str, "end")==0)
-		return generateNewToken(str, TK_END);
-	else if(strcmp(str, "while")==0)
-		return generateNewToken(str, TK_WHILE);
-	else if(strcmp(str, "int")==0)
-		return generateNewToken(str, TK_INT);
-	else if(strcmp(str, "real")==0)
-		return generateNewToken(str, TK_REAL);
-	else if(strcmp(str, "type")==0)
-		return generateNewToken(str, TK_TYPE);
-	else if(strcmp(str, "_main")==0)
-		return generateNewToken(str, TK_MAIN);
-	else if(strcmp(str, "global")==0)
-		return generateNewToken(str, TK_GLOBAL);
-	else if(strcmp(str, "parameter")==0)
-		return generateNewToken(str, TK_PARAMETER);
-	else if(strcmp(str, "list")==0)
-		return generateNewToken(str, TK_LIST);
-	else if(strcmp(str, "input")==0)
-		return generateNewToken(str, TK_INPUT);
-	else if(strcmp(str, "output")==0)
-		return generateNewToken(str, TK_OUTPUT);
-	else if(strcmp(str, "endwhile")==0)
-		return generateNewToken(str, TK_ENDWHILE);
-	else if(strcmp(str, "if")==0)
-		return generateNewToken(str, TK_IF);
-	else if(strcmp(str, "then")==0)
-		return generateNewToken(str, TK_THEN);
-	else if(strcmp(str, "endif")==0)
-		return generateNewToken(str, TK_ENDIF);
-	else if(strcmp(str, "read")==0)
-		return generateNewToken(str, TK_READ);
-	else if(strcmp(str, "write")==0)
-		return generateNewToken(str, TK_WRITE);
-	else if(strcmp(str, "return")==0)
-		return generateNewToken(str, TK_RETURN);
-	else if(strcmp(str, "call")==0)
-		return generateNewToken(str, TK_CALL);
-	else if(strcmp(str, "record")==0)
-		return generateNewToken(str, TK_RECORD);
-	else if(strcmp(str, "endrecord")==0)
-		return generateNewToken(str, TK_ENDRECORD);
-	else if(strcmp(str, "else")==0)
-		return generateNewToken(str, TK_ELSE);
+	int l = 24;
+	char* strings[] = {"with","parameters","end","while","int","real","type","_main","global","parameter","list","input","output","endwhile","if","then","endif","read","write","return","call","record","endrecord","else"};
+
+	int tokens[] = {TK_WITH,TK_PARAMETERS,TK_END,TK_WHILE,TK_INT,TK_REAL,TK_TYPE,TK_MAIN,TK_GLOBAL,TK_PARAMETER,TK_LIST,TK_INPUT,TK_OUTPUT,TK_ENDWHILE,TK_IF,TK_THEN,TK_ENDIF,TK_READ,TK_WRITE,TK_RETURN,TK_CALL,TK_RECORD,TK_ENDRECORD,TK_ELSE};
+	for(int i=0; i<l; i++)
+		if(strcmp(str, strings[i])==0)
+			return generateNewToken(str, tokens[i]);
 	return generateNewToken(str,iddd);
 }
 
@@ -495,7 +455,7 @@ TokenInfo getNextToken(FILE *fp){
 					}
 				}
 				break;
-			
+
 		}
 	}
 }
