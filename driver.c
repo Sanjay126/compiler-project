@@ -5,8 +5,6 @@
 #include "parser.h"
 
 char* tArray[] = {"TK_WITH","TK_THEN","TK_TYPE","TK_EQ","TK_DOLLAR","TK_COMMA","TK_RNUM","TK_CL","TK_AND","TK_PARAMETER","TK_DIV","TK_ID","TK_GLOBAL","TK_GE","TK_LIST","TK_IF","TK_RECORD","TK_NUM","TK_NE","TK_LE","TK_DOT","TK_INPUT","TK_MAIN","TK_CALL","TK_PLUS","TK_ELSE","TK_COMMENT","TK_ASSIGNOP","TK_WRITE","TK_COLON","TK_WHILE","TK_REAL","TK_READ","TK_NOT","TK_SQL","TK_OUTPUT","TK_SQR","TK_ENDIF","TK_MINUS","TK_SEM","TK_FIELDID","TK_PARAMETERS","TK_OP","TK_ENDWHILE","TK_MUL","TK_FUNID","TK_INT","TK_RETURN","TK_GT","TK_END","TK_LT","TK_OR","TK_ENDRECORD","eps","TK_RECORDID"};
-
-
 Grammar gram;
 int main(int argc, char *argv[]){
 	if(argc!=3){
@@ -47,69 +45,11 @@ int main(int argc, char *argv[]){
 						break;
 				}
 				fclose(fp);
-				// printf("\n");
 			}break;
 			case 3:{
-				// FirstAndFollow(gram);
-				gram=getGrammar();
-
-				// int i=38;
-				// RuleRHS ruleIter = gram.rules[i];
-				// while(ruleIter != NULL)
-				// {
-				// 	Node RHSIter = ruleIter->head;
-				// 	// while(RHSIter && RHSIter->next)
-				// 	// 	RHSIter = RHSIter->next;
-				// 	// int epsFlag=0;
-				// 	// Node firstIter;
-				// 	// // firstIter=getFirst(RHSIter,&epsFlag);
-				// 	// if(First[RHSIter->id-1][0] != NULL)
-				// 	// 	firstIter = First[RHSIter->id-1][0];
-
-				// 	while(RHSIter)
-				// 	{
-				// 		printf("%d\t%s\n", RHSIter->id, getTokenFromId(RHSIter->id));
-				// 		RHSIter = RHSIter->next;
-				// 	}
-					
-				// 	// if(epsFlag){
-				// 	// 		Node followIter = Follow[i];
-				// 	// 			while(followIter)
-				// 	// 			{
-				// 	// 				T[i][followIter->id-no_of_nt] = ruleIter->ruleNo;
-				// 	// 				followIter = followIter->next;
-				// 	// 			}
-
-				// 	// 	}
-				// 	ruleIter = ruleIter->next;
-				// }
-
-
-
-				// buildRules();
-				// ReadFromFileFirstAndFollow(gram);
-				// printFirst();
-				parseTable T;// = createParseTable(T);
+				parseTable T;
 				ParseTree PT = parseInputSourceCode(argv[1], T, PT);
-				printParseTree(PT,"a.txt");
-				// printParseTable(T);
-				// for(int i=0; i<no_of_nt; i++){
-				// 	// printf("%s\n", );
-				// 	// for(int )
-
-				// 	RuleRHS r = gram.rules[i];
-				// 	while(r!=NULL){
-				// 		Node h = r->head;
-				// 		// printf("%s\n", );
-				// 		printf("RuleNo. - %d \t%s\t ==> ", r->ruleNo, getTokenFromId(i));
-				// 		while(h!=NULL){
-				// 			printf("%s\t", getTokenFromId(h->id));
-				// 			h = h->next;
-				// 		}
-				// 		printf("\n");
-				// 		r = r->next;
-				// 	}
-				// }
+				printParseTree(PT,"parsetree.txt");
 			}break;
 			default :
 				printf("invalid option");
