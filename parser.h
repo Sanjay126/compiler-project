@@ -36,5 +36,5 @@ Grammar getGrammar();
 void inorderTraversal(ParseTree PT, FILE* fp1);
 void printParseTree(ParseTree PT, char *outfile);
 void ReadFromFileFirstAndFollow(Grammar gram);
-void parseInputSourceCode(char *testcaseFile, parseTable T);
+ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT);
 #endif

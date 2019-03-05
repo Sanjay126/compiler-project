@@ -303,7 +303,7 @@ Node getFirst(Node head,int* epsFlag){
 	Node calculatedFirst=NULL;
 	Node temp=head;
 	while(temp){
-		printf("%s\n",symbolArray[temp->id]);
+		// printf("%s\n",symbolArray[temp->id]);
 		if(First[temp->id][1]==NULL){
 			calculatedFirst=joinNodeList(calculatedFirst,First[temp->id][0]);
 			// printf("\n-----in if-----\n");
@@ -355,7 +355,7 @@ parseTable createParseTable(parseTable T){
 			firstIter=getFirst(revList,&epsFlag);
 			// if(First[RHSIter->id-1][0] != NULL)
 			// 	firstIter = First[RHSIter->id-1][0];
-			printNodeList(firstIter);
+			// printNodeList(firstIter);
 
 			while(firstIter)
 			{	
@@ -512,32 +512,38 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 	// }
 }
 
-void inorderTraversal(ParseTree PT, FILE* fp1){
+void inorderTraversal(ParseTree PT, FILE* fp1, int level){
 	if(PT==NULL)
 		return;
-	if(PT->non_term_id)
-		printf("----\t----\t");
+	//traverse left
+	inorderTraversal(PT->children, fp1, level+1);
+
+	//print current
+	// fprintf(fp1, "LEVEL: %d\t", level);
+	if(PT->tk == NULL)
+		fprintf(fp1,"LEVEL: %d\t----\t----\t %d %s\n",level, PT->non_term_id, symbolArray[PT->non_term_id]);
 	else
-		printf("%s\t%llu\t", PT->tk->name, PT->tk->lineNo);
-	// printf("");
-	inorderTraversal(PT->children, fp1);
-	inorderTraversal(PT->next, fp1);
+		fprintf(fp1,"LEVEL: %d\t%s\t%llu\t\n", level, PT->tk->name, PT->tk->lineNo);
+	
+	//traverse right
+	inorderTraversal(PT->next, fp1, level);
 }
 
 void printParseTree(ParseTree PT, char *outfile){
 	FILE* fp1 = fopen(outfile, "w");
 	// printf("")
-	inorderTraversal(PT, fp1);
+	inorderTraversal(PT, fp1, 0);
 	fclose(fp1);
 }
 
-void parseInputSourceCode(char *testcaseFile, parseTable T){
+ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	Stack s = intialiseStack();
 	s = pushStack(s,TK_DOLLAR+no_of_nt,NULL);
-	ParseTree PT = NULL;
+	// ParseTree PT = NULL;
 	PT = createPTNode(program);
+	ParseTree head = PT;
 	s = pushStack(s,program,PT);
-	ParseTree ptr = PT->children;
+	// PT = PT->children;
 	buildRules();
 	// gram = getGrammar();
 	ReadFromFileFirstAndFollow(gram);
@@ -573,9 +579,10 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 		{
 			// printf("-----CASE2-----\n");
 			s = popStack(s);
-			ptr = createPTNode(-1);
-			ptr->tk = token;
-			ptr = topStack(s)->pt_node;
+			printf("aa----%s---aa\n",symbolArray[PT->non_term_id]);
+			// PT->children = createPTNode(-1);
+			PT->tk = token;
+			PT = topStack(s)->pt_node;
 			token = getNextToken(fp);
 			while(token==NULL){
 				token = getNextToken(fp);
@@ -590,35 +597,45 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 				s = popStack(s);
 				int ruleNo = T[X][token->tid];
 				RuleRHS ruleIter = gram.rules[X];
-				while(ruleIter && ruleIter->ruleNo != ruleNo)
-				{
+				while(ruleIter && ruleIter->ruleNo != ruleNo){
 					ruleIter = ruleIter->next;
 				}
 
 				Node rhsIter = ruleIter->head;
 
-				while(rhsIter)
-				{
+				while(rhsIter){
 					ParseTree newNode = createPTNode(rhsIter->id);
 					if(rhsIter->id!=eps+no_of_nt)
 						s = pushStack(s,rhsIter->id,newNode);
-					if(ptr == NULL)
-						ptr = newNode;
-					else
-					{
-						newNode->next = ptr;
-						ptr = newNode;
+					else{
+						newNode->non_term_id = -1;
+						newNode->tk = (TokenInfo)malloc(sizeof(struct tokenInfo));
+						newNode->tk->tid = eps;
+						newNode->tk->lineNo = 0;
+						newNode->tk->name = (char*)malloc(10*sizeof(char));
+						strcpy(newNode->tk->name,"eps");
+						// PT->children = newNode;	
 					}
+					// printf("`````%s`````\n", symbolArray[rhsIter->id]);
+					// if(rhsIter->id < no_of_nt)
+					// {
+						if(PT->children == NULL)
+							PT->children = newNode;
+						else{
+							newNode->next = PT->children;
+							PT->children = newNode;
+						}
+					// }
 					rhsIter = rhsIter->next;
 				}
 
-				ptr = ptr->children;
+				PT = topStack(s)->pt_node;
 			}
 			else if(T[X][token->tid] == 0) // Panic Mode : syn set
 			{
 				printf("ERROR1 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 				s = popStack(s);
-				ptr = topStack(s)->pt_node;
+				PT = topStack(s)->pt_node;
 				errorFlag = 1;
 			}
 			else //Panic Mode : Error
@@ -644,5 +661,5 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 	fclose(fp);
 	if(!errorFlag)
 		printf("Input source code is syntactically correct...........\n");
-	return;
+	return head;
 }
