@@ -28,8 +28,6 @@ Node **First;
 Node *Follow;
 
 hashTable Table; //hashtable global variable for storing all the symbols -> Non-terminals followed by tokens(Used for fast retreival of their ID)           
-
-//Initializing Linked List Node
 Node intialiseNode(int id){
 	Node n = (Node)malloc(sizeof(struct node));
 	n->id = id;
@@ -99,6 +97,14 @@ Node createCopyNodeList(Node head, int dupAllowed){
 		temp=temp->next;
 	}
 	return newNode;
+}
+void freeNodeList(Node head){
+	Node temp;
+	while(head){
+		temp = head->next;
+		free(head);
+		head = temp;
+	}
 }
 Node joinNodeList(Node n1,Node n2){
 	Node copy=createCopyNodeList(n2, 0);
@@ -517,6 +523,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	int errorFlag=0;
 	while(1){
 		int X = topStack(s)->id;
+
 		printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
 		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt){ //Case 1 : Top of stack is current token is equal to '$'
 			break;
@@ -524,6 +531,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 		else if(token->tid + no_of_nt == topStack(s)->id) //Case 2 Top of stack = Token is not equal '$'
 		{
 			s = popStack(s);
+
 			PT->tk = token;
 			PT = topStack(s)->pt_node;
 			token = getNextToken(fp);
@@ -566,20 +574,29 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 
 				PT = topStack(s)->pt_node;
 			}
-			else if(T[X][token->tid] == 0) // Panic Mode : syn set
-			{
-				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
-				s = popStack(s);
-				PT = topStack(s)->pt_node;
-				errorFlag = 1;
-			}
+			// else if(T[X][token->tid] == 0) // Panic Mode : syn set
+			// {
+			// 	// printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
+			// 	s = popStack(s);
+			// 	PT = topStack(s)->pt_node;
+			// 	errorFlag = 1;
+			// }
 			else //Panic Mode : Error
 			{
 				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
+				while(T[X][token->tid]<0){
 				token = getNextToken(fp);
-				while(token==NULL){
-					token = getNextToken(fp);
+					while(token==NULL){
+						token = getNextToken(fp);
+					}
 				}
+				if(T[X][token->tid]==0){
+					s=popStack(s);
+					PT=topStack(s)->pt_node;
+					
+
+				}
+				
 				errorFlag = 1;
 			}	
 		}
