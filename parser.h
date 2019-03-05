@@ -22,6 +22,7 @@ Stack pushStack(Stack s, int id,ParseTree pt_node);
 Stack popStack(Stack s);
 SNode topStack(Stack s);
 
+Node reverseList(Node ls);
 
 int hash(char *v, int M);
 void populateHashTable();
