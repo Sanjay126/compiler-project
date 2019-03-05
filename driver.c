@@ -48,10 +48,46 @@ int main(int argc, char *argv[]){
 			}break;
 			case 3:{
 				// FirstAndFollow(gram);
-				parseTable T;// = createParseTable(T);
-				// ReadFromFileFirstAndFollow(gram);
-				parseInputSourceCode(argv[1], T);
-				// printParseTable(T);
+				gram=getGrammar();
+
+				// int i=38;
+				// RuleRHS ruleIter = gram.rules[i];
+				// while(ruleIter != NULL)
+				// {
+				// 	Node RHSIter = ruleIter->head;
+				// 	// while(RHSIter && RHSIter->next)
+				// 	// 	RHSIter = RHSIter->next;
+				// 	// int epsFlag=0;
+				// 	// Node firstIter;
+				// 	// // firstIter=getFirst(RHSIter,&epsFlag);
+				// 	// if(First[RHSIter->id-1][0] != NULL)
+				// 	// 	firstIter = First[RHSIter->id-1][0];
+
+				// 	while(RHSIter)
+				// 	{
+				// 		printf("%d\t%s\n", RHSIter->id, getTokenFromId(RHSIter->id));
+				// 		RHSIter = RHSIter->next;
+				// 	}
+					
+				// 	// if(epsFlag){
+				// 	// 		Node followIter = Follow[i];
+				// 	// 			while(followIter)
+				// 	// 			{
+				// 	// 				T[i][followIter->id-no_of_nt] = ruleIter->ruleNo;
+				// 	// 				followIter = followIter->next;
+				// 	// 			}
+
+				// 	// 	}
+				// 	ruleIter = ruleIter->next;
+				// }
+
+
+
+				buildRules();
+				ReadFromFileFirstAndFollow(gram);
+				parseTable T = createParseTable(T);
+				// parseInputSourceCode(argv[1], T);
+				printParseTable(T);
 				// for(int i=0; i<no_of_nt; i++){
 				// 	// printf("%s\n", );
 				// 	// for(int )
