@@ -1,3 +1,11 @@
+/*
+Group Number - 12
+Sanjay Malhotra 2016A7PS0126P
+Nilay Arora 2016A7PS0117P
+Tushar Goel 2016A7PS0023P
+Adit Shastri 2016A7PS0121P
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,18 +13,23 @@
 #include "lexer.h"
 #include "parserDef.h"
 
+//global variable for grammer struct
 Grammar gram;
+
+//Arrays for non-terminals,all symbols and token resp.
 char* ntArray[] = {"assignmentStmt","global_or_not","booleanExpression","highPrecedenceOperators","singleOrRecId","constructedDatatype","dataType","primitiveDatatype","typeDefinitions","more_ids","idList","relationalOp","temp","output_par","stmt","declarations","input_par","logicalOp","newallvar","program","remaining_list","all","term","stmts","returnStmt","declaration","iterativeStmt","otherFunctions","factor","allnew","new_24","function","arithmeticExpression","var","fieldDefinitions","allVar","mainFunction","funCallStmt","parameter_list","fieldDefinition","typeDefinition","expPrime","outputParameters","termPrime","lowPrecedenceOperators","optionalReturn","elsePart","moreFields","conditionalStmt","otherStmts","ioStmt","inputParameters"};
 
 char* symbolArray[] = {"assignmentStmt","global_or_not","booleanExpression","highPrecedenceOperators","singleOrRecId","constructedDatatype","dataType","primitiveDatatype","typeDefinitions","more_ids","idList","relationalOp","temp","output_par","stmt","declarations","input_par","logicalOp","newallvar","program","remaining_list","all","term","stmts","returnStmt","declaration","iterativeStmt","otherFunctions","factor","allnew","new_24","function","arithmeticExpression","var","fieldDefinitions","allVar","mainFunction","funCallStmt","parameter_list","fieldDefinition","typeDefinition","expPrime","outputParameters","termPrime","lowPrecedenceOperators","optionalReturn","elsePart","moreFields","conditionalStmt","otherStmts","ioStmt","inputParameters", "TK_WITH","TK_THEN","TK_TYPE","TK_EQ","TK_DOLLAR","TK_COMMA","TK_RNUM","TK_CL","TK_AND","TK_PARAMETER","TK_DIV","TK_ID","TK_GLOBAL","TK_GE","TK_LIST","TK_IF","TK_RECORD","TK_NUM","TK_NE","TK_LE","TK_DOT","TK_INPUT","TK_MAIN","TK_CALL","TK_PLUS","TK_ELSE","TK_COMMENT","TK_ASSIGNOP","TK_WRITE","TK_COLON","TK_WHILE","TK_REAL","TK_READ","TK_NOT","TK_SQL","TK_OUTPUT","TK_SQR","TK_ENDIF","TK_MINUS","TK_SEM","TK_FIELDID","TK_PARAMETERS","TK_OP","TK_ENDWHILE","TK_MUL","TK_FUNID","TK_INT","TK_RETURN","TK_GT","TK_END","TK_LT","TK_OR","TK_ENDRECORD","eps","TK_RECORDID"};
 
 char* tokenArray[] = {"TK_WITH","TK_THEN","TK_TYPE","TK_EQ","TK_DOLLAR","TK_COMMA","TK_RNUM","TK_CL","TK_AND","TK_PARAMETER","TK_DIV","TK_ID","TK_GLOBAL","TK_GE","TK_LIST","TK_IF","TK_RECORD","TK_NUM","TK_NE","TK_LE","TK_DOT","TK_INPUT","TK_MAIN","TK_CALL","TK_PLUS","TK_ELSE","TK_COMMENT","TK_ASSIGNOP","TK_WRITE","TK_COLON","TK_WHILE","TK_REAL","TK_READ","TK_NOT","TK_SQL","TK_OUTPUT","TK_SQR","TK_ENDIF","TK_MINUS","TK_SEM","TK_FIELDID","TK_PARAMETERS","TK_OP","TK_ENDWHILE","TK_MUL","TK_FUNID","TK_INT","TK_RETURN","TK_GT","TK_END","TK_LT","TK_OR","TK_ENDRECORD","eps","TK_RECORDID"};
 
+//Data structures for storing first and follows sets
 Node **First;
 Node *Follow;
-int size_table = 107;
-hashTable Table; 
 
+hashTable Table; //hashtable global variable for storing all the symbols -> Non-terminals followed by tokens(Used for fast retreival of their ID)           
+
+//Initializing Linked List Node
 Node intialiseNode(int id){
 	Node n = (Node)malloc(sizeof(struct node));
 	n->id = id;
@@ -24,6 +37,7 @@ Node intialiseNode(int id){
 	return n;
 }
 
+//Stack ADT
 SNode intialiseSNode(int id,ParseTree pt_node){
 	SNode n = (SNode)malloc(sizeof(struct snode));
 	n->id = id;
@@ -37,7 +51,6 @@ Stack intialiseStack(){
 	s->head = NULL;
 	return s;
 }
-
 Stack pushStack(Stack s, int id,ParseTree pt_node){
 	SNode n = intialiseSNode(id,pt_node);
 	n->next = s->head;
@@ -45,7 +58,6 @@ Stack pushStack(Stack s, int id,ParseTree pt_node){
 	s->head = n;
 	return s;
 }
-
 Stack popStack(Stack s){
 	if(s->head==NULL)
 		return s;
@@ -55,13 +67,13 @@ Stack popStack(Stack s){
 	s->size--;
 	return s;
 }
-
 SNode topStack(Stack s){
 	if (s->head==NULL)
 		return NULL;
 	return s->head;
 }
 
+//Linkied List Utility Functions
 Node addNode(int id,Node head, int dupAllowed){
 	Node newNode=(Node)malloc(sizeof(struct node));
 	Node temp=head;
@@ -88,7 +100,6 @@ Node createCopyNodeList(Node head, int dupAllowed){
 	}
 	return newNode;
 }
-
 Node joinNodeList(Node n1,Node n2){
 	Node copy=createCopyNodeList(n2, 0);
 	Node temp=n1;
@@ -100,55 +111,51 @@ Node joinNodeList(Node n1,Node n2){
 	return n1;
 }
 
+//Returning Symbol from ID
 char* getTokenFromId(int id){
 	return symbolArray[id];
 }
+// void printFirst(){
+// 	for(int i=0; i<no_of_nt+no_of_t+1; i++){
+// 		Node temp, temp2;
+// 		printf("First of %s %d ==> ", getTokenFromId(i), i);
+// 		if(First[i][0]!=NULL){
+// 			temp = First[i][0];
+// 			while(temp!=NULL){
+// 				printf("%s\t",getTokenFromId(temp->id));
+// 				temp=temp->next;
+// 			}
+// 		}
+// 		else if(First[i][1]!=NULL){
+// 			temp2 = First[i][1];
+// 			while(temp2!=NULL){
+// 				printf("%s\t",getTokenFromId(temp2->id));
+// 				temp2=temp2->next;
+// 			}
+// 		}
+// 		else{
+// 			printf("ERROR\n");
+// 			continue;
+// 		}
+// 		printf("\n");
+// 	}				
+// }
 
-Grammar getGrammar(){
-	return gram;
-}
-
-void printFirst(){
-	for(int i=0; i<no_of_nt+no_of_t+1; i++){
-		Node temp, temp2;
-		printf("First of %s %d ==> ", getTokenFromId(i), i);
-		if(First[i][0]!=NULL){
-			temp = First[i][0];
-			while(temp!=NULL){
-				printf("%s\t",getTokenFromId(temp->id));
-				temp=temp->next;
-			}
-		}
-		else if(First[i][1]!=NULL){
-			temp2 = First[i][1];
-			while(temp2!=NULL){
-				printf("%s\t",getTokenFromId(temp2->id));
-				temp2=temp2->next;
-			}
-		}
-		else{
-			printf("ERROR\n");
-			continue;
-		}
-		printf("\n");
-	}				
-}
-
+//HashTable ADT
 int hash(char *v, int M){ 
 	int h = 0, a = 257;
     for (; *v != 0; v++)
         h = (a*h + *v) % M;
     return h;
 }
-
 void populateHashTable(){
-	Table = (hashTable)malloc(size_table*sizeof(hashNode*));
-	for(int i = 0;i < size_table;i++){
+	Table = (hashTable)malloc(no_of_sym*sizeof(hashNode*));
+	for(int i = 0;i < no_of_sym;i++){
 		Table[i] = (hashNode*)malloc(sizeof(hashNode));
 		Table[i]->next == NULL;
 	}
-	for(int i = 0;i < size_table;i++){
-		int hval = hash(symbolArray[i],size_table);
+	for(int i = 0;i < no_of_sym;i++){
+		int hval = hash(symbolArray[i],no_of_sym);
 		if(Table[hval]->next == NULL){
 			Table[hval]->next = (hashNode*)malloc(sizeof(hashNode));
 			Table[hval]->next->index = i;
@@ -166,9 +173,8 @@ void populateHashTable(){
 		}
 	}
 }
-
 int findIndex(char* s){
-	int in = hash(s,size_table);
+	int in = hash(s,no_of_sym);
 	hashNode* ptr = Table[in];
 	while(ptr != NULL){
 		if(strcmp(ptr->s,s) == 0)
@@ -178,7 +184,7 @@ int findIndex(char* s){
 	return -1;
 }
 
-
+//Reading Grammer from grammet.txt and storing it
 void buildRules(){
 	populateHashTable();
 	FILE *gramFile = fopen("grammar.txt","r");
@@ -219,6 +225,7 @@ void buildRules(){
 	fclose(gramFile);
 }
 
+//creating parse tree node
 ParseTree createPTNode(int id){
 	ParseTree new = (ParseTree)malloc(sizeof(struct parseTree));
 	new->next = NULL;
@@ -229,6 +236,7 @@ ParseTree createPTNode(int id){
 	return new;
 }
 
+//reversing a linked list
 Node reverseList(Node ls){
 	Node curr = createCopyNodeList(ls, 1);
 	Node prev = NULL, next = NULL;
@@ -241,6 +249,7 @@ Node reverseList(Node ls){
 	return prev;
 }
 
+//returns First of Right Hand Side of a grammer rule
 Node getFirst(Node head,int* epsFlag){
 	if (head==NULL)
 		return NULL;
@@ -259,6 +268,7 @@ Node getFirst(Node head,int* epsFlag){
 	return calculatedFirst;
 }
 
+//Prints a linked List
 void printNodeList(Node list){
 	Node temp=list;
 	while(temp){
@@ -268,7 +278,13 @@ void printNodeList(Node list){
 	printf("\n");
 }
 
-//A number greater than zero in parseTable represents the ruleNo; 0 represents Syn;-1 represents error
+/*
+Creates Parse Table
+Parse table is a 2D matrix with each cell as Integer
+A number greater than 0 is ruleNo which is basically lineNo in grammer.txt
+0 represents that is in syn set
+-1 represents error
+*/
 parseTable createParseTable(parseTable T){
 	T = (parseTable)malloc(no_of_nt*sizeof(int*));
 
@@ -311,6 +327,7 @@ parseTable createParseTable(parseTable T){
 	return T;
 }
 
+//printing parse table
 void printParseTable(parseTable T){
 	char* filename = "parseTable.txt";
 	FILE* fp23 = fopen(filename, "w");
@@ -330,6 +347,7 @@ void printParseTable(parseTable T){
 	fclose(fp23);
 }
 
+//Reading first and follow from txt files and populating the data structures
 void ReadFromFileFirstAndFollow(Grammar gram){
 	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
 	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
@@ -351,7 +369,6 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 		if(lhsIndex==-1)
 			continue;
 		token = strtok(NULL," \n\r");
-		// int f=0;
 		int tokenIndex=findIndex(token);
 		if(tokenIndex==-1)
 			continue;
@@ -409,7 +426,6 @@ void ReadFromFileFirstAndFollow(Grammar gram){
 }
 
 
-
 void printNumber(char* str, FILE* fp1){
 	int d=0;
 	while(str!=NULL){
@@ -418,7 +434,6 @@ void printNumber(char* str, FILE* fp1){
 	}
 	fprintf(fp1, "%d\t", d);
 }
-
 void printReal(char* str, FILE* fp1){
 	int d = 0;
 	while(str!=NULL && *str!='.'){
@@ -464,6 +479,7 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 	inorderTraversal(PT->next, fp1, level, parent);
 }
 
+//printing pasre tree
 void printParseTree(ParseTree PT, char *outfile){
 	FILE* fp1 = fopen(outfile, "w");
 	char* headings[] = {"lexeme","lineno","tokenName","valueIfNumber","parentNodeSymbol","isLeafNode","NodeSymbol"};
@@ -475,17 +491,23 @@ void printParseTree(ParseTree PT, char *outfile){
 	fclose(fp1);
 }
 
+//Parsing anf forming parsetree
 ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
+	
 	Stack s = intialiseStack();
+	
 	s = pushStack(s,TK_DOLLAR+no_of_nt,NULL);
+	
 	PT = createPTNode(program);
 	ParseTree head = PT;
+	
 	s = pushStack(s,program,PT);
+	
 	buildRules();
 	ReadFromFileFirstAndFollow(gram);
 
 	T = createParseTable(T);
-	printParseTable(T);
+	
 	FILE* fp = fopen(testcaseFile,"r");
 
 	TokenInfo token = getNextToken(fp);
@@ -494,21 +516,14 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	}
 	int errorFlag=0;
 	while(1){
-		// printf("bla\n");
 		int X = topStack(s)->id;
 		printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
-		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt){//Case 1
+		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt){ //Case 1 : Top of stack is current token is equal to '$'
 			break;
 		}
-		// else if(token->tid==TK_DOLLAR){
-		// 	printf("end of file unexpected");
-		// 	break;
-		// }
-		else if(token->tid + no_of_nt == topStack(s)->id)//Case 2
+		else if(token->tid + no_of_nt == topStack(s)->id) //Case 2 Top of stack = Token is not equal '$'
 		{
 			s = popStack(s);
-			printf("aa----%s---aa\n",symbolArray[PT->non_term_id]);
-			// PT->children = createPTNode(-1);
 			PT->tk = token;
 			PT = topStack(s)->pt_node;
 			token = getNextToken(fp);
@@ -516,9 +531,9 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 				token = getNextToken(fp);
 			}
 		}
-		else if(topStack(s)->id < no_of_nt)//Case 3
+		else if(topStack(s)->id < no_of_nt)//Case 3 : Top of stack is non terminal
 		{
-			if(T[X][token->tid] > 0){
+			if(T[X][token->tid] > 0){ 
 				s = popStack(s);
 				int ruleNo = T[X][token->tid];
 				RuleRHS ruleIter = gram.rules[X];
@@ -568,14 +583,11 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 				errorFlag = 1;
 			}	
 		}
-		else
+		else //Case 4 : Top of stack is token but is not equal to the current token
 		{
 			errorFlag = 1;
-			// printf("ERROR3 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 			printf("Line %llu: The token %s for lexeme %s does not match with the expected token %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
 			s = popStack(s);
-			// break;
-			//we dont know: token in stack does not match current token from input
 		}
 	}
 	fclose(fp);

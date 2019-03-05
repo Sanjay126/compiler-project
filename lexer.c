@@ -1,3 +1,10 @@
+/*
+Group Number - 12
+Sanjay Malhotra 2016A7PS0126P
+Nilay Arora 2016A7PS0117P
+Tushar Goel 2016A7PS0023P
+Adit Shastri 2016A7PS0121P
+*/
 # include <stdio.h>
 # include <stdlib.h>
 # include <string.h>
@@ -5,8 +12,9 @@
 #include"lexerDef.h"
 currentInfo currVariables = {1,0,0,0,-1,0};
 
+//Initializing various global variables used
 void intialiseGlobalVariablesLexer(){
-	currVariables.lineNo = 1;
+	currVariables.lineNo = 1; 
 	currVariables.state = 0;
 	currVariables.offset = 0;
 	currVariables.flag = 0;
@@ -14,6 +22,7 @@ void intialiseGlobalVariablesLexer(){
 	currVariables.lexicalError = 0;
 }
 
+//removing comments
 void removeComments(char *testcaseFile, char *cleanFile){
 	FILE *fp12 = fopen(testcaseFile,"r");
 	FILE *nfp12 = fopen(cleanFile,"w");
@@ -30,7 +39,7 @@ void removeComments(char *testcaseFile, char *cleanFile){
 	fclose(nfp12);
 }
 
-
+//reading next character from file
 char getNextChar(FILE *fp){
 	if (currVariables.flag==1)
 		return 26;
@@ -48,9 +57,9 @@ char getNextChar(FILE *fp){
 	}
 
 	return buffer[(currVariables.offset)++];
-	// if(currVariables.bufferSize==0) check later
 }
 
+//Allocating memory to a token and returning the token
 TokenInfo generateNewToken(char* str,tokenId tid){
 	TokenInfo new =  (TokenInfo)malloc(sizeof(struct tokenInfo));
 	new->tid = tid;
@@ -60,8 +69,8 @@ TokenInfo generateNewToken(char* str,tokenId tid){
 	return new;
 }
 
-
-TokenInfo cmpFunc(char* str, int iddd){
+//used to compare keyword with lexeme 
+TokenInfo cmpFunc(char* str, int id){
 	int l = 24;
 	char* strings[] = {"with","parameters","end","while","int","real","type","_main","global","parameter","list","input","output","endwhile","if","then","endif","read","write","return","call","record","endrecord","else"};
 
@@ -69,10 +78,10 @@ TokenInfo cmpFunc(char* str, int iddd){
 	for(int i=0; i<l; i++)
 		if(strcmp(str, strings[i])==0)
 			return generateNewToken(str, tokens[i]);
-	return generateNewToken(str,iddd);
+	return generateNewToken(str,id);
 }
 
-
+//retreiving next token from file
 TokenInfo getNextToken(FILE *fp){
 	int buffer2Pos = -1;
 	currVariables.state = 0;
@@ -190,7 +199,7 @@ TokenInfo getNextToken(FILE *fp){
 						break;
 					default :
 						if(currVariables.flag == 1)
-  							return generateNewToken("$",TK_DOLLAR); //$1 or $
+  							return generateNewToken("$",TK_DOLLAR); 
 						else{
 							printf("Line %llu: Unknown Symbol %c\n", currVariables.lineNo,curr);
 							return NULL; 
@@ -216,7 +225,7 @@ TokenInfo getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("Line %llu: Unknown Pattern <-\n", currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern <-\n", currVariables.lineNo);	
 					return generateNewToken("",TK_ASSIGNOP);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
@@ -227,7 +236,7 @@ TokenInfo getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("Line %llu: Unknown Pattern <--\n", currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern <--\n", currVariables.lineNo);	
 					return generateNewToken("",TK_ASSIGNOP);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
@@ -248,7 +257,7 @@ TokenInfo getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("Line %llu: Unknown Pattern #", currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern #", currVariables.lineNo);	
 					return generateNewToken("",TK_RECORDID);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
@@ -270,7 +279,7 @@ TokenInfo getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("Line %llu: Unknown Pattern !\n", currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern !\n", currVariables.lineNo);	
 					return generateNewToken("",TK_NE);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
@@ -281,7 +290,7 @@ TokenInfo getNextToken(FILE *fp){
 				else{
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
-					printf("Line %llu: Unknown Pattern =\n", currVariables.lineNo);	// TODO error handling
+					printf("Line %llu: Unknown Pattern =\n", currVariables.lineNo);	
 					return generateNewToken("",TK_EQ);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
@@ -342,10 +351,8 @@ TokenInfo getNextToken(FILE *fp){
 				else if(curr<='9' && curr>='0')
 					currVariables.state=15;
 				else{
-					//discard state 16
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
-					// printf("\n---%d---\n", buffer2Pos);
 					if(buffer2Pos<=31)
 						return cmpFunc(buffer2, TK_FUNID);
 					else{
@@ -369,9 +376,6 @@ TokenInfo getNextToken(FILE *fp){
 					}
 				}
 				break;
-			// case 16:
-			// 	// TODO LOOKUP
-			// 	break;
 			case 17:
 				if(curr<='9' && curr>='0');
 				else if(curr=='.')
@@ -393,8 +397,6 @@ TokenInfo getNextToken(FILE *fp){
 				break;
 			case 19:
 				if(curr<='9' && curr>='0'){
-					// buffer2Pos++;
-					// buffer2Pos = MAX_LENGTH > buffer2Pos+1
 					buffer2[buffer2Pos+1]=0;
 					return generateNewToken(buffer2, TK_RNUM);
 				}

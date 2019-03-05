@@ -1,6 +1,14 @@
+/*
+Group Number - 12
+Sanjay Malhotra 2016A7PS0126P
+Nilay Arora 2016A7PS0117P
+Tushar Goel 2016A7PS0023P
+Adit Shastri 2016A7PS0121P
+*/
 #ifndef PARSERDEF
 #define PARSERDEF
 
+//Enum for non-terminals
 typedef enum{
 	assignmentStmt,
 	global_or_not,
@@ -56,14 +64,14 @@ typedef enum{
 	inputParameters,
 } nonTerminals;
 
-#define no_of_t  55
-#define no_of_nt 52
-#define no_of_sym 107
+#define no_of_t  55 //Number of terminals
+#define no_of_nt 52 //Number of non-terminals
+#define no_of_sym 107 //Number of symbols -> no of tokens plus no of nonTerminals
 
-
+//2D matrix for parse tree
 typedef int** parseTable;
 
-// for the hash table
+//For the hash table
 typedef struct hashNode{
 	int index;
 	char s[MAX_LENGTH];
@@ -73,7 +81,7 @@ typedef struct hashNode{
 typedef hashNode** hashTable;
 //end
 
-//linked list for rhs token
+//linked list for Right hand side of grammer rules tokens
 struct node{
 	int id;
 	struct node * next;
@@ -89,32 +97,31 @@ struct ruleRHS{
 };
 typedef struct ruleRHS* RuleRHS;
 
+//Array of ruleRhs pointer for representing grammer. Each index in array represent rules starting from the non-terminal denoted by that ID.
 struct grammar{
-	RuleRHS *rules;
-	// int size;
+	RuleRHS *rules; 
 };
-// char* ntArray[no_of_nt];
-// char* symbolArray[no_of_sym];
-// char* tokenArray[no_of_t];
 typedef struct grammar Grammar;
 
-//parsetree Node
+//Parsetree Node
 struct parseTree{
-	int non_term_id;
-	TokenInfo tk;
+	int non_term_id; //Id of the Non-terminal (non leaf node)
+	TokenInfo tk; //Pointer to token in leaf nodes
 	struct parseTree* next;//for looping through children
-	struct parseTree* children;
-	struct parseTree* parent;
+	struct parseTree* children; //pointing to head of linked list of children
+	struct parseTree* parent; //pointer to parent of node
 };
-typedef struct parseTree* ParseTree;
+typedef struct parseTree* ParseTree; 
 
+//Stack Node 
 struct snode{
 	int id;
-	struct snode * next;
-	ParseTree pt_node;
+	struct snode * next; 
+	ParseTree pt_node; //Pointer to Parse Tree Node
 };
 typedef struct snode* SNode;
 
+//Stack struct
 struct stack{
 	int size;
 	SNode head;		

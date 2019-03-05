@@ -1,3 +1,10 @@
+/*
+Group Number - 12
+Sanjay Malhotra 2016A7PS0126P
+Nilay Arora 2016A7PS0117P
+Tushar Goel 2016A7PS0023P
+Adit Shastri 2016A7PS0121P
+*/
 #ifndef LEXERDEF
 #define LEXERDEF
 
@@ -5,6 +12,7 @@
 # define MAX_LENGTH 250
 # define ull unsigned long long
 
+//enum for tokens
 typedef enum {
     TK_WITH,
     TK_THEN,
@@ -63,23 +71,26 @@ typedef enum {
     TK_RECORDID,
 } tokenId;
 
+//Token struct
 struct tokenInfo{
-    tokenId tid;
-    char * name;
-    ull lineNo;
+    tokenId tid; //enum value associated with token
+    char * name; //lexeme value
+    ull lineNo; //lineNo token is present at
 };
 
 typedef struct tokenInfo* TokenInfo;
 
+//buffer for reading a chunk at a time from the file
+char buffer[MAX_SIZE];
+
+//struct containing variables of current state of program
 typedef struct{
-    ull lineNo;
-    int state;
-    int offset;
-    int flag;
-    int bufferSize;
-    int lexicalError;
+    ull lineNo; //current lineno 
+    int state; //current state of DFA
+    int offset; //offset in buffer where character is being read from
+    int flag; //flag whether end of file reached or not
+    int bufferSize; //size of the current buffer read from file
+    int lexicalError; //flag whether any lexical error present or not
 }currentInfo;
 
-
-char buffer[MAX_SIZE];
 #endif
