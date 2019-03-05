@@ -616,15 +616,17 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 			}
 			else if(T[X][token->tid] == 0) // Panic Mode : syn set
 			{
-				printf("ERROR1 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
+				// printf("ERROR1 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
 				s = popStack(s);
 				ptr = topStack(s)->pt_node;
 				errorFlag = 1;
 			}
 			else //Panic Mode : Error
 			{
-				printf("%s\n",symbolArray[topStack(s)->id] );
-				printf("ERROR2 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+				// printf("%s\n",symbolArray[topStack(s)->id] );
+				// printf("ERROR2 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
 				token = getNextToken(fp);
 				while(token==NULL){
 					token = getNextToken(fp);
@@ -635,7 +637,8 @@ void parseInputSourceCode(char *testcaseFile, parseTable T){
 		else
 		{
 			errorFlag = 1;
-			printf("ERROR3 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+			// printf("ERROR3 : Unexpected Token: %s at line no. %llu\n",tokenArray[token->tid], token->lineNo);
+			printf("Line %llu: The token %s for lexeme %s does not match with the expected token %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
 			s = popStack(s);
 			// break;
 			//we dont know: token in stack not match current token from input

@@ -48,8 +48,7 @@ char getNextChar(FILE *fp){
 	// if(currVariables.bufferSize==0) check later
 }
 
-TokenInfo generateNewToken(char* str,tokenId tid)
-{
+TokenInfo generateNewToken(char* str,tokenId tid){
 	TokenInfo new =  (TokenInfo)malloc(sizeof(struct tokenInfo));
 	
 	new->tid = tid;
@@ -124,10 +123,7 @@ TokenInfo getNextToken(FILE *fp){
 		curr = getNextChar(fp);
 		buffer2Pos++;
 		buffer2[buffer2Pos] = curr;
-
-		// printf("%c\n", curr);
-		switch(currVariables.state)
-		{
+		switch(currVariables.state){
 			case 0 :
 				switch(curr){
 					case '\n': 
@@ -237,7 +233,7 @@ TokenInfo getNextToken(FILE *fp){
   							return generateNewToken("$",TK_DOLLAR); //$1 or $
 						else{
 							printf("Line %llu: Unknown Symbol %c\n", currVariables.lineNo,curr);
-							return NULL;	//// TODO  error handling 
+							return NULL; 
 						}
 				}
 				break;
@@ -261,7 +257,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern <-\n", currVariables.lineNo);	// TODO error handling
-					return NULL;
+					return generateNewToken("",TK_ASSIGNOP);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 3:
@@ -272,7 +268,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern <--\n", currVariables.lineNo);	// TODO error handling
-					return NULL;
+					return generateNewToken("",TK_ASSIGNOP);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 4:
@@ -293,7 +289,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern #", currVariables.lineNo);	// TODO error handling
-					return NULL;
+					return generateNewToken("",TK_RECORDID);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 6:
@@ -315,7 +311,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern !\n", currVariables.lineNo);	// TODO error handling
-					return NULL;
+					return generateNewToken("",TK_NE);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 8:
@@ -326,7 +322,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern =\n", currVariables.lineNo);	// TODO error handling
-					return NULL;
+					return generateNewToken("",TK_EQ);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 
@@ -337,7 +333,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern &", currVariables.lineNo);
-					return NULL;
+					return generateNewToken("",TK_AND);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 10:
@@ -347,7 +343,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern &&\n", currVariables.lineNo);
-					return NULL;
+					return generateNewToken("",TK_AND);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 
@@ -358,7 +354,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern @\n", currVariables.lineNo);
-					return NULL;
+					return generateNewToken("",TK_OR);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 12:
@@ -368,7 +364,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern @@\n", currVariables.lineNo);
-					return NULL;
+					return generateNewToken("",TK_OR);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 13:
@@ -378,7 +374,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					printf("Line %llu: Unknown Pattern _\n", currVariables.lineNo);
-					return NULL;
+					return generateNewToken("",TK_FUNID);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 14:
@@ -394,7 +390,7 @@ TokenInfo getNextToken(FILE *fp){
 						return cmpFunc(buffer2, TK_FUNID);
 					else{
 						printf("Line %llu: Function ID is longer than the prescribed length of 30 characters\n", currVariables.lineNo);
-						return NULL;
+						return generateNewToken("",TK_FUNID);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 					}
 					
 				}
@@ -409,7 +405,7 @@ TokenInfo getNextToken(FILE *fp){
 						return generateNewToken(buffer2, TK_FUNID);
 					else{
 						printf("Line %llu: Function ID is longer than the prescribed length of 30 characters\n", currVariables.lineNo);
-						return NULL;
+						return generateNewToken("",TK_FUNID);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 					}
 				}
 				break;
@@ -447,7 +443,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
 					printf("Line %llu: Unknown Pattern %c\n", currVariables.lineNo,curr);
-					return NULL;
+					return generateNewToken("",TK_RNUM);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
 			case 20:
@@ -495,11 +491,11 @@ TokenInfo getNextToken(FILE *fp){
 						return generateNewToken(buffer2, TK_ID);					
 					else{
 						printf("Line %llu: Identifier is longer than the prescribed length of 20 characters\n", currVariables.lineNo);
-						return NULL;
+						return generateNewToken("",TK_ID);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 					}
 				}
 				break;
+			
 		}
 	}
-
 }
