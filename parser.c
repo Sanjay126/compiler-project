@@ -373,24 +373,24 @@ parseTable createParseTable(parseTable T){
 
 
 //printing parse table
-void printParseTable(parseTable T){
-	char* filename = "parseTable.txt";
-	FILE* fp23 = fopen(filename, "w");
-	char * a = "A";
-	fprintf(fp23, "%23s\t", a);
-	for(int i=0;i<no_of_t;i++){
-		fprintf(fp23, "%13s",symbolArray[i+no_of_nt]);
-	}
-	fprintf(fp23, "\n");
-	for(int i=0; i<no_of_nt; i++){
-		fprintf(fp23, "%23s\t",symbolArray[i] );
-		for(int j=0; j<no_of_t; j++){
-			fprintf(fp23, "%13d", T[i][j]);
-		}
-		fprintf(fp23, "\n");
-	}
-	fclose(fp23);
-}
+// void printParseTable(parseTable T){
+// 	char* filename = "parseTable.txt";
+// 	FILE* fp23 = fopen(filename, "w");
+// 	char * a = "A";
+// 	fprintf(fp23, "%23s\t", a);
+// 	for(int i=0;i<no_of_t;i++){
+// 		fprintf(fp23, "%13s",symbolArray[i+no_of_nt]);
+// 	}
+// 	fprintf(fp23, "\n");
+// 	for(int i=0; i<no_of_nt; i++){
+// 		fprintf(fp23, "%23s\t",symbolArray[i] );
+// 		for(int j=0; j<no_of_t; j++){
+// 			fprintf(fp23, "%13d", T[i][j]);
+// 		}
+// 		fprintf(fp23, "\n");
+// 	}
+// 	fclose(fp23);
+// }
 
 //Reading first and follow from txt files and populating the data structures
 void ComputeFirstAndFollowSets(Grammar gram){

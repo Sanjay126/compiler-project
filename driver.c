@@ -16,7 +16,13 @@ int main(int argc, char *argv[]){
     clock_t    start_time, end_time;
 
     double total_CPU_time, total_CPU_time_in_seconds;
-
+	
+	printf("(a) FIRST and FOLLOW not set automated\n");
+	printf("(b) Both lexical and syntax analysis modules implemented\n");
+	printf("(c) modules compile properly\n");
+	printf("(d) modules work with testcases 2, 3 and 4 only \n");
+	printf("(e) parse tree is being constructed\n");
+	
 	while(1){
 		printf("\n---------------------------------------------------\n");
 		printf("Press a number to choose the corresponding option\n");
@@ -74,12 +80,12 @@ int main(int argc, char *argv[]){
                 total_CPU_time  =  (double) (end_time - start_time);
                 total_CPU_time_in_seconds =   total_CPU_time / CLOCKS_PER_SEC;
 
-                printf("TOTAL_CPU_TIME:\t%lf\nTOTAL_CPU_TIME_IN_SECONDS:\t%lf\n\n", total_CPU_time, total_CPU_time_in_seconds);
+                printf("\nTOTAL_CPU_TIME:\t%lf\nTOTAL_CPU_TIME_IN_SECONDS:\t%lf\n\n", total_CPU_time, total_CPU_time_in_seconds);
                 break;
              // Print both total_CPU_time and total_CPU_time_in_seconds 
 			default :
-				printf("invalid option");
-				return 0;
+				printf("\n\n---Invalid Option---\n\n");
+				continue;
 		}
 	}
 	return 0;

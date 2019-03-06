@@ -415,6 +415,9 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lineNo++;
 					buffer2Pos=-1;
 				}
+				else if(curr==26){
+					return NULL;
+				}
 				break;
 			case 21:
 				if(curr>='2' && curr<='7')
