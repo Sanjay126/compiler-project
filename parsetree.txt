@@ -1,54 +1,79 @@
                  lexeme	                 lineno	              tokenName	          valueIfNumber	       parentNodeSymbol	             isLeafNode	             NodeSymbol	
 
-                  _sumN	                      4	               TK_FUNID                   ----	               function	                    yes	                   ----
-                  input	                      4	               TK_INPUT                   ----	              input_par	                    yes	                   ----
-              parameter	                      4	           TK_PARAMETER                   ----	              input_par	                    yes	                   ----
-                   list	                      4	                TK_LIST                   ----	              input_par	                    yes	                   ----
-                      [	                      4	                 TK_SQL                   ----	              input_par	                    yes	                   ----
-                    int	                      4	                 TK_INT                   ----	      primitiveDatatype	                    yes	                   ----
+  _computeFunctionValue	                      6	               TK_FUNID                   ----	               function	                    yes	                   ----
+                  input	                      6	               TK_INPUT                   ----	              input_par	                    yes	                   ----
+              parameter	                      6	           TK_PARAMETER                   ----	              input_par	                    yes	                   ----
+                   list	                      6	                TK_LIST                   ----	              input_par	                    yes	                   ----
+                      [	                      6	                 TK_SQL                   ----	              input_par	                    yes	                   ----
+                    int	                      6	                 TK_INT                   ----	      primitiveDatatype	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
                    ----	                   ----	                   ----	                   ----	         parameter_list	                     no	               dataType
-                 d5cc34	                      4	                  TK_ID                   ----	         parameter_list	                    yes	                   ----
+                     c3	                      6	                  TK_ID                   ----	         parameter_list	                    yes	                   ----
+                      ,	                      6	               TK_COMMA                   ----	         remaining_list	                    yes	                   ----
+                    int	                      6	                 TK_INT                   ----	      primitiveDatatype	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
+                   ----	                   ----	                   ----	                   ----	         parameter_list	                     no	               dataType
+                     c4	                      6	                  TK_ID                   ----	         parameter_list	                    yes	                   ----
+                      ,	                      6	               TK_COMMA                   ----	         remaining_list	                    yes	                   ----
+                    int	                      6	                 TK_INT                   ----	      primitiveDatatype	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
+                   ----	                   ----	                   ----	                   ----	         parameter_list	                     no	               dataType
+                     c5	                      6	                  TK_ID                   ----	         parameter_list	                    yes	                   ----
                     eps	                      0	                    eps                   ----	         remaining_list	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	         parameter_list	                     no	         remaining_list
+                   ----	                   ----	                   ----	                   ----	         remaining_list	                     no	         parameter_list
+                   ----	                   ----	                   ----	                   ----	         parameter_list	                     no	         remaining_list
+                   ----	                   ----	                   ----	                   ----	         remaining_list	                     no	         parameter_list
+                   ----	                   ----	                   ----	                   ----	         parameter_list	                     no	         remaining_list
                    ----	                   ----	                   ----	                   ----	              input_par	                     no	         parameter_list
-                      ]	                      4	                 TK_SQR                   ----	              input_par	                    yes	                   ----
+                      ]	                      6	                 TK_SQR                   ----	              input_par	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               function	                     no	              input_par
-                 output	                      5	              TK_OUTPUT                   ----	             output_par	                    yes	                   ----
-              parameter	                      5	           TK_PARAMETER                   ----	             output_par	                    yes	                   ----
-                   list	                      5	                TK_LIST                   ----	             output_par	                    yes	                   ----
-                      [	                      5	                 TK_SQL                   ----	             output_par	                    yes	                   ----
-                   real	                      5	                TK_REAL                   ----	      primitiveDatatype	                    yes	                   ----
+                 output	                      7	              TK_OUTPUT                   ----	             output_par	                    yes	                   ----
+              parameter	                      7	           TK_PARAMETER                   ----	             output_par	                    yes	                   ----
+                      [	                      7	                 TK_SQL                   ----	             output_par	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	             output_par	                     no	                 TK_SQL
+                   real	                      7	                TK_REAL                   ----	      primitiveDatatype	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
                    ----	                   ----	                   ----	                   ----	         parameter_list	                     no	               dataType
-                     d3	                      5	                  TK_ID                   ----	         parameter_list	                    yes	                   ----
+                     c6	                      7	                  TK_ID                   ----	         parameter_list	                    yes	                   ----
                     eps	                      0	                    eps                   ----	         remaining_list	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	         parameter_list	                     no	         remaining_list
                    ----	                   ----	                   ----	                   ----	             output_par	                     no	         parameter_list
-                      ]	                      5	                 TK_SQR                   ----	             output_par	                    yes	                   ----
+                      ]	                      7	                 TK_SQR                   ----	             output_par	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               function	                     no	             output_par
-                      ;	                      5	                 TK_SEM                   ----	               function	                    yes	                   ----
+                      ;	                      7	                 TK_SEM                   ----	               function	                    yes	                   ----
                     eps	                      0	                    eps                   ----	        typeDefinitions	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                  stmts	                     no	        typeDefinitions
-                   type	                      6	                TK_TYPE                   ----	            declaration	                    yes	                   ----
-                    int	                      6	                 TK_INT                   ----	      primitiveDatatype	                    yes	                   ----
+                   type	                      8	                TK_TYPE                   ----	            declaration	                    yes	                   ----
+                   real	                      8	                TK_REAL                   ----	      primitiveDatatype	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
                    ----	                   ----	                   ----	                   ----	            declaration	                     no	               dataType
-                      :	                      6	               TK_COLON                   ----	            declaration	                    yes	                   ----
-                 b5b567	                      6	                  TK_ID                   ----	            declaration	                    yes	                   ----
+                      :	                      8	               TK_COLON                   ----	            declaration	                    yes	                   ----
+                   ----	                      8	                  TK_ID                   ----	            declaration	                    yes	                   ----
                     eps	                      0	                    eps                   ----	          global_or_not	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	            declaration	                     no	          global_or_not
-                      ;	                      6	                 TK_SEM                   ----	            declaration	                    yes	                   ----
+                      ;	                      8	                 TK_SEM                   ----	            declaration	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	           declarations	                     no	            declaration
+                   type	                      9	                TK_TYPE                   ----	            declaration	                    yes	                   ----
+                   real	                      9	                TK_REAL                   ----	      primitiveDatatype	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
+                   ----	                   ----	                   ----	                   ----	            declaration	                     no	               dataType
+                      :	                      9	               TK_COLON                   ----	            declaration	                    yes	                   ----
+                  c4bbb	                      9	                  TK_ID                   ----	            declaration	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	          global_or_not	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	            declaration	                     no	          global_or_not
+                      ;	                      9	                 TK_SEM                   ----	            declaration	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	           declarations	                     no	            declaration
                     eps	                      0	                    eps                   ----	           declarations	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	           declarations	                     no	           declarations
+                   ----	                   ----	                   ----	                   ----	           declarations	                     no	           declarations
                    ----	                   ----	                   ----	                   ----	                  stmts	                     no	           declarations
-                 b5b567	                      7	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
+                     c6	                     10	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
                     eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
                    ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	          singleOrRecId
-                   <---	                      7	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
-                      1	                      7	                 TK_NUM1	                    all	                    yes	                   ----
+                   <---	                     10	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
+                   ----	                     10	                TK_RNUM                   ----	                    all	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
                    ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
                     eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
@@ -57,52 +82,17 @@
                     eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
                    ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	   arithmeticExpression
-                      ;	                      7	                 TK_SEM                   ----	         assignmentStmt	                    yes	                   ----
+                      ;	                     10	                 TK_SEM                   ----	         assignmentStmt	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                   stmt	                     no	         assignmentStmt
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
-                     d3	                      8	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
-                    eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
-                   ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	          singleOrRecId
-                   <---	                      8	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
-                   0.00	                      8	                TK_RNUM0.00	                    all	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
-                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
-                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
-                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
-                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
-                   ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	   arithmeticExpression
-                      ;	                      8	                 TK_SEM                   ----	         assignmentStmt	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	         assignmentStmt
-                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
-                  while	                      9	               TK_WHILE                   ----	          iterativeStmt	                    yes	                   ----
-                      (	                      9	                  TK_OP                   ----	          iterativeStmt	                    yes	                   ----
-                 b5b567	                      9	                  TK_ID                   ----	                    var	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	                    var
-                     <=	                      9	                  TK_LE                   ----	           relationalOp	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	           relationalOp
-                 d5cc34	                      9	                  TK_ID                   ----	                    var	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	                    var
-                   ----	                   ----	                   ----	                   ----	          iterativeStmt	                     no	      booleanExpression
-                      )	                      9	                  TK_CL                   ----	          iterativeStmt	                    yes	                   ----
-                   read	                     10	                TK_READ                   ----	                 ioStmt	                    yes	                   ----
-                      (	                     10	                  TK_OP                   ----	                 ioStmt	                    yes	                   ----
-                   c3bd	                     10	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
-                    eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
-                   ----	                   ----	                   ----	                   ----	                 ioStmt	                     no	          singleOrRecId
-                      )	                     10	                  TK_CL                   ----	                 ioStmt	                    yes	                   ----
-                      ;	                     10	                 TK_SEM                   ----	                 ioStmt	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	                 ioStmt
-                   ----	                   ----	                   ----	                   ----	          iterativeStmt	                     no	                   stmt
-                     d3	                     11	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
+             d4cbcd5677	                     11	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
                     eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
                    ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	          singleOrRecId
                    <---	                     11	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
-                     d3	                     11	                  TK_ID                   ----	                    all	                    yes	                   ----
+                      (	                     11	                  TK_OP                   ----	                 factor	                    yes	                   ----
+                      (	                     11	                  TK_OP                   ----	                 factor	                    yes	                   ----
+                     c3	                     11	                  TK_ID                   ----	                    all	                    yes	                   ----
                     eps	                      0	                    eps                   ----	                 allnew	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                    all	                     no	                 allnew
                    ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
@@ -112,9 +102,34 @@
                    ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
                       +	                     11	                TK_PLUS                   ----	 lowPrecedenceOperators	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               expPrime	                     no	 lowPrecedenceOperators
-                   c3bd	                     11	                  TK_ID                   ----	                    all	                    yes	                   ----
+                      2	                     11	                 TK_NUM2	                    all	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                      *	                     11	                 TK_MUL                   ----	highPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	highPrecedenceOperators
+                     c4	                     11	                  TK_ID                   ----	                    all	                    yes	                   ----
                     eps	                      0	                    eps                   ----	                 allnew	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                    all	                     no	                 allnew
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	                   term
+                      -	                     11	               TK_MINUS                   ----	 lowPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	 lowPrecedenceOperators
+                      (	                     11	                  TK_OP                   ----	                 factor	                    yes	                   ----
+                     c5	                     11	                  TK_ID                   ----	                    all	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	                 allnew	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                    all	                     no	                 allnew
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
+                      -	                     11	               TK_MINUS                   ----	 lowPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	 lowPrecedenceOperators
+                      5	                     11	                 TK_NUM5	                    all	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
                    ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
                     eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
@@ -123,16 +138,50 @@
                     eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               expPrime	                     no	               expPrime
                    ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	   arithmeticExpression
+                      )	                     11	                  TK_CL                   ----	                 factor	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	                   term
+                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	   arithmeticExpression
+                      )	                     11	                  TK_CL                   ----	                 factor	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                      /	                     11	                 TK_DIV                   ----	highPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	highPrecedenceOperators
+                      4	                     11	                 TK_NUM4	                    all	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
+                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	   arithmeticExpression
+                    eps	                      0	                    eps                   ----	                  TK_CL	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                  TK_CL
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
+                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
                    ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	   arithmeticExpression
                       ;	                     11	                 TK_SEM                   ----	         assignmentStmt	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                   stmt	                     no	         assignmentStmt
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
-                 b5b567	                     12	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
+                  c4bbb	                     12	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
                     eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
                    ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	          singleOrRecId
                    <---	                     12	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
-                 b5b567	                     12	                  TK_ID                   ----	                    all	                    yes	                   ----
+                      (	                     12	                  TK_OP                   ----	                 factor	                    yes	                   ----
+                      (	                     12	                  TK_OP                   ----	                 factor	                    yes	                   ----
+             d4cbcd5677	                     12	                  TK_ID                   ----	                    all	                    yes	                   ----
                     eps	                      0	                    eps                   ----	                 allnew	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                    all	                     no	                 allnew
                    ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
@@ -140,12 +189,75 @@
                     eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
                    ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
-                      +	                     12	                TK_PLUS                   ----	 lowPrecedenceOperators	                    yes	                   ----
+                      -	                     12	               TK_MINUS                   ----	 lowPrecedenceOperators	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	               expPrime	                     no	 lowPrecedenceOperators
-                      1	                     12	                 TK_NUM1	                    all	                    yes	                   ----
+                   2.35	                     12	                TK_RNUM2.35	                    all	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
                    ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
                     eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	                   term
+                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	   arithmeticExpression
+                      )	                     12	                  TK_CL                   ----	                 factor	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                      *	                     12	                 TK_MUL                   ----	highPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	highPrecedenceOperators
+                      (	                     12	                  TK_OP                   ----	                 factor	                    yes	                   ----
+                   2345	                     12	                 TK_NUM2345	                    all	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
+                      -	                     12	               TK_MINUS                   ----	 lowPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	 lowPrecedenceOperators
+                    234	                     12	                 TK_NUM234	                    all	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                      *	                     12	                 TK_MUL                   ----	highPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	highPrecedenceOperators
+                      8	                     12	                 TK_NUM8	                    all	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	                   term
+                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	   arithmeticExpression
+                      )	                     12	                  TK_CL                   ----	                 factor	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
+                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	   arithmeticExpression
+                      )	                     12	                  TK_CL                   ----	                 factor	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
+                      +	                     12	                TK_PLUS                   ----	 lowPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               expPrime	                     no	 lowPrecedenceOperators
+                      5	                     12	                 TK_NUM5	                    all	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                      *	                     12	                 TK_MUL                   ----	highPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	highPrecedenceOperators
+                     c3	                     12	                  TK_ID                   ----	                    all	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	                 allnew	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                    all	                     no	                 allnew
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	              termPrime
                    ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
                    ----	                   ----	                   ----	                   ----	               expPrime	                     no	                   term
                     eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
@@ -155,67 +267,74 @@
                       ;	                     12	                 TK_SEM                   ----	         assignmentStmt	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                   stmt	                     no	         assignmentStmt
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
-                    eps	                      0	                    eps                   ----	             otherStmts	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
-                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
-                   ----	                   ----	                   ----	                   ----	          iterativeStmt	                     no	             otherStmts
-               endwhile	                     13	            TK_ENDWHILE                   ----	          iterativeStmt	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	          iterativeStmt
-                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
-                    eps	                      0	                    eps                   ----	             otherStmts	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
-                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
-                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
-                   ----	                   ----	                   ----	                   ----	                  stmts	                     no	             otherStmts
-                 return	                     14	              TK_RETURN                   ----	             returnStmt	                    yes	                   ----
-                      [	                     14	                 TK_SQL                   ----	         optionalReturn	                    yes	                   ----
-                     d3	                     14	                  TK_ID                   ----	                 idList	                    yes	                   ----
-                    eps	                      0	                    eps                   ----	               more_ids	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                 idList	                     no	               more_ids
-                   ----	                   ----	                   ----	                   ----	         optionalReturn	                     no	                 idList
-                      ]	                     14	                 TK_SQR                   ----	         optionalReturn	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	             returnStmt	                     no	         optionalReturn
-                      ;	                     14	                 TK_SEM                   ----	             returnStmt	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                  stmts	                     no	             returnStmt
-                   ----	                   ----	                   ----	                   ----	               function	                     no	                  stmts
-                    end	                     15	                 TK_END                   ----	               function	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	         otherFunctions	                     no	               function
-                    eps	                      0	                    eps                   ----	         otherFunctions	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	         otherFunctions	                     no	         otherFunctions
-                   ----	                   ----	                   ----	                   ----	                program	                     no	         otherFunctions
-                  _main	                     17	                TK_MAIN                   ----	           mainFunction	                    yes	                   ----
-                    eps	                      0	                    eps                   ----	        typeDefinitions	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	                  stmts	                     no	        typeDefinitions
-                   type	                     18	                TK_TYPE                   ----	            declaration	                    yes	                   ----
-                    int	                     18	                 TK_INT                   ----	      primitiveDatatype	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
-                   ----	                   ----	                   ----	                   ----	            declaration	                     no	               dataType
-                      :	                     18	               TK_COLON                   ----	            declaration	                    yes	                   ----
-                     b3	                     18	                  TK_ID                   ----	            declaration	                    yes	                   ----
-                    eps	                      0	                    eps                   ----	          global_or_not	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	            declaration	                     no	          global_or_not
-                      ;	                     18	                 TK_SEM                   ----	            declaration	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	           declarations	                     no	            declaration
-                   type	                     19	                TK_TYPE                   ----	            declaration	                    yes	                   ----
-                   real	                     19	                TK_REAL                   ----	      primitiveDatatype	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	               dataType	                     no	      primitiveDatatype
-                   ----	                   ----	                   ----	                   ----	            declaration	                     no	               dataType
-                      :	                     19	               TK_COLON                   ----	            declaration	                    yes	                   ----
-                 c4bd56	                     19	                  TK_ID                   ----	            declaration	                    yes	                   ----
-                    eps	                      0	                    eps                   ----	          global_or_not	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	            declaration	                     no	          global_or_not
-                      ;	                     19	                 TK_SEM                   ----	            declaration	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	           declarations	                     no	            declaration
-                    eps	                      0	                    eps                   ----	           declarations	                    yes	                   ----
-                   ----	                   ----	                   ----	                   ----	           declarations	                     no	           declarations
-                   ----	                   ----	                   ----	                   ----	           declarations	                     no	           declarations
-                   ----	                   ----	                   ----	                   ----	                  stmts	                     no	           declarations
-                     b3	                     20	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
+                     if	                     13	                  TK_IF                   ----	        conditionalStmt	                    yes	                   ----
+                      (	                     13	                  TK_OP                   ----	        conditionalStmt	                    yes	                   ----
+                      (	                     13	                  TK_OP                   ----	      booleanExpression	                    yes	                   ----
+                      ~	                     13	                 TK_NOT                   ----	      booleanExpression	                    yes	                   ----
+                      (	                     13	                  TK_OP                   ----	      booleanExpression	                    yes	                   ----
+                  c4bbb	                     13	                  TK_ID                   ----	                    var	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	                    var
+                     ==	                     13	                  TK_EQ                   ----	           relationalOp	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	           relationalOp
+                      0	                     13	                 TK_NUM0	                    var	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	                    var
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	      booleanExpression
+                      )	                     13	                  TK_CL                   ----	      booleanExpression	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	      booleanExpression
+                      )	                     13	                  TK_CL                   ----	      booleanExpression	                    yes	                   ----
+                   ----	                     13	                 TK_AND                   ----	              logicalOp	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	              logicalOp
+                      (	                     13	                  TK_OP                   ----	      booleanExpression	                    yes	                   ----
+                  c4bbb	                     13	                  TK_ID                   ----	                    var	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	                    var
+                      >	                     13	                  TK_GT                   ----	           relationalOp	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	           relationalOp
+                  78.56	                     13	                TK_RNUM78.56	                    var	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	                    var
+                   ----	                   ----	                   ----	                   ----	      booleanExpression	                     no	      booleanExpression
+                      )	                     13	                  TK_CL                   ----	      booleanExpression	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	        conditionalStmt	                     no	      booleanExpression
+                      )	                     13	                  TK_CL                   ----	        conditionalStmt	                    yes	                   ----
+                   then	                     14	                TK_THEN                   ----	        conditionalStmt	                    yes	                   ----
+                     c6	                     15	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
                     eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
                    ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	          singleOrRecId
-                   <---	                     20	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
-                      7	                     20	                 TK_NUM7	                    all	                    yes	                   ----
+                   <---	                     15	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
+             d4cbcd5677	                     15	                  TK_ID                   ----	                    all	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	                 allnew	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                    all	                     no	                 allnew
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
+                      /	                     15	                 TK_DIV                   ----	highPrecedenceOperators	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	highPrecedenceOperators
+                  c4bbb	                     15	                  TK_ID                   ----	                    all	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	                 allnew	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                    all	                     no	                 allnew
+                   ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	                 factor
+                    eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	              termPrime	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	                   term	                     no	              termPrime
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	                   term
+                    eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
+                   ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	   arithmeticExpression
+                    eps	                      0	                    eps                   ----	                 TK_SEM	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	                 TK_SEM
+                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	         assignmentStmt
+                   ----	                   ----	                   ----	                   ----	        conditionalStmt	                     no	                   stmt
+                   ----	                   ----	                   ----	                   ----	        conditionalStmt	                     no	             otherStmts
+                  endif	                     18	               TK_ENDIF                   ----	               elsePart	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	        conditionalStmt	                     no	               elsePart
+                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	        conditionalStmt
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
+                     b5	                     25	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
+                   ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	          singleOrRecId
+                   ----	                     29	            TK_ASSIGNOP                   ----	         assignmentStmt	                    yes	                   ----
+                      1	                     29	                 TK_NUM1	                    all	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                 factor	                     no	                    all
                    ----	                   ----	                   ----	                   ----	                   term	                     no	                 factor
                     eps	                      0	                    eps                   ----	              termPrime	                    yes	                   ----
@@ -224,52 +343,98 @@
                     eps	                      0	                    eps                   ----	               expPrime	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	   arithmeticExpression	                     no	               expPrime
                    ----	                   ----	                   ----	                   ----	         assignmentStmt	                     no	   arithmeticExpression
-                      ;	                     20	                 TK_SEM                   ----	         assignmentStmt	                    yes	                   ----
+                      ;	                     29	                 TK_SEM                   ----	         assignmentStmt	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                   stmt	                     no	         assignmentStmt
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
-                      [	                     21	                 TK_SQL                   ----	       outputParameters	                    yes	                   ----
-                 c4bd56	                     21	                  TK_ID                   ----	                 idList	                    yes	                   ----
+                   read	                     30	                TK_READ                   ----	                 ioStmt	                    yes	                   ----
+                      (	                     30	                  TK_OP                   ----	                 ioStmt	                    yes	                   ----
+              d5cb34567	                     30	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
+                   ----	                   ----	                   ----	                   ----	                 ioStmt	                     no	          singleOrRecId
+                      )	                     30	                  TK_CL                   ----	                 ioStmt	                    yes	                   ----
+                      ;	                     30	                 TK_SEM                   ----	                 ioStmt	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	                 ioStmt
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
+                   read	                     31	                TK_READ                   ----	                 ioStmt	                    yes	                   ----
+                      (	                     31	                  TK_OP                   ----	                 ioStmt	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                 ioStmt	                     no	          singleOrRecId
+                      )	                     31	                  TK_CL                   ----	                 ioStmt	                    yes	                   ----
+                      ;	                     31	                 TK_SEM                   ----	                 ioStmt	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	                 ioStmt
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
+                   read	                     32	                TK_READ                   ----	                 ioStmt	                    yes	                   ----
+                      (	                     32	                  TK_OP                   ----	                 ioStmt	                    yes	                   ----
+                 b3b444	                     32	                  TK_ID                   ----	          singleOrRecId	                    yes	                   ----
+                    eps	                      0	                    eps                   ----	                 new_24	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	          singleOrRecId	                     no	                 new_24
+                   ----	                   ----	                   ----	                   ----	                 ioStmt	                     no	          singleOrRecId
+                      )	                     32	                  TK_CL                   ----	                 ioStmt	                    yes	                   ----
+                      ;	                     32	                 TK_SEM                   ----	                 ioStmt	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	                   stmt	                     no	                 ioStmt
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
+                      [	                     34	                 TK_SQL                   ----	       outputParameters	                    yes	                   ----
+                     c3	                     34	                  TK_ID                   ----	                 idList	                    yes	                   ----
                     eps	                      0	                    eps                   ----	               more_ids	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                 idList	                     no	               more_ids
                    ----	                   ----	                   ----	                   ----	       outputParameters	                     no	                 idList
-                      ]	                     21	                 TK_SQR                   ----	       outputParameters	                    yes	                   ----
-                   <---	                     21	            TK_ASSIGNOP                   ----	       outputParameters	                    yes	                   ----
+                      ]	                     34	                 TK_SQR                   ----	       outputParameters	                    yes	                   ----
+                   <---	                     34	            TK_ASSIGNOP                   ----	       outputParameters	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	            funCallStmt	                     no	       outputParameters
-                   call	                     21	                TK_CALL                   ----	            funCallStmt	                    yes	                   ----
-                  _sumN	                     21	               TK_FUNID                   ----	            funCallStmt	                    yes	                   ----
-                   with	                     21	                TK_WITH                   ----	            funCallStmt	                    yes	                   ----
-             parameters	                     21	          TK_PARAMETERS                   ----	            funCallStmt	                    yes	                   ----
-                      [	                     21	                 TK_SQL                   ----	        inputParameters	                    yes	                   ----
-                     b3	                     21	                  TK_ID                   ----	                 idList	                    yes	                   ----
+                   call	                     34	                TK_CALL                   ----	            funCallStmt	                    yes	                   ----
+  _computeFunctionValue	                     34	               TK_FUNID                   ----	            funCallStmt	                    yes	                   ----
+                   with	                     34	                TK_WITH                   ----	            funCallStmt	                    yes	                   ----
+             parameters	                     34	          TK_PARAMETERS                   ----	            funCallStmt	                    yes	                   ----
+                      [	                     34	                 TK_SQL                   ----	        inputParameters	                    yes	                   ----
+                     b5	                     34	                  TK_ID                   ----	                 idList	                    yes	                   ----
+                      ,	                     34	               TK_COMMA                   ----	               more_ids	                    yes	                   ----
+              d5cb34567	                     34	                  TK_ID                   ----	                 idList	                    yes	                   ----
+                      ,	                     34	               TK_COMMA                   ----	               more_ids	                    yes	                   ----
+                 b3b444	                     34	                  TK_ID                   ----	                 idList	                    yes	                   ----
                     eps	                      0	                    eps                   ----	               more_ids	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                 idList	                     no	               more_ids
+                   ----	                   ----	                   ----	                   ----	               more_ids	                     no	                 idList
+                   ----	                   ----	                   ----	                   ----	                 idList	                     no	               more_ids
+                   ----	                   ----	                   ----	                   ----	               more_ids	                     no	                 idList
+                   ----	                   ----	                   ----	                   ----	                 idList	                     no	               more_ids
                    ----	                   ----	                   ----	                   ----	        inputParameters	                     no	                 idList
-                      ]	                     21	                 TK_SQR                   ----	        inputParameters	                    yes	                   ----
+                      ]	                     34	                 TK_SQR                   ----	        inputParameters	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	            funCallStmt	                     no	        inputParameters
-                      ;	                     21	                 TK_SEM                   ----	            funCallStmt	                    yes	                   ----
+                      ;	                     34	                 TK_SEM                   ----	            funCallStmt	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                   stmt	                     no	            funCallStmt
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
-                  write	                     22	               TK_WRITE                   ----	                 ioStmt	                    yes	                   ----
-                      (	                     22	                  TK_OP                   ----	                 ioStmt	                    yes	                   ----
-                 c4bd56	                     22	                  TK_ID                   ----	                 allVar	                    yes	                   ----
+                  write	                     35	               TK_WRITE                   ----	                 ioStmt	                    yes	                   ----
+                      (	                     35	                  TK_OP                   ----	                 ioStmt	                    yes	                   ----
+                     c3	                     35	                  TK_ID                   ----	                 allVar	                    yes	                   ----
                     eps	                      0	                    eps                   ----	              newallvar	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                 allVar	                     no	              newallvar
                    ----	                   ----	                   ----	                   ----	                 ioStmt	                     no	                 allVar
-                      )	                     22	                  TK_CL                   ----	                 ioStmt	                    yes	                   ----
-                      ;	                     22	                 TK_SEM                   ----	                 ioStmt	                    yes	                   ----
+                      )	                     35	                  TK_CL                   ----	                 ioStmt	                    yes	                   ----
+                      ;	                     35	                 TK_SEM                   ----	                 ioStmt	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                   stmt	                     no	                 ioStmt
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	                   stmt
                     eps	                      0	                    eps                   ----	             otherStmts	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
                    ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
+                   ----	                   ----	                   ----	                   ----	             otherStmts	                     no	             otherStmts
                    ----	                   ----	                   ----	                   ----	                  stmts	                     no	             otherStmts
-                 return	                     23	              TK_RETURN                   ----	             returnStmt	                    yes	                   ----
+                 return	                     36	              TK_RETURN                   ----	             returnStmt	                    yes	                   ----
                     eps	                      0	                    eps                   ----	         optionalReturn	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	             returnStmt	                     no	         optionalReturn
-                      ;	                     23	                 TK_SEM                   ----	             returnStmt	                    yes	                   ----
+                      ;	                     36	                 TK_SEM                   ----	             returnStmt	                    yes	                   ----
                    ----	                   ----	                   ----	                   ----	                  stmts	                     no	             returnStmt
-                   ----	                   ----	                   ----	                   ----	           mainFunction	                     no	                  stmts
-                    end	                     24	                 TK_END                   ----	           mainFunction	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	               function	                     no	                  stmts
+                    end	                     37	                 TK_END                   ----	               function	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	         otherFunctions	                     no	               function
+                    eps	                      0	                    eps                   ----	         otherFunctions	                    yes	                   ----
+                   ----	                   ----	                   ----	                   ----	         otherFunctions	                     no	         otherFunctions
+                   ----	                   ----	                   ----	                   ----	                program	                     no	         otherFunctions
                    ----	                   ----	                   ----	                   ----	                program	                     no	           mainFunction
                    ----	                   ----	                   ----	                   ----	                   ROOT	                     no	                program

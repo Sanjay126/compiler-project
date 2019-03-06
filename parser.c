@@ -498,11 +498,11 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	while(1){
 		int X = topStack(s)->id;
 
-		// printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
-		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt){ //Case 1 : Top of stack is current token is equal to '$'
+		printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
+		if(token->tid == TK_DOLLAR && X == TK_DOLLAR + no_of_nt){ //Case 1 : Top of stack is current token is equal to '$'
 			break;
 		}
-		else if(token->tid + no_of_nt == topStack(s)->id) //Case 2 Top of stack = Token is not equal '$'
+		else if(token->tid + no_of_nt == X) //Case 2 Top of stack = Token is not equal '$'
 		{
 			s = popStack(s);
 
@@ -557,7 +557,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 			// }
 			else //Panic Mode : Error
 			{
-				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
+				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[X]);
 				while(T[X][token->tid]<0){
 				token = getNextToken(fp);
 					while(token==NULL){
@@ -577,7 +577,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 		else //Case 4 : Top of stack is token but is not equal to the current token
 		{
 			errorFlag = 1;
-			printf("Line %llu: The token %s for lexeme %s does not match with the expected token %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
+			printf("Line %llu: The token %s for lexeme %s does not match with the expected token %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[X]);
 			s = popStack(s);
 		}
 	}

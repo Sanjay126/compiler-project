@@ -404,7 +404,7 @@ TokenInfo getNextToken(FILE *fp){
 					currVariables.lexicalError = 1;
 					currVariables.offset--;
 					buffer2[buffer2Pos]=0;
-					printf("Line %llu: Unknown Pattern %c\n", currVariables.lineNo,curr);
+					printf("Line %llu: Unknown Pattern %s\n", currVariables.lineNo,buffer2);
 					return generateNewToken("",TK_RNUM);	//error token with empty lexeme(expected token returned to help syntax analyzer)
 				}
 				break;
