@@ -57,6 +57,7 @@ int main(int argc, char *argv[]){
 				parseTable T;
 				ParseTree PT = parseInputSourceCode(argv[1], T, PT);
 				printParseTree(PT,"parsetree.txt");
+				freeMemory();
 			}break;
 			case 4:
                 start_time = clock();
@@ -64,6 +65,8 @@ int main(int argc, char *argv[]){
 					intialiseGlobalVariablesLexer();
 					parseTable T;
 					ParseTree PT = parseInputSourceCode(argv[1], T, PT);
+					printParseTree(PT,"parsetree.txt");
+					freeMemory();
                 }
 
                 end_time = clock();

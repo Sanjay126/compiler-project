@@ -44,7 +44,7 @@ parseTable createParseTable(parseTable T);
 void printParseTable(parseTable T);
 
 //Reading First and Follow from files
-void ReadFromFileFirstAndFollow(Grammar gram);
+void ComputeFirstAndFollowSets(Grammar gram);
 
 //Parsing and forming ParseTree
 ParseTree createPTNode(int id);
@@ -53,4 +53,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT);
 //Printing ParseTree
 void inorderTraversal(ParseTree PT, FILE* fp1);
 void printParseTree(ParseTree PT, char *outfile);
+
+void freeMemory();
+
 #endif
