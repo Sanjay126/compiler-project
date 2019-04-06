@@ -24,12 +24,10 @@ char* symbolArray[] = {"assignmentStmt","global_or_not","booleanExpression","hig
 char* tokenArray[] = {"TK_WITH","TK_THEN","TK_TYPE","TK_EQ","TK_DOLLAR","TK_COMMA","TK_RNUM","TK_CL","TK_AND","TK_PARAMETER","TK_DIV","TK_ID","TK_GLOBAL","TK_GE","TK_LIST","TK_IF","TK_RECORD","TK_NUM","TK_NE","TK_LE","TK_DOT","TK_INPUT","TK_MAIN","TK_CALL","TK_PLUS","TK_ELSE","TK_COMMENT","TK_ASSIGNOP","TK_WRITE","TK_COLON","TK_WHILE","TK_REAL","TK_READ","TK_NOT","TK_SQL","TK_OUTPUT","TK_SQR","TK_ENDIF","TK_MINUS","TK_SEM","TK_FIELDID","TK_PARAMETERS","TK_OP","TK_ENDWHILE","TK_MUL","TK_FUNID","TK_INT","TK_RETURN","TK_GT","TK_END","TK_LT","TK_OR","TK_ENDRECORD","eps","TK_RECORDID"};
 
 //Data structures for storing first and follows sets
-Node **First=NULL;
-Node *Follow=NULL;
+Node **First;
+Node *Follow;
 
-hashTable Table = NULL; //hashtable global variable for storing all the symbols -> Non-terminals followed by tokens(Used for fast retreival of their ID)           
-
-
+hashTable Table; //hashtable global variable for storing all the symbols -> Non-terminals followed by tokens(Used for fast retreival of their ID)           
 Node intialiseNode(int id){
 	Node n = (Node)malloc(sizeof(struct node));
 	n->id = id;
@@ -75,23 +73,19 @@ SNode topStack(Stack s){
 
 //Linkied List Utility Functions
 Node addNode(int id,Node head, int dupAllowed){
-	Node newNode=intialiseNode(id);
+	Node newNode=(Node)malloc(sizeof(struct node));
 	Node temp=head;
 	newNode->id=id;
 	newNode->next=NULL;
 	if(head==NULL)
 		return newNode;
 	while(temp->next!=NULL){
-		if(temp->id==id && !dupAllowed){
-			free(newNode);
+		if(temp->id==id && !dupAllowed)
 			return head;
-		}
 		temp=temp->next;
 	}
-	if(temp->id==id&&!dupAllowed){
-		free(newNode);
+	if(temp->id==id)
 		return head;
-	}
 	temp->next=newNode;
 	return head;
 }
@@ -127,6 +121,31 @@ Node joinNodeList(Node n1,Node n2){
 char* getTokenFromId(int id){
 	return symbolArray[id];
 }
+// void printFirst(){
+// 	for(int i=0; i<no_of_nt+no_of_t+1; i++){
+// 		Node temp, temp2;
+// 		printf("First of %s %d ==> ", getTokenFromId(i), i);
+// 		if(First[i][0]!=NULL){
+// 			temp = First[i][0];
+// 			while(temp!=NULL){
+// 				printf("%s\t",getTokenFromId(temp->id));
+// 				temp=temp->next;
+// 			}
+// 		}
+// 		else if(First[i][1]!=NULL){
+// 			temp2 = First[i][1];
+// 			while(temp2!=NULL){
+// 				printf("%s\t",getTokenFromId(temp2->id));
+// 				temp2=temp2->next;
+// 			}
+// 		}
+// 		else{
+// 			printf("ERROR\n");
+// 			continue;
+// 		}
+// 		printf("\n");
+// 	}				
+// }
 
 //HashTable ADT
 int hash(char *v, int M){ 
@@ -135,22 +154,31 @@ int hash(char *v, int M){
         h = (a*h + *v) % M;
     return h;
 }
-
 void populateHashTable(){
 	Table = (hashTable)malloc(no_of_sym*sizeof(hashNode*));
 	for(int i = 0;i < no_of_sym;i++){
-		Table[i] == NULL;
+		Table[i] = (hashNode*)malloc(sizeof(hashNode));
+		Table[i]->next == NULL;
 	}
 	for(int i = 0;i < no_of_sym;i++){
 		int hval = hash(symbolArray[i],no_of_sym);
-		hashNode* newNode = (hashNode*)malloc(sizeof(hashNode));
-		newNode->index = i;		
-		strcpy(newNode->s, symbolArray[i]);
-		newNode->next = Table[hval];
-		Table[hval] = newNode;
+		if(Table[hval]->next == NULL){
+			Table[hval]->next = (hashNode*)malloc(sizeof(hashNode));
+			Table[hval]->next->index = i;
+			strcpy(Table[hval]->next->s, symbolArray[i]);
+			Table[hval]->next->next = NULL;
+		}
+		else{
+			hashNode* ptr = Table[hval]->next;
+			while(ptr != NULL && ptr->next != NULL)
+				ptr = ptr->next;
+			ptr->next = (hashNode*)malloc(sizeof(hashNode));
+			ptr->next->index = i;
+			strcpy(ptr->next->s, symbolArray[i]);
+			ptr->next->next = NULL;
+		}
 	}
 }
-
 int findIndex(char* s){
 	int in = hash(s,no_of_sym);
 	hashNode* ptr = Table[in];
@@ -160,68 +188,6 @@ int findIndex(char* s){
 		ptr = ptr->next;
 	}
 	return -1;
-}
-
-// void freeHashTable(){
-// 	for(int i = 0;i < no_of_sym;i++){
-// 		hashNode* n = Table[i];
-// 		hashNode* temp;
-// 		while(n!=NULL){
-// 			temp = n->next;
-// 			if(n)
-// 				free(n->s);
-// 			free(n);
-// 			n = temp;
-// 		}
-// 		// Table[i] = NULL;
-// 	}
-// 	free(Table);
-// }
-
-void freeGrammar(){
-
-	for(int i=0; i<no_of_nt; i++){
-		RuleRHS r = gram.rules[i], temp;
-		while(r){
-			temp = r->next;
-			freeNodeList(r->head);
-			free(r);
-			r = temp;
-		}
-	}
-}
-
-void freeFirstAndFollow(){
-	for(int i=0; i<no_of_nt+no_of_t+1; i++){
-		freeNodeList(First[i][0]);
-		freeNodeList(First[i][1]);
-		free(First[i]);
-	}
-	for(int i=0; i<no_of_nt+1; i++)
-		freeNodeList(Follow[i]);
-	free(Follow);
-	free(First);
-	First = NULL;
-	Follow = NULL;
-}
-
-
-void freeParseTree(ParseTree PT){
-	if(PT){
-		freeParseTree(PT->children);
-		freeParseTree(PT->next);
-		if(PT && PT->tk)
-			free(PT->tk->name);	
-		free(PT->tk);
-	}
-	free(PT);
-	PT = NULL;
-}
-
-void freeMemory(){
-	freeGrammar();
-	freeFirstAndFollow();
-	// freeHashTable();
 }
 
 //Reading Grammer from grammet.txt and storing it
@@ -263,15 +229,15 @@ void buildRules(){
 		ruleNo++;
 	}
 	fclose(gramFile);
-	free(buff);
 }
 
 //creating parse tree node
-ParseTree createPTNode(int id){
+ParseTree createPTNode(int id,ParseTree p){
 	ParseTree new = (ParseTree)malloc(sizeof(struct parseTree));
 	new->next = NULL;
 	new->children = NULL;
 	new->tk = NULL;
+	new->parent = p;
 	new->non_term_id = id;
 	return new;
 }
@@ -308,15 +274,15 @@ Node getFirst(Node head,int* epsFlag){
 	return calculatedFirst;
 }
 
-// //Prints a linked List
-// void printNodeList(Node list){
-// 	Node temp=list;
-// 	while(temp){
-// 		printf("%s\t",symbolArray[temp->id] );
-// 		temp=temp->next;
-// 	}
-// 	printf("\n");
-// }
+//Prints a linked List
+void printNodeList(Node list){
+	Node temp=list;
+	while(temp){
+		printf("%s\t",symbolArray[temp->id] );
+		temp=temp->next;
+	}
+	printf("\n");
+}
 
 /*
 Creates Parse Table
@@ -342,7 +308,6 @@ parseTable createParseTable(parseTable T){
 			Node firstIter;
 			Node revList = reverseList(RHSIter);
 			firstIter=getFirst(revList,&epsFlag);
-			Node firstIterHead=firstIter;	//for freeing the list memory later
 			while(firstIter){	
 				T[i][firstIter->id-no_of_nt] = ruleIter->ruleNo;
 				firstIter = firstIter->next;
@@ -354,8 +319,6 @@ parseTable createParseTable(parseTable T){
 					followIter = followIter->next;
 				}
 			}
-			freeNodeList(firstIterHead);
-			freeNodeList(revList);
 			ruleIter = ruleIter->next;
 		}
 		for(int j = 0;j < no_of_t;j++){
@@ -370,30 +333,28 @@ parseTable createParseTable(parseTable T){
 	return T;
 }
 
-
-
 //printing parse table
-// void printParseTable(parseTable T){
-// 	char* filename = "parseTable.txt";
-// 	FILE* fp23 = fopen(filename, "w");
-// 	char * a = "A";
-// 	fprintf(fp23, "%23s\t", a);
-// 	for(int i=0;i<no_of_t;i++){
-// 		fprintf(fp23, "%13s",symbolArray[i+no_of_nt]);
-// 	}
-// 	fprintf(fp23, "\n");
-// 	for(int i=0; i<no_of_nt; i++){
-// 		fprintf(fp23, "%23s\t",symbolArray[i] );
-// 		for(int j=0; j<no_of_t; j++){
-// 			fprintf(fp23, "%13d", T[i][j]);
-// 		}
-// 		fprintf(fp23, "\n");
-// 	}
-// 	fclose(fp23);
-// }
+void printParseTable(parseTable T){
+	char* filename = "parseTable.txt";
+	FILE* fp23 = fopen(filename, "w");
+	char * a = "A";
+	fprintf(fp23, "%23s\t", a);
+	for(int i=0;i<no_of_t;i++){
+		fprintf(fp23, "%13s",symbolArray[i+no_of_nt]);
+	}
+	fprintf(fp23, "\n");
+	for(int i=0; i<no_of_nt; i++){
+		fprintf(fp23, "%23s\t",symbolArray[i] );
+		for(int j=0; j<no_of_t; j++){
+			fprintf(fp23, "%13d", T[i][j]);
+		}
+		fprintf(fp23, "\n");
+	}
+	fclose(fp23);
+}
 
 //Reading first and follow from txt files and populating the data structures
-void ComputeFirstAndFollowSets(Grammar gram){
+void ReadFromFileFirstAndFollow(Grammar gram){
 	First = (Node**)malloc(sizeof(Node*)*(no_of_nt+no_of_t+1));
 	Follow = (Node*)malloc(sizeof(Node)*(no_of_nt+1));
 	for(int i=0; i<no_of_nt+1; i++){
@@ -468,13 +429,12 @@ void ComputeFirstAndFollowSets(Grammar gram){
 		Follow[lhsIndex] = head;
 	}
 	fclose(fp_follow);
-	free(buff);
 }
 
 
 void printNumber(char* str, FILE* fp1){
 	int d=0;
-	while(*str!=0){
+	while(str!=NULL){
 		d = d*10 + ((*str)-48);
 		str++;
 	}
@@ -482,7 +442,7 @@ void printNumber(char* str, FILE* fp1){
 }
 void printReal(char* str, FILE* fp1){
 	int d = 0;
-	while(*str!=0 && *str!='.'){
+	while(str!=NULL && *str!='.'){
 		d = d*10 + ((*str)-48);
 		str++;
 	}
@@ -507,13 +467,10 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 		fprintf(fp1, "%23s\t%23s\n", no, symbolArray[PT->non_term_id]);
 	}
 	else{
-		if(strcmp("", PT->tk->name)!=0)
-			fprintf(fp1,"%23s\t%23llu\t%23s", PT->tk->name, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);
-		else
-			fprintf(fp1,"%23s\t%23llu\t%23s", dash, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);			
-		if(PT->tk->tid==TK_NUM && strcmp("", PT->tk->name)!=0)
+		fprintf(fp1,"%23s\t%23llu\t%23s", PT->tk->name, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);
+		if(PT->tk->tid==TK_NUM)
 			printNumber(PT->tk->name, fp1);
-		else if(PT->tk->tid==TK_RNUM && strcmp("", PT->tk->name)!=0)
+		else if(PT->tk->tid==TK_RNUM)
 			printReal(PT->tk->name, fp1);
 		else
 			fprintf(fp1, "%23s\t", dash);
@@ -526,7 +483,6 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 	
 	//traverse right
 	inorderTraversal(PT->next, fp1, level, parent);
-	
 }
 
 //printing pasre tree
@@ -539,7 +495,6 @@ void printParseTree(ParseTree PT, char *outfile){
 
 	inorderTraversal(PT, fp1, 0, NULL);
 	fclose(fp1);
-	freeParseTree(PT);
 }
 
 //Parsing anf forming parsetree
@@ -549,13 +504,13 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	
 	s = pushStack(s,TK_DOLLAR+no_of_nt,NULL);
 	
-	PT = createPTNode(program);
+	PT = createPTNode(program,NULL);
 	ParseTree head = PT;
 	
 	s = pushStack(s,program,PT);
 	
 	buildRules();
-	ComputeFirstAndFollowSets(gram);
+	ReadFromFileFirstAndFollow(gram);
 
 	T = createParseTable(T);
 	
@@ -569,19 +524,17 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	while(1){
 		int X = topStack(s)->id;
 
-		if(token->tid == TK_DOLLAR && X == TK_DOLLAR + no_of_nt){ //Case 1 : Top of stack is current token is equal to '$'
-			free(token);
-			free(s->head);
+		printf("%s\t%s\n", symbolArray[X],tokenArray[token->tid]);
+		if(token->tid == TK_DOLLAR && topStack(s)->id == TK_DOLLAR + no_of_nt){ //Case 1 : Top of stack is current token is equal to '$'
 			break;
 		}
-		else if(token->tid + no_of_nt == X) //Case 2 Top of stack = Token is not equal '$'
+		else if(token->tid + no_of_nt == topStack(s)->id) //Case 2 Top of stack = Token is not equal '$'
 		{
 			s = popStack(s);
-
 			PT->tk = token;
 			PT = topStack(s)->pt_node;
 			token = getNextToken(fp);
-			while(!token){
+			while(token==NULL){
 				token = getNextToken(fp);
 			}
 		}
@@ -598,39 +551,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 				Node rhsIter = ruleIter->head;
 
 				while(rhsIter){
-					ParseTree newNode = createPTNode(rhsIter->id);
-					if(rhsIter->id!=eps+no_of_nt)
-						s = pushStack(s,rhsIter->id,newNode);
-					else{
-						newNode->non_term_id = -1;
-						newNode->tk = (TokenInfo)malloc(sizeof(struct tokenInfo));
-						newNode->tk->tid = eps;
-						newNode->tk->lineNo = 0;
-						newNode->tk->name = (char*)malloc(10*sizeof(char));
-						strcpy(newNode->tk->name,"eps");
-					}
-					if(PT->children == NULL)
-						PT->children = newNode;
-					else{
-						newNode->next = PT->children;
-						PT->children = newNode;
-					}
-					rhsIter = rhsIter->next;
-				}
-				PT = topStack(s)->pt_node;
-			}
-			else if(T[X][eps] > 0){ 
-				s = popStack(s);
-				int ruleNo = T[X][eps];
-				RuleRHS ruleIter = gram.rules[X];
-				while(ruleIter && ruleIter->ruleNo != ruleNo){
-					ruleIter = ruleIter->next;
-				}
-
-				Node rhsIter = ruleIter->head;
-
-				while(rhsIter){
-					ParseTree newNode = createPTNode(rhsIter->id);
+					ParseTree newNode = createPTNode(rhsIter->id,PT);
 					if(rhsIter->id!=eps+no_of_nt)
 						s = pushStack(s,rhsIter->id,newNode);
 					else{
@@ -660,10 +581,9 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 			// 	errorFlag = 1;
 			// }
 			else //Panic Mode : Error
-			{	
-				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[X]);
+			{
+				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
 				while(T[X][token->tid]<0){
-				free(token);
 				token = getNextToken(fp);
 					while(token==NULL){
 						token = getNextToken(fp);
@@ -675,30 +595,19 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 					
 
 				}
-				// free(token);
+				
 				errorFlag = 1;
 			}	
 		}
 		else //Case 4 : Top of stack is token but is not equal to the current token
 		{
 			errorFlag = 1;
-			if(X==TK_SEM+no_of_nt)
-				printf("Line %llu :Semicolon is missing\n",token->lineNo);
-			else
-				printf("Line %llu: The token %s for lexeme %s does not match with the expected token %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[X]);
-			s = popStack(s);
-			PT=topStack(s)->pt_node;
+			printf("Line %llu: The token %s for lexeme %s does not match with the expected token %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[topStack(s)->id]);
+			s = popStack(s);      
 		}
 	}
 	fclose(fp);
-
 	if(!errorFlag)
 		printf("Input source code is syntactically correct...........\n");
-	// printParseTree()
-	free(s);
-	for(int i=0; i<no_of_nt; i++){
-		free(T[i]);
-	}
-	free(T);
 	return head;
 }
