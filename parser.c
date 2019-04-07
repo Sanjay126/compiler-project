@@ -480,15 +480,17 @@ void printNumber(char* str, FILE* fp1){
 		d = d*10 + ((*str)-48);
 		str++;
 	}
-	fprintf(fp1, "%d\t", d);
+	fprintf(fp1, "%23d\t", d);
 }
 void printReal(char* str, FILE* fp1){
-	int d = 0;
+	float d = 0;
 	while(*str!=0 && *str!='.'){
 		d = d*10 + ((*str)-48);
 		str++;
 	}
-	fprintf(fp1, "%d%s\t", d, str);
+	str++;
+	d += (float)(((*str)-48)/10.0 + ((*(str+1))-48)/100.0);
+	fprintf(fp1, "%23.2f\t", d);
 }
 
 void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
@@ -510,9 +512,9 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 	}
 	else{
 		if(strcmp("", PT->tk->name)!=0)
-			fprintf(fp1,"%23s\t%23llu\t%23s", PT->tk->name, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);
+			fprintf(fp1,"%23s\t%23llu\t%23s\t", PT->tk->name, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);
 		else
-			fprintf(fp1,"%23s\t%23llu\t%23s", dash, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);			
+			fprintf(fp1,"%23s\t%23llu\t%23s\t", dash, PT->tk->lineNo, symbolArray[PT->tk->tid+no_of_nt]);			
 		if(PT->tk->tid==TK_NUM && strcmp("", PT->tk->name)!=0)
 			printNumber(PT->tk->name, fp1);
 		else if(PT->tk->tid==TK_RNUM && strcmp("", PT->tk->name)!=0)
@@ -622,6 +624,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 					}
 					rhsIter = rhsIter->next;
 				}
+				PT->ruleNo = ruleNo;
 				PT = topStack(s)->pt_node;
 			}
 			else if(T[X][eps] > 0){ 

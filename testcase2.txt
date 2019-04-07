@@ -35,7 +35,7 @@ _main
 
 	b5 <--- 1;
 	read(d5cb34567);
-	b5c6.maths <--- 0.00;
+	b5c6.maths <--- 11.31;
 	b5c6.physics <--- 0.00;
 	b5c6.chemistry <---0.00;
 	while(b5<=d5cb34567)
