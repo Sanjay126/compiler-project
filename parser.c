@@ -504,11 +504,15 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 	char* ROOT = "ROOT";
 	if(PT->tk == NULL){
 		fprintf(fp1,"%23s\t%23s\t%23s\t%23s\t", dash,dash,dash,dash);
+		// if(parent==NULL)
+		// 	fprintf(fp1, "%23s\t", ROOT);
+		// else
+		// 	fprintf(fp1, "%23s\t", symbolArray[parent->non_term_id]);
 		if(parent==NULL)
 			fprintf(fp1, "%23s\t", ROOT);
 		else
-			fprintf(fp1, "%23s\t", symbolArray[parent->non_term_id]);
-		fprintf(fp1, "%23s\t%23s\t", no, symbolArray[PT->non_term_id]);
+			fprintf(fp1, "%23d\t",parent->non_term_id);
+		fprintf(fp1, "%23s\t%23d\t", no,PT->non_term_id); //symbolArray[PT->non_term_id]);
 	}
 	else{
 		if(strcmp("", PT->tk->name)!=0)
@@ -524,7 +528,7 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 		if(parent==NULL)
 			fprintf(fp1, "%23s\t", ROOT);
 		else
-			fprintf(fp1, "%23s\t", symbolArray[parent->non_term_id]);
+			fprintf(fp1, "%23d\t",parent->non_term_id); //symbolArray[parent->non_term_id]);
 		fprintf(fp1, "%23s\t%23s\t",yes, dash);
 	}
 	fprintf(fp1, "%23d\n", PT->ruleNo);
@@ -543,7 +547,7 @@ void printParseTree(ParseTree PT, char *outfile){
 
 	inorderTraversal(PT, fp1, 0, NULL);
 	fclose(fp1);
-	freeParseTree(PT);
+	// freeParseTree(PT);
 }
 
 //Parsing anf forming parsetree

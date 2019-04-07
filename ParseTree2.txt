@@ -1,0 +1,8 @@
+                 lexeme	                 lineno	              tokenName	          valueIfNumber	       parentNodeSymbol	             isLeafNode	             NodeSymbol	                 ruleNo	
+
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	                      1	                      0
+                   ----	                   ----	                   ----	                   ----	                      2	                     no	                      4	                      0
+                   ----	                   ----	                   ----	                   ----	                      2	                     no	                      5	                      0
+                   ----	                   ----	                   ----	                   ----	                      2	                     no	                      6	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	                      2	                      0
+                   ----	                   ----	                   ----	                   ----	                   ROOT	                     no	                      0	                      0
