@@ -267,12 +267,13 @@ void buildRules(){
 }
 
 //creating parse tree node
-ParseTree createPTNode(int id){
+ParseTree createPTNode(int id, ParseTree parent){
 	ParseTree new = (ParseTree)malloc(sizeof(struct parseTree));
 	new->next = NULL;
 	new->children = NULL;
 	new->tk = NULL;
 	new->non_term_id = id;
+	new->parent = parent;
 	return new;
 }
 
@@ -504,7 +505,7 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 			fprintf(fp1, "%23s\t", ROOT);
 		else
 			fprintf(fp1, "%23s\t", symbolArray[parent->non_term_id]);
-		fprintf(fp1, "%23s\t%23s\n", no, symbolArray[PT->non_term_id]);
+		fprintf(fp1, "%23s\t%23s\t", no, symbolArray[PT->non_term_id]);
 	}
 	else{
 		if(strcmp("", PT->tk->name)!=0)
@@ -521,9 +522,9 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 			fprintf(fp1, "%23s\t", ROOT);
 		else
 			fprintf(fp1, "%23s\t", symbolArray[parent->non_term_id]);
-		fprintf(fp1, "%23s\t%23s\n",yes, dash);
+		fprintf(fp1, "%23s\t%23s\t",yes, dash);
 	}
-	
+	fprintf(fp1, "%23d\n", PT->ruleNo);
 	//traverse right
 	inorderTraversal(PT->next, fp1, level, parent);
 	
@@ -532,8 +533,8 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 //printing pasre tree
 void printParseTree(ParseTree PT, char *outfile){
 	FILE* fp1 = fopen(outfile, "w");
-	char* headings[] = {"lexeme","lineno","tokenName","valueIfNumber","parentNodeSymbol","isLeafNode","NodeSymbol"};
-	for(int i=0; i<7; i++)
+	char* headings[] = {"lexeme","lineno","tokenName","valueIfNumber","parentNodeSymbol","isLeafNode","NodeSymbol", "ruleNo"};
+	for(int i=0; i<8; i++)
 		fprintf(fp1, "%23s\t", headings[i]);
 	fprintf(fp1, "\n\n");
 
@@ -549,7 +550,8 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	
 	s = pushStack(s,TK_DOLLAR+no_of_nt,NULL);
 	
-	PT = createPTNode(program);
+	PT = createPTNode(program, NULL);
+	PT->ruleNo = 0;
 	ParseTree head = PT;
 	
 	s = pushStack(s,program,PT);
@@ -598,7 +600,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 				Node rhsIter = ruleIter->head;
 
 				while(rhsIter){
-					ParseTree newNode = createPTNode(rhsIter->id);
+					ParseTree newNode = createPTNode(rhsIter->id, PT);
 					if(rhsIter->id!=eps+no_of_nt)
 						s = pushStack(s,rhsIter->id,newNode);
 					else{
@@ -617,6 +619,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 					}
 					rhsIter = rhsIter->next;
 				}
+				PT->ruleNo = ruleNo;
 				PT = topStack(s)->pt_node;
 			}
 			else if(T[X][eps] > 0){ 
@@ -630,7 +633,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 				Node rhsIter = ruleIter->head;
 
 				while(rhsIter){
-					ParseTree newNode = createPTNode(rhsIter->id);
+					ParseTree newNode = createPTNode(rhsIter->id, PT);
 					if(rhsIter->id!=eps+no_of_nt)
 						s = pushStack(s,rhsIter->id,newNode);
 					else{
@@ -649,7 +652,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 					}
 					rhsIter = rhsIter->next;
 				}
-
+				PT->ruleNo = ruleNo;
 				PT = topStack(s)->pt_node;
 			}
 			// else if(T[X][token->tid] == 0) // Panic Mode : syn set
