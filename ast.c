@@ -269,56 +269,62 @@ ParseTree case25(ParseTree p){
 ParseTree case26(ParseTree p){
 	// <declarations> ===> eps
 
-	
+	free(p->children);
+	p->children = NULL;
 	return p;
 }
 
 ParseTree case27(ParseTree p){
 	// <declaration> ===> TK_TYPE <dataType> TK_COLON TK_ID  <global_or_not> TK_SEM
 
-	
+	p = del_child(p, 5);
+	p = del_child(p, 2);
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case28(ParseTree p){
 	 //<global_or_not> ===> TK_COLON  TK_GLOBAL
 
-	
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case29(ParseTree p){
 	 //<global_or_not> ===> eps
 
-	
+	free(p->children);
+	p->children = NULL;
 	return p;
 }
 
 ParseTree case30(ParseTree p){
 	 // <otherStmts> ===> <stmt> <otherStmts1>
 
-	
+	p = del_child(p, 1);
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case31(ParseTree p){
 	// <otherStmts> ===> eps
 
-	
+	free(p->children);
+	p->children = NULL;
 	return p;
 }
 
 ParseTree case32(ParseTree p){
 	// <stmt> ===> <assignmentStmt>
 
-	
+	// p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case33(ParseTree p){
 	// <stmt> ===> <funCallStmt>
 
-	
+	// p = del_child(p, 0);
 	return p;
 }
 
@@ -346,7 +352,422 @@ ParseTree case36(ParseTree p){
 ParseTree case37(ParseTree p){
 	// <assignmentStmt> ===> <SingleOrRecId> TK_ASSIGNOP  <arithmeticExpression> TK_SEM
 
+	p = del_child(p, 3);
+	p = del_child(p, 1);
+	// p = del_child()
+	return p;
+}
+
+ParseTree case38(ParseTree p){
+	//<singleOrRecId> ===>TK_ID  <new_24>
+
+	p = del_child(p,1);
+	return p;
+}
+
+ParseTree case39(ParseTree p){
+	//<new_24> ===> TK_DOT  TK_FIELDID
+
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case40(ParseTree p){
+	//<new_24> ===> eps
+
+	free(p->children);
+	p->children = NULL;
+	return p;
+}
+
+ParseTree case41(ParseTree p){
+	//<funCallStmt> ===> <outputParameters> TK_CALL  TK_FUNID  TK_WITH TK_PARAMETERS <inputParameters>  TK_SEM
+
+	p = del_child(p, 1);
+	p = del_child(p, 2);
+	p = del_child(p, 2);
+	p = del_child(p, 3);
+	return p;
+}
+
+ParseTree case42(ParseTree p){
+	//<outputParameters> ==> TK_SQL <idList> TK_SQR TK_ASSIGNOP
+
+	p = del_child(p, 3);
+	p = del_child(p, 2);
+	p = del_child(p, 0);
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case43(ParseTree p){
+	//<outputParameters> ==> eps
+
+	free(p->children);
+	p->children = NULL;
+	return p;
+}
+
+ParseTree case44(ParseTree p){
+	//<inputParameters> ===> TK_SQL <idList> TK_SQR
+
+	p = del_child(p, 2);
+	p = del_child(p, 1);
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case45(ParseTree p){
+	//<iterativeStmt> ===> TK_WHILE TK_OP <booleanExpression> TK_CL <stmt> <otherStmts> TK_ENDWHILE
+
+	p = del_child(p, 6);
+	p = del_child(p, 5);
+	p = del_child(p, 3);
+	p = del_child(p, 1);
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case46(ParseTree p){
+	//<conditionalStmt> ===> TK_IF TK_OP <booleanExpression> TK_CL TK_THEN <stmt> <otherStmts> <elsePart>
+
+	p = del_child(p, 6);
+	p = del_child(p, 4);
+	p = del_child(p, 3);
+	p = del_child(p, 1);
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case47(ParseTree p){
+	//<elsePart> ===> TK_ELSE <stmt> <otherStmts> TK_ENDIF
+
+	p = del_child(p, 3);
+	p = del_child(p, 2);
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case48(ParseTree p){
+	//<elsePart> ===> TK_ENDIF
+
+	free(p-<children);
+	p->children = NULL;
+	free(p);
+	return NULL;
+}
+
+ParseTree case49(ParseTree p){
+	//<ioStmt> ===> TK_READ TK_OP <singleOrRecId> TK_CL TK_SEM
+
+	p = del_child(p, 4);
+	p = del_child(p, 3);
+	p = del_child(p, 1);
+	return p;
+}
+
+ParseTree case50(ParseTree p){
+	//<ioStmt> ===>  TK_WRITE TK_OP <allVar> TK_CL TK_SEM
+
+	p = del_child(p, 4);
+	p = del_child(p, 3);
+	p = del_child(p, 1);
+	p = del_child(p, 1);
+	return p;
+}
+
+ParseTree case51(ParseTree p){
+	//<allVar> ===>  TK_ID <newallvar>
+
+	p = del_child(p, 1);
+	return p;
+}
+
+ParseTree case52(ParseTree p){
+	//<allVar> ===>  TK_RNUM
+
+	return p;
+}
+
+ParseTree case53(ParseTree p){
+	//<allVar> ===>  TK_NUM
+
+	return p;
+}
+
+ParseTree case54(ParseTree p){
+	//<newallvar> ===>  TK_DOT TK_FIELDID
 	
+	p = del_child(p,0);
+	return p;
+}
+
+ParseTree case55(ParseTree p){
+	//<newallvar> ===>  eps
+
+	free(p->children);
+	p->children = NULL;
+	return p;
+}
+
+//	TODO
+ParseTree case56(ParseTree p){
+	//<arithmeticExpression> ===>  <term> <expPrime>
+
+	p = del_child(p, 1);
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case57(ParseTree p){
+	//<expPrime> ===>  <lowPrecedenceOperators> <term> <expPrime>
+
+	p = del_child(p, 0);
+	p = del_child(p, 2);
+	p = del_child(p, 1);
+	return p;
+}
+
+ParseTree case58(ParseTree p){
+	//<expPrime> ===>  eps
+	
+	free(p->children);
+	p->children = NULL;
+	return p;
+}
+
+ParseTree case59(ParseTree p){
+	//<term> ===>  <factor> <termPrime>
+
+	p = del_child(p, 1);
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case60(ParseTree p){
+	//<termPrime> ===>  <highPrecedenceOperators> <factor> <termPrime>
+
+	p = del_child(p, 0);
+	p = del_child(p, 2);
+	p = del_child(p, 1);
+	return p;
+}
+
+ParseTree case61(ParseTree p){
+	//<termPrime> ===>  eps
+
+	free(p->children);
+	p->children = NULL;
+	return p;
+}
+
+ParseTree case62(ParseTree p){
+	//<factor> ===> <all>
+
+	p = del_child(p, 0);
+	return p;
+}
+// ENDTODO
+
+
+ParseTree case63(ParseTree p){
+	//<factor> ===> TK_OP <arithmeticExpression> TK_CL
+
+	p = del_child(p, 0);
+	p = del_child(p, 1);
+	return p;
+}
+
+ParseTree case64(ParseTree p){
+	//<lowPrecedenceOperators> ===>  TK_MINUS
+
+	return p;
+}
+
+ParseTree case65(ParseTree p){
+	//<lowPrecedenceOperators> ===> TK_PLUS
+
+	return p;
+}
+
+ParseTree case66(ParseTree p){
+	//<highPrecedenceOperators> ===> TK_MUL
+
+	return p;
+}
+
+ParseTree case67(ParseTree p){
+	//<highPrecedenceOperators> ===> TK_DIV
+
+	return p;
+}
+
+ParseTree case68(ParseTree p){
+	//<all> ===>  TK_ID <allnew>
+
+	p = del_child(p, 1);
+	return p;
+}
+
+ParseTree case69(ParseTree p){
+	//<all> ===>  TK_NUM
+
+	return p;
+}
+
+ParseTree case70(ParseTree p){
+	//<all> ===>  TK_RNUM
+
+	return p;
+}
+
+ParseTree case71(ParseTree p){
+	//<allnew> ===>  <temp>
+
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case72(ParseTree p){
+	//<allnew> ===>  eps
+
+	free(p->children);
+	p->children = NULL;
+	return p;
+}
+
+ParseTree case73(ParseTree p){
+	//<temp> ===>  eps
+
+	free(p->children);
+	p->children = NULL;
+	return p;
+}
+
+ParseTree case74(ParseTree p){
+	//<temp> ===> TK_DOT TK_FIELDID
+
+	p = del_child(p, 0);
+	return p;
+}
+
+ParseTree case75(ParseTree p){
+	//<booleanExpression> ===> TK_OP  <booleanExpression1> TK_CL <logicalOp> TK_OP <booleanExpression2> TK_CL
+
+	return p;
+}
+
+ParseTree case76(ParseTree p){
+	//<booleanExpression> ===> <allVar> <relationalOp> <allVar>
+
+	return p;
+}
+
+ParseTree case77(ParseTree p){
+	//<booleanExpression> ===> TK_NOT TK_OP <booleanExpression1>TK_CL
+
+	return p;
+}
+
+ParseTree case78(ParseTree p){
+	//<var> ===> TK_NUM
+
+	return p;
+}
+
+ParseTree case79(ParseTree p){
+	//<var> ===> TK_RNUM
+
+	return p;
+}
+
+ParseTree case80(ParseTree p){
+	//<var> ===> <TK_ID>
+
+	return p;
+}
+
+ParseTree case81(ParseTree p){
+	//<logicalOp> ===> TK_AND
+
+	return p;
+}
+
+ParseTree case82(ParseTree p){
+	//<logicalOp> ===> TK_OR
+
+	return p;
+}
+
+ParseTree case83(ParseTree p){
+	//<relationalOp> ===> TK_LT
+
+	return p;
+}
+
+ParseTree case84(ParseTree p){
+	//<relationalOp> ===> TK_LE
+
+	return p;
+}
+
+ParseTree case85(ParseTree p){
+	//<relationalOp> ===> TK_EQ
+
+	return p;
+}
+
+ParseTree case86(ParseTree p){
+	//<relationalOp> ===> TK_GT
+
+	return p;
+}
+
+ParseTree case87(ParseTree p){
+	//<relationalOp> ===> TK_GE
+
+	return p;
+}
+
+ParseTree case88(ParseTree p){
+	//<relationalOp> ===> TK_NE
+
+	return p;
+}
+
+ParseTree case89(ParseTree p){
+	//<returnStmt> ===> TK_RETURN <optionalReturn> TK_SEM
+
+	return p;
+}
+
+ParseTree case90(ParseTree p){
+	//<optionalReturn> ===> TK_SQL <idList> TK_SQR
+
+	return p;
+}
+
+ParseTree case91(ParseTree p){
+	//<optionalReturn> ===> eps
+
+	return p;
+}
+
+ParseTree case92(ParseTree p){
+	//<idList> ===> TK_ID <more_ids>
+
+	return p;
+}
+
+ParseTree case93(ParseTree p){
+	//<more_ids> ===> TK_COMMA <idList>
+
+	return p;
+}
+
+ParseTree case94(ParseTree p){
+	//<more_ids> ===> eps
+
 	return p;
 }
 
@@ -357,7 +778,7 @@ ParseTree case37(ParseTree p){
 
 
 
-ParseTree case(ParseTree p){
+ParseTree case%d(ParseTree p){
 
 	return p;
 }
