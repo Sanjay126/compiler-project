@@ -109,11 +109,9 @@ struct parseTree{
 	TokenInfo tk; //Pointer to token in leaf nodes
 	struct parseTree* next;//for looping through children
 	struct parseTree* children; //pointing to head of linked list of children
+
 	struct parseTree* parent; //pointer to parent of node
-<<<<<<< HEAD
 	int ruleNo;
-=======
->>>>>>> dd9bed437d04b032baa161f701b08b191afd999e
 };
 typedef struct parseTree* ParseTree; 
 
