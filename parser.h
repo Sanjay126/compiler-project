@@ -24,6 +24,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT);
 
 //Printing ParseTree
 void printParseTree(ParseTree PT, char *outfile);
+void printPARSETREENEW(ParseTree PT, char *outfile);
 
 void freeMemory();
 

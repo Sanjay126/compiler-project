@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "parser.c"	
-#include "lexer.c"
-// #include "ast.h"
+#include "lexerDef.h"
+#include "lexer.h"
+#include "parserDef.h"	
+#include "parser.h"	
+#include "ast.h"
 
 ParseTree ast;
 
@@ -37,7 +39,7 @@ ParseTree del_child(ParseTree node,int i)
 		int count = 0;
 		ParseTree prev;
 
-		while(count < i && ptr)
+		while(count < i && ptr && ptr->next)
 		{
 			prev = ptr;
 			ptr = ptr->next;
@@ -56,6 +58,7 @@ ParseTree del_child(ParseTree node,int i)
 		}
 		else
 		{
+			if(ptr->)
 			prev->next = ptr->children;
 			ParseTree ptr2 = ptr->children;
 			while(ptr2 && ptr2->next)
@@ -222,10 +225,10 @@ ParseTree case19(ParseTree p){
 ParseTree case20(ParseTree p){
 	// <typeDefinition> ===> TK_RECORD TK_RECORDID <fieldDefinitions> TK_ENDRECORD TK_SEM
 
-	p = del_child(p, 4);
-	p = del_child(p, 3);
-	p = del_child(p, 2);
 	p = del_child(p, 0);
+	p = del_child(p, 2);
+	p = del_child(p, 2);
+	p = del_child(p, 1);
 	return p;
 }
 
@@ -277,9 +280,9 @@ ParseTree case26(ParseTree p){
 ParseTree case27(ParseTree p){
 	// <declaration> ===> TK_TYPE <dataType> TK_COLON TK_ID  <global_or_not> TK_SEM
 
-	p = del_child(p, 5);
-	p = del_child(p, 2);
 	p = del_child(p, 0);
+	p = del_child(p, 1);
+	p = del_child(p, 3);
 	return p;
 }
 
@@ -317,34 +320,30 @@ ParseTree case31(ParseTree p){
 ParseTree case32(ParseTree p){
 	// <stmt> ===> <assignmentStmt>
 
-	// p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case33(ParseTree p){
-	// <stmt> ===> <funCallStmt>
+	// <stmt> ===> <iterativeStmt>
 
 	// p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case34(ParseTree p){
-	// <stmt> ===> <iterativeStmt>
-
+	// <stmt> ===> <conditionalStmt>
 	
 	return p;
 }
 
 ParseTree case35(ParseTree p){
-	// <stmt> ===> <conditionalStmt>
-
+	 //<stmt> ===> <ioStmt>
 	
 	return p;
 }
 
 ParseTree case36(ParseTree p){
-	 //<stmt> ===> <ioStmt>
-
+	// <stmt> ===> <funCallStmt>
 	
 	return p;
 }
@@ -352,8 +351,8 @@ ParseTree case36(ParseTree p){
 ParseTree case37(ParseTree p){
 	// <assignmentStmt> ===> <SingleOrRecId> TK_ASSIGNOP  <arithmeticExpression> TK_SEM
 
-	p = del_child(p, 3);
 	p = del_child(p, 1);
+	p = del_child(p, 2);
 	// p = del_child()
 	return p;
 }
@@ -393,9 +392,9 @@ ParseTree case41(ParseTree p){
 ParseTree case42(ParseTree p){
 	//<outputParameters> ==> TK_SQL <idList> TK_SQR TK_ASSIGNOP
 
-	p = del_child(p, 3);
-	p = del_child(p, 2);
 	p = del_child(p, 0);
+	p = del_child(p, 1);
+	p = del_child(p, 1);
 	p = del_child(p, 0);
 	return p;
 }
@@ -420,38 +419,38 @@ ParseTree case44(ParseTree p){
 ParseTree case45(ParseTree p){
 	//<iterativeStmt> ===> TK_WHILE TK_OP <booleanExpression> TK_CL <stmt> <otherStmts> TK_ENDWHILE
 
-	p = del_child(p, 6);
-	p = del_child(p, 5);
-	p = del_child(p, 3);
-	p = del_child(p, 1);
 	p = del_child(p, 0);
+	p = del_child(p, 0);
+	p = del_child(p, 1);
+	p = del_child(p, 3);
+	p = del_child(p, 2);
 	return p;
 }
 
 ParseTree case46(ParseTree p){
 	//<conditionalStmt> ===> TK_IF TK_OP <booleanExpression> TK_CL TK_THEN <stmt> <otherStmts> <elsePart>
 
-	p = del_child(p, 6);
-	p = del_child(p, 4);
-	p = del_child(p, 3);
-	p = del_child(p, 1);
 	p = del_child(p, 0);
+	p = del_child(p, 0);
+	p = del_child(p, 1);
+	p = del_child(p, 1);
+	p = del_child(p, 2);
 	return p;
 }
 
 ParseTree case47(ParseTree p){
 	//<elsePart> ===> TK_ELSE <stmt> <otherStmts> TK_ENDIF
 
-	p = del_child(p, 3);
-	p = del_child(p, 2);
 	p = del_child(p, 0);
+	p = del_child(p, 2);
+	p = del_child(p, 1);
 	return p;
 }
 
 ParseTree case48(ParseTree p){
 	//<elsePart> ===> TK_ENDIF
 
-	free(p-<children);
+	free(p->children);
 	p->children = NULL;
 	free(p);
 	return NULL;
@@ -460,18 +459,18 @@ ParseTree case48(ParseTree p){
 ParseTree case49(ParseTree p){
 	//<ioStmt> ===> TK_READ TK_OP <singleOrRecId> TK_CL TK_SEM
 
-	p = del_child(p, 4);
-	p = del_child(p, 3);
 	p = del_child(p, 1);
+	p = del_child(p, 2);
+	p = del_child(p, 2);
 	return p;
 }
 
 ParseTree case50(ParseTree p){
 	//<ioStmt> ===>  TK_WRITE TK_OP <allVar> TK_CL TK_SEM
 
-	p = del_child(p, 4);
-	p = del_child(p, 3);
 	p = del_child(p, 1);
+	p = del_child(p, 2);
+	p = del_child(p, 2);
 	p = del_child(p, 1);
 	return p;
 }
@@ -654,35 +653,49 @@ ParseTree case74(ParseTree p){
 ParseTree case75(ParseTree p){
 	//<booleanExpression> ===> TK_OP  <booleanExpression1> TK_CL <logicalOp> TK_OP <booleanExpression2> TK_CL
 
+	p = del_child(p, 0);
+	p = del_child(p, 1);
+	p = del_child(p, 2);
+	p = del_child(p, 3);
+	p = del_child(p, 2);
+	p = del_child(p, 1);
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case76(ParseTree p){
-	//<booleanExpression> ===> <allVar> <relationalOp> <allVar>
+	//<booleanExpression> ===> <Var> <relationalOp> <Var>
 
+	p = del_child(p, 2);
+	p = del_child(p, 1);
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case77(ParseTree p){
 	//<booleanExpression> ===> TK_NOT TK_OP <booleanExpression1>TK_CL
 
+	p = del_child(p, 3);
+	p = del_child(p, 2);
+	p = del_child(p, 1);
+
 	return p;
 }
 
 ParseTree case78(ParseTree p){
-	//<var> ===> TK_NUM
+	//<var> ===> <TK_ID>
 
 	return p;
 }
 
 ParseTree case79(ParseTree p){
-	//<var> ===> TK_RNUM
+	//<var> ===> TK_NUM
 
 	return p;
 }
 
 ParseTree case80(ParseTree p){
-	//<var> ===> <TK_ID>
+	//<var> ===> TK_RNUM
 
 	return p;
 }
@@ -738,67 +751,68 @@ ParseTree case88(ParseTree p){
 ParseTree case89(ParseTree p){
 	//<returnStmt> ===> TK_RETURN <optionalReturn> TK_SEM
 
+	p = del_child(p, 0);
+	p = del_child(p, 1);
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case90(ParseTree p){
 	//<optionalReturn> ===> TK_SQL <idList> TK_SQR
 
+	p = del_child(p, 0);
+	p = del_child(p, 1);
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case91(ParseTree p){
 	//<optionalReturn> ===> eps
 
+	free(p->children);
+	p->children = NULL;
 	return p;
 }
 
 ParseTree case92(ParseTree p){
 	//<idList> ===> TK_ID <more_ids>
 
+	p = del_child(p, 1);
 	return p;
 }
 
 ParseTree case93(ParseTree p){
 	//<more_ids> ===> TK_COMMA <idList>
 
+	p = del_child(p, 0);
 	return p;
 }
 
 ParseTree case94(ParseTree p){
 	//<more_ids> ===> eps
-
+	
+	free(p->children);
+	p->children = NULL;
 	return p;
 }
 
 
-
-
-
-
-
-
-ParseTree case%d(ParseTree p){
-
-	return p;
-}
+static ParseTree (*functions[94])() = {case1, case2, case3, case4, case5, case6, case7, case8, case9, case10, case11, case12, case13, case14, case15, case16, case17, case18, case19, case20, case21, case22, case23, case24, case25, case26, case27, case28, case29, case30, case31, case32, case33, case34, case35, case36, case37, case38, case39, case40, case41, case42, case43, case44, case45, case46, case47, case48, case49, case50, case51, case52, case53, case54, case55, case56, case57, case58, case59, case60, case61, case62, case63, case64, case65, case66, case67, case68, case69, case70, case71, case72, case73, case74, case75, case76, case77, case78, case79, case80, case81, case82, case83, case84, case85, case86, case87, case88, case89, case90, case91, case92, case93, case94};
 
 
 ParseTree createAST(ParseTree PT)
 {
 	if(PT->children == NULL)
 		return PT;
-	ParseTree ptr  = PT->chlidren;
+	ParseTree ptr  = PT->children;
 	while(ptr)
 	{
-		createAST(ptr);
+		ptr = createAST(ptr);
 		ptr = ptr->next;
 	}
 
-	switch(PT -> ruleNo)
-	{
-
-	}
+	if(PT->ruleNo)
+		PT = functions[PT->ruleNo-1](PT);
 
 	return PT;
 }

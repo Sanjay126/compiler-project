@@ -473,6 +473,21 @@ void ComputeFirstAndFollowSets(Grammar gram){
 	free(buff);
 }
 
+void printParseTreeNew(ParseTree p, int spaces, FILE *fp){
+	if(p==NULL)
+		return;
+	for(int i=0; i<spaces; i++)
+		fprintf(fp, "    ");
+	if(p->tk==NULL)
+		fprintf(fp, "%s\n", symbolArray[p->non_term_id]);
+	else
+		fprintf(fp, "%s\n", symbolArray[p->tk->tid+no_of_nt]);
+	ParseTree ptr = p->children;
+	while(ptr){
+		printParseTreeNew(ptr, spaces+1, fp);
+		ptr = ptr->next;
+	}
+}
 
 void printNumber(char* str, FILE* fp1){
 	int d=0;
@@ -512,7 +527,7 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 			fprintf(fp1, "%23s\t", ROOT);
 		else
 			fprintf(fp1, "%23d\t",parent->non_term_id);
-		fprintf(fp1, "%23s\t%23d\t", no,PT->non_term_id); //symbolArray[PT->non_term_id]);
+		fprintf(fp1, "%23s\t%23s\t", no, symbolArray[PT->non_term_id]);
 	}
 	else{
 		if(strcmp("", PT->tk->name)!=0)
@@ -528,7 +543,7 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 		if(parent==NULL)
 			fprintf(fp1, "%23s\t", ROOT);
 		else
-			fprintf(fp1, "%23d\t",parent->non_term_id); //symbolArray[parent->non_term_id]);
+			fprintf(fp1, "%23s\t", symbolArray[parent->non_term_id]);
 		fprintf(fp1, "%23s\t%23s\t",yes, dash);
 	}
 	fprintf(fp1, "%23d\n", PT->ruleNo);
@@ -537,8 +552,15 @@ void inorderTraversal(ParseTree PT, FILE* fp1, int level, ParseTree parent){
 	
 }
 
+void printPARSETREENEW(ParseTree PT, char *outfile){
+	FILE* fp1 = fopen(outfile, "w");
+	printParseTreeNew(PT, 0, fp1);
+	fclose(fp1);	
+}
+
 //printing pasre tree
 void printParseTree(ParseTree PT, char *outfile){
+
 	FILE* fp1 = fopen(outfile, "w");
 	char* headings[] = {"lexeme","lineno","tokenName","valueIfNumber","parentNodeSymbol","isLeafNode","NodeSymbol", "ruleNo"};
 	for(int i=0; i<8; i++)
@@ -547,7 +569,6 @@ void printParseTree(ParseTree PT, char *outfile){
 
 	inorderTraversal(PT, fp1, 0, NULL);
 	fclose(fp1);
-	// freeParseTree(PT);
 }
 
 //Parsing anf forming parsetree
