@@ -58,16 +58,22 @@ ParseTree del_child(ParseTree node,int i)
 		}
 		else
 		{
-			if(ptr->)
-			prev->next = ptr->children;
-			ParseTree ptr2 = ptr->children;
-			while(ptr2 && ptr2->next)
+			if(ptr->children == NULL)
 			{
-				ptr2->parent = node;
-				ptr2 = ptr2->next;
+				prev->next = ptr->next;
 			}
-			ptr2->parent = node;
-			ptr2->next = ptr->next;
+			else
+			{
+				prev->next = ptr->children;
+				ParseTree ptr2 = ptr->children;
+				while(ptr2 && ptr2->next)
+				{
+					ptr2->parent = node;
+					ptr2 = ptr2->next;
+				}
+				ptr2->parent = node;
+				ptr2->next = ptr->next;	
+			}
 			free(ptr);
 		}
 	}
