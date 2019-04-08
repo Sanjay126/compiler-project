@@ -208,8 +208,11 @@ ParseTree case16(ParseTree p){
 
 ParseTree case17(ParseTree p){
 	 // <stmts> ===> <typeDefinitions> <declarations> <otherStmts> <returnStmt>
-
 	p = del_child(p, 2);
+	if(p->children->next->children == NULL)
+		p = del_child(p,1);
+	if(p->children->children == NULL)
+		p = del_child(p,0);
 	return p;
 }
 
@@ -250,6 +253,7 @@ ParseTree case22(ParseTree p){
 	for(int i=0; i<3; i++){
 		p = del_child(p, i);
 	}
+	p = del_child(p,0);
 	return p;
 }
 
@@ -289,6 +293,8 @@ ParseTree case27(ParseTree p){
 	p = del_child(p, 0);
 	p = del_child(p, 1);
 	p = del_child(p, 3);
+	p = del_child(p ,2);
+	p = del_child(p, 0);
 	return p;
 }
 
@@ -430,6 +436,7 @@ ParseTree case45(ParseTree p){
 	p = del_child(p, 1);
 	p = del_child(p, 3);
 	p = del_child(p, 2);
+	p = del_child(p, 1);
 	return p;
 }
 
@@ -441,6 +448,7 @@ ParseTree case46(ParseTree p){
 	p = del_child(p, 1);
 	p = del_child(p, 1);
 	p = del_child(p, 2);
+	p = del_child(p, 1);
 	return p;
 }
 
@@ -450,6 +458,7 @@ ParseTree case47(ParseTree p){
 	p = del_child(p, 0);
 	p = del_child(p, 2);
 	p = del_child(p, 1);
+	p = del_child(p , 0);
 	return p;
 }
 
@@ -477,7 +486,7 @@ ParseTree case50(ParseTree p){
 	p = del_child(p, 1);
 	p = del_child(p, 2);
 	p = del_child(p, 2);
-	p = del_child(p, 1);
+	// p = del_child(p, 1);
 	return p;
 }
 
@@ -527,9 +536,10 @@ ParseTree case56(ParseTree p){
 ParseTree case57(ParseTree p){
 	//<expPrime> ===>  <lowPrecedenceOperators> <term> <expPrime>
 
-	p = del_child(p, 0);
 	p = del_child(p, 2);
-	p = del_child(p, 1);
+	p = del_child(p,1);
+	p = del_child(p, 0);
+	// p = del_child(p, 1);
 	return p;
 }
 
@@ -552,9 +562,9 @@ ParseTree case59(ParseTree p){
 ParseTree case60(ParseTree p){
 	//<termPrime> ===>  <highPrecedenceOperators> <factor> <termPrime>
 
-	p = del_child(p, 0);
 	p = del_child(p, 2);
 	p = del_child(p, 1);
+	p = del_child(p, 0);
 	return p;
 }
 
