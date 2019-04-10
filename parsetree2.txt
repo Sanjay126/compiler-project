@@ -28,40 +28,45 @@ program
                 singleOrRecId
                     TK_ID
                 arithmeticExpression
-                    arithmeticExpression
+                    term
                         arithmeticExpression
-                            TK_ID
-                            TK_PLUS
-                            TK_NUM
-                            TK_MUL
-                            TK_ID
-                        TK_MINUS
-                        arithmeticExpression
-                            TK_ID
+                            arithmeticExpression
+                                TK_ID
+                                TK_PLUS
+                                term
+                                    TK_NUM
+                                    TK_MUL
+                                    TK_ID
                             TK_MINUS
-                            TK_NUM
-                    TK_DIV
-                    TK_NUM
+                            arithmeticExpression
+                                TK_ID
+                                TK_MINUS
+                                TK_NUM
+                        TK_DIV
+                        TK_NUM
             assignmentStmt
                 singleOrRecId
                     TK_ID
                 arithmeticExpression
                     arithmeticExpression
-                        arithmeticExpression
-                            TK_ID
-                            TK_MINUS
-                            TK_RNUM
-                        TK_MUL
-                        arithmeticExpression
-                            TK_NUM
-                            TK_MINUS
-                            TK_NUM
+                        term
+                            arithmeticExpression
+                                TK_ID
+                                TK_MINUS
+                                TK_RNUM
                             TK_MUL
-                            TK_NUM
+                            arithmeticExpression
+                                TK_NUM
+                                TK_MINUS
+                                term
+                                    TK_NUM
+                                    TK_MUL
+                                    TK_NUM
                     TK_PLUS
-                    TK_NUM
-                    TK_MUL
-                    TK_ID
+                    term
+                        TK_NUM
+                        TK_MUL
+                        TK_ID
             conditionalStmt
                 booleanExpression
                     TK_NOT
@@ -76,9 +81,10 @@ program
                     singleOrRecId
                         TK_ID
                     arithmeticExpression
-                        TK_ID
-                        TK_DIV
-                        TK_ID
+                        term
+                            TK_ID
+                            TK_DIV
+                            TK_ID
                 elsePart
                     ioStmt
                         TK_WRITE

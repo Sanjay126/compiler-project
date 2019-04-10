@@ -19,18 +19,20 @@ typedef struct {
     int lineNo;
     rec_dec *record;
     struct entry *next;
+    // struct entry *prev;
 }entry;
 
 struct scopetable{
 	int size;
 	int scope;
-	struct 	scopetable	prevScope;
-	struct entry *table;
+	struct scopeTable *prevScope;
+	// struct entry* scopeEntry;
+	struct entry *head;
 };
-typedef struct scopetable scopeTable;
+typedef struct scopetable *scopeTable;
 
 struct {
 	int size;
-	scopeTable table;
+	scopeTable curr;
 }symbolTable;
 

@@ -365,7 +365,7 @@ ParseTree case37(ParseTree p){
 
 	p = del_child(p, 1);
 	p = del_child(p, 2);
-	// p = del_child()
+	// p = del_child(p, 1);
 	return p;
 }
 
@@ -529,7 +529,8 @@ ParseTree case56(ParseTree p){
 	//<arithmeticExpression> ===>  <term> <expPrime>
 
 	p = del_child(p, 1);
-	p = del_child(p, 0);
+	if(p->children->children->next == NULL)
+		p = del_child(p, 0);
 	return p;
 }
 
@@ -537,7 +538,8 @@ ParseTree case57(ParseTree p){
 	//<expPrime> ===>  <lowPrecedenceOperators> <term> <expPrime>
 
 	p = del_child(p, 2);
-	p = del_child(p,1);
+	if(p->children->next->children->next ==  NULL)
+		p = del_child(p,1);
 	p = del_child(p, 0);
 	// p = del_child(p, 1);
 	return p;
