@@ -5,7 +5,7 @@
 
 symbolTable createSymbolTable(parseTree PT, int size);
 
-scopeTable createScopeTable(char* scope,entry *current);
+// scopeTable createScopeTable(char* scope,entry *current);
 
 void printSymbolTable(symbolTable st, int size);
 
