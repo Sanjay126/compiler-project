@@ -16,7 +16,7 @@ int hash(char *v, int M){
     return h;
 }
 
-symbolTable OpenScope(symbolTable ST,int sz){
+symbolTable openScope(symbolTable ST,int sz){
 	ST.size++;
 	scopeTable s = (scopeTable)malloc(sizeof(struct scopetable));
 	s->size = sz;
@@ -36,11 +36,11 @@ symbolTable closeScope(symbolTable ST){
 	ST.size--;
 	scopeTable s = ST.curr;
 	ST.curr = s->prevScope;
-	freeScopeTable(s);
+	// freeScopeTable(s);
 	return ST;
 }
 
-symbolTable Insert(symbolTable ST, entry *en){
+symbolTable insert(symbolTable ST, entry *en){
 	scopeTable s = ST.curr;
 	int in = hash(en->name,s->size);
 	entry* ptr = s->arr[in];
@@ -62,7 +62,7 @@ symbolTable Insert(symbolTable ST, entry *en){
 	return ST;
 }
 
-entry* Lookup(symbolTable ST, char* name)
+entry* lookup(symbolTable ST, char* name)
 {
 	scopeTable ptr = ST.curr;
 	int in;
