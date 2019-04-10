@@ -97,9 +97,27 @@ void freeScopeTable(scopeTable s){
 	free(s->arr);
 	free(s);
 }
-symbolTable createSymbolTable(ParseTree PT, int size){
-	symbolTable ST;
-	ST.size=0;
+// symbolTable createSymbolTable(ParseTree PT, int size){
+// 	symbolTable ST;
+// 	ST.size=0;
+// 	ST=openScope(ST,50,"global");
+// 	ParseTree ptr= PT->children;
+// 	if(PT==NULL)
+// 		return ST;
+// 	else{
+// 		while(ptr){
+// 			entry *en=(entry*)malloc(sizeof(entry));
+// 			en->name=ptr->next->tk->name;
+// 			en->type="function";
+// 			en->lineNo=ptr->next->tk->lineNo;
+// 			ST=insert(ST,en)
+// 			int size=noOfDeclarations(ptr);
+// 			ST=openScope(ST,size,en->name);
+			
+// 			while(ptr)
 
-}
+// 		}
+// 	}
+
+// }
 
