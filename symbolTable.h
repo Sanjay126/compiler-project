@@ -1,23 +1,25 @@
 #include "symboltableDef.h"
 #include "parser.h"
+#include "parserDef.h"
 #include "lexer.h"
 #include "ast.h"
 
-symbolTable createSymbolTable(parseTree PT, int size);
+#ifndef SYMBOLTABLE
+#define SYMBOLTABLE
+
+symbolTable createSymbolTable(ParseTree PT, int size);
 
 // scopeTable createScopeTable(char* scope,entry *current);
 
 void printSymbolTable(symbolTable st, int size);
 
-void Insert();
+symbolTable Insert(symbolTable ST, entry *en);
+symbolTable closeScope(symbolTable ST);
+symbolTable OpenScope(symbolTable ST,int sz);
 
-void CloseScope();
+entry* Lookup(symbolTable ST, char* name);
 
-symbolTable OpenScope(struct symbolTable ST,struct entry* en);
+void freeScopeTable(scopeTable s);
 
-struct entry* Lookup(struct symbolTable ST, char* name,char* type, int lineNo);
-
-//entry* getInputParameter(symbolTable st,char)
-
-
+#endif
 
