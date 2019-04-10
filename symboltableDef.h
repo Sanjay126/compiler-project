@@ -1,5 +1,5 @@
 #include<stdio.h>
-
+#include<stdbool.h>
 #ifndef symbolTableDef
 #define symbolTableDef
 
@@ -10,6 +10,31 @@ struct recordDecl{
 };
 
 typedef struct recordDecl* rec_dec;
+
+struct record{
+	char* name;
+	int size;
+	rec_dec head;
+	struct record* next;
+};
+typedef struct record* Record;
+
+struct records{
+	int count;
+	Record head;
+};
+
+typedef struct records* Records;
+
+struct recordValue{
+	char* name;
+	int valueInt;
+	float valueFloat;
+	bool isInt;
+	struct recordValue* next;
+};
+typedef struct recordValue* RecordValue;
+
 
 typedef struct entry{
     char *name;

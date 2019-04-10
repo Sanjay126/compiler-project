@@ -13,21 +13,7 @@ program
                             TK_INT
                     TK_ID
                     remaining_list
-                        TK_COMMA
-                        parameter_list
-                            dataType
-                                primitiveDatatype
-                                    TK_INT
-                            TK_ID
-                            remaining_list
-                                TK_COMMA
-                                parameter_list
-                                    dataType
-                                        primitiveDatatype
-                                            TK_INT
-                                    TK_ID
-                                    remaining_list
-                                        eps
+                        eps
                 TK_SQR
             output_par
                 TK_OUTPUT
@@ -36,8 +22,9 @@ program
                 TK_SQL
                 parameter_list
                     dataType
-                        primitiveDatatype
-                            TK_REAL
+                        constructedDatatype
+                            TK_RECORD
+                            TK_RECORDID
                     TK_ID
                     remaining_list
                         eps
@@ -47,309 +34,45 @@ program
                 typeDefinitions
                     eps
                 declarations
-                    declaration
-                        TK_TYPE
-                        dataType
-                            primitiveDatatype
-                                TK_REAL
-                        TK_COLON
-                        TK_ID
-                        global_or_not
-                            eps
-                        TK_SEM
-                    declarations
-                        declaration
-                            TK_TYPE
-                            dataType
-                                primitiveDatatype
-                                    TK_REAL
-                            TK_COLON
-                            TK_ID
-                            global_or_not
-                                eps
-                            TK_SEM
-                        declarations
-                            eps
+                    eps
                 otherStmts
                     stmt
-                        assignmentStmt
+                        ioStmt
+                            TK_READ
+                            TK_OP
                             singleOrRecId
                                 TK_ID
                                 new_24
-                                    eps
-                            TK_ASSIGNOP
-                            arithmeticExpression
-                                term
-                                    factor
-                                        all
-                                            TK_RNUM
-                                    termPrime
-                                        eps
-                                expPrime
-                                    eps
+                                    TK_DOT
+                                    TK_FIELDID
+                            TK_CL
                             TK_SEM
                     otherStmts
                         stmt
-                            assignmentStmt
+                            ioStmt
+                                TK_READ
+                                TK_OP
                                 singleOrRecId
                                     TK_ID
                                     new_24
-                                        eps
-                                TK_ASSIGNOP
-                                arithmeticExpression
-                                    term
-                                        factor
-                                            TK_OP
-                                            arithmeticExpression
-                                                term
-                                                    factor
-                                                        TK_OP
-                                                        arithmeticExpression
-                                                            term
-                                                                factor
-                                                                    all
-                                                                        TK_ID
-                                                                        allnew
-                                                                            eps
-                                                                termPrime
-                                                                    eps
-                                                            expPrime
-                                                                lowPrecedenceOperators
-                                                                    TK_PLUS
-                                                                term
-                                                                    factor
-                                                                        all
-                                                                            TK_NUM
-                                                                    termPrime
-                                                                        highPrecedenceOperators
-                                                                            TK_MUL
-                                                                        factor
-                                                                            all
-                                                                                TK_ID
-                                                                                allnew
-                                                                                    eps
-                                                                        termPrime
-                                                                            eps
-                                                                expPrime
-                                                                    eps
-                                                        TK_CL
-                                                    termPrime
-                                                        eps
-                                                expPrime
-                                                    lowPrecedenceOperators
-                                                        TK_MINUS
-                                                    term
-                                                        factor
-                                                            TK_OP
-                                                            arithmeticExpression
-                                                                term
-                                                                    factor
-                                                                        all
-                                                                            TK_ID
-                                                                            allnew
-                                                                                eps
-                                                                    termPrime
-                                                                        eps
-                                                                expPrime
-                                                                    lowPrecedenceOperators
-                                                                        TK_MINUS
-                                                                    term
-                                                                        factor
-                                                                            all
-                                                                                TK_NUM
-                                                                        termPrime
-                                                                            eps
-                                                                    expPrime
-                                                                        eps
-                                                            TK_CL
-                                                        termPrime
-                                                            eps
-                                                    expPrime
-                                                        eps
-                                            TK_CL
-                                        termPrime
-                                            highPrecedenceOperators
-                                                TK_DIV
-                                            factor
-                                                all
-                                                    TK_NUM
-                                            termPrime
-                                                eps
-                                    expPrime
-                                        eps
+                                        TK_DOT
+                                        TK_FIELDID
+                                TK_CL
                                 TK_SEM
                         otherStmts
                             stmt
-                                assignmentStmt
+                                ioStmt
+                                    TK_READ
+                                    TK_OP
                                     singleOrRecId
                                         TK_ID
                                         new_24
-                                            eps
-                                    TK_ASSIGNOP
-                                    arithmeticExpression
-                                        term
-                                            factor
-                                                TK_OP
-                                                arithmeticExpression
-                                                    term
-                                                        factor
-                                                            TK_OP
-                                                            arithmeticExpression
-                                                                term
-                                                                    factor
-                                                                        all
-                                                                            TK_ID
-                                                                            allnew
-                                                                                eps
-                                                                    termPrime
-                                                                        eps
-                                                                expPrime
-                                                                    lowPrecedenceOperators
-                                                                        TK_MINUS
-                                                                    term
-                                                                        factor
-                                                                            all
-                                                                                TK_RNUM
-                                                                        termPrime
-                                                                            eps
-                                                                    expPrime
-                                                                        eps
-                                                            TK_CL
-                                                        termPrime
-                                                            highPrecedenceOperators
-                                                                TK_MUL
-                                                            factor
-                                                                TK_OP
-                                                                arithmeticExpression
-                                                                    term
-                                                                        factor
-                                                                            all
-                                                                                TK_NUM
-                                                                        termPrime
-                                                                            eps
-                                                                    expPrime
-                                                                        lowPrecedenceOperators
-                                                                            TK_MINUS
-                                                                        term
-                                                                            factor
-                                                                                all
-                                                                                    TK_NUM
-                                                                            termPrime
-                                                                                highPrecedenceOperators
-                                                                                    TK_MUL
-                                                                                factor
-                                                                                    all
-                                                                                        TK_NUM
-                                                                                termPrime
-                                                                                    eps
-                                                                        expPrime
-                                                                            eps
-                                                                TK_CL
-                                                            termPrime
-                                                                eps
-                                                    expPrime
-                                                        eps
-                                                TK_CL
-                                            termPrime
-                                                eps
-                                        expPrime
-                                            lowPrecedenceOperators
-                                                TK_PLUS
-                                            term
-                                                factor
-                                                    all
-                                                        TK_NUM
-                                                termPrime
-                                                    highPrecedenceOperators
-                                                        TK_MUL
-                                                    factor
-                                                        all
-                                                            TK_ID
-                                                            allnew
-                                                                eps
-                                                    termPrime
-                                                        eps
-                                            expPrime
-                                                eps
+                                            TK_DOT
+                                            TK_FIELDID
+                                    TK_CL
                                     TK_SEM
                             otherStmts
-                                stmt
-                                    conditionalStmt
-                                        TK_IF
-                                        TK_OP
-                                        booleanExpression
-                                            TK_OP
-                                            booleanExpression
-                                                TK_NOT
-                                                TK_OP
-                                                booleanExpression
-                                                    var
-                                                        TK_ID
-                                                    relationalOp
-                                                        TK_EQ
-                                                    var
-                                                        TK_NUM
-                                                TK_CL
-                                            TK_CL
-                                            logicalOp
-                                                TK_AND
-                                            TK_OP
-                                            booleanExpression
-                                                var
-                                                    TK_ID
-                                                relationalOp
-                                                    TK_GT
-                                                var
-                                                    TK_RNUM
-                                            TK_CL
-                                        TK_CL
-                                        TK_THEN
-                                        stmt
-                                            assignmentStmt
-                                                singleOrRecId
-                                                    TK_ID
-                                                    new_24
-                                                        eps
-                                                TK_ASSIGNOP
-                                                arithmeticExpression
-                                                    term
-                                                        factor
-                                                            all
-                                                                TK_ID
-                                                                allnew
-                                                                    eps
-                                                        termPrime
-                                                            highPrecedenceOperators
-                                                                TK_DIV
-                                                            factor
-                                                                all
-                                                                    TK_ID
-                                                                    allnew
-                                                                        eps
-                                                            termPrime
-                                                                eps
-                                                    expPrime
-                                                        eps
-                                                TK_SEM
-                                        otherStmts
-                                            eps
-                                        elsePart
-                                            TK_ELSE
-                                            stmt
-                                                ioStmt
-                                                    TK_WRITE
-                                                    TK_OP
-                                                    allVar
-                                                        TK_ID
-                                                        newallvar
-                                                            eps
-                                                    TK_CL
-                                                    TK_SEM
-                                            otherStmts
-                                                eps
-                                            TK_ENDIF
-                                otherStmts
-                                    eps
+                                eps
                 returnStmt
                     TK_RETURN
                     optionalReturn
@@ -367,138 +90,65 @@ program
         TK_MAIN
         stmts
             typeDefinitions
-                eps
-            declarations
-                declaration
-                    TK_TYPE
-                    dataType
-                        primitiveDatatype
-                            TK_INT
-                    TK_COLON
-                    TK_ID
-                    global_or_not
-                        eps
-                    TK_SEM
-                declarations
-                    declaration
-                        TK_TYPE
-                        dataType
-                            primitiveDatatype
-                                TK_INT
-                        TK_COLON
-                        TK_ID
-                        global_or_not
-                            eps
-                        TK_SEM
-                    declarations
-                        declaration
+                typeDefinition
+                    TK_RECORD
+                    TK_RECORDID
+                    fieldDefinitions
+                        fieldDefinition
                             TK_TYPE
-                            dataType
-                                primitiveDatatype
-                                    TK_INT
+                            primitiveDatatype
+                                TK_REAL
                             TK_COLON
-                            TK_ID
-                            global_or_not
-                                TK_COLON
-                                TK_GLOBAL
+                            TK_FIELDID
                             TK_SEM
-                        declarations
-                            declaration
+                        fieldDefinition
+                            TK_TYPE
+                            primitiveDatatype
+                                TK_REAL
+                            TK_COLON
+                            TK_FIELDID
+                            TK_SEM
+                        moreFields
+                            fieldDefinition
                                 TK_TYPE
-                                dataType
-                                    primitiveDatatype
-                                        TK_REAL
+                                primitiveDatatype
+                                    TK_REAL
                                 TK_COLON
-                                TK_ID
-                                global_or_not
-                                    eps
+                                TK_FIELDID
                                 TK_SEM
-                            declarations
+                            moreFields
                                 eps
-            otherStmts
-                stmt
-                    assignmentStmt
-                        singleOrRecId
-                            TK_ID
-                            new_24
+                    TK_ENDRECORD
+                    TK_SEM
+                typeDefinitions
+                    typeDefinition
+                        TK_RECORD
+                        TK_RECORDID
+                        fieldDefinitions
+                            fieldDefinition
+                                TK_TYPE
+                                primitiveDatatype
+                                    TK_REAL
+                                TK_COLON
+                                TK_FIELDID
+                                TK_SEM
+                            fieldDefinition
+                                TK_TYPE
+                                primitiveDatatype
+                                    TK_REAL
+                                TK_COLON
+                                TK_FIELDID
+                                TK_SEM
+                            moreFields
                                 eps
-                        TK_ASSIGNOP
-                        arithmeticExpression
-                            term
-                                factor
-                                    all
-                                        TK_NUM
-                                termPrime
-                                    eps
-                            expPrime
-                                eps
+                        TK_ENDRECORD
                         TK_SEM
-                otherStmts
-                    stmt
-                        ioStmt
-                            TK_READ
-                            TK_OP
-                            singleOrRecId
-                                TK_ID
-                                new_24
-                                    eps
-                            TK_CL
-                            TK_SEM
-                    otherStmts
-                        stmt
-                            ioStmt
-                                TK_READ
-                                TK_OP
-                                singleOrRecId
-                                    TK_ID
-                                    new_24
-                                        eps
-                                TK_CL
-                                TK_SEM
-                        otherStmts
-                            stmt
-                                funCallStmt
-                                    outputParameters
-                                        TK_SQL
-                                        idList
-                                            TK_ID
-                                            more_ids
-                                                eps
-                                        TK_SQR
-                                        TK_ASSIGNOP
-                                    TK_CALL
-                                    TK_FUNID
-                                    TK_WITH
-                                    TK_PARAMETERS
-                                    inputParameters
-                                        TK_SQL
-                                        idList
-                                            TK_ID
-                                            more_ids
-                                                TK_COMMA
-                                                idList
-                                                    TK_ID
-                                                    more_ids
-                                                        TK_COMMA
-                                                        idList
-                                                            TK_ID
-                                                            more_ids
-                                                                eps
-                                        TK_SQR
-                                    TK_SEM
-                            otherStmts
-                                stmt
-                                    ioStmt
-                                        TK_WRITE
-                                        TK_OP
-                                        allVar
-                                            TK_ID
-                                            newallvar
-                                                eps
-                                        TK_CL
-                                        TK_SEM
-                                otherStmts
-                                    eps
+                    typeDefinitions
+                        eps
+            declarations
+                eps
+            otherStmts
+                eps
             returnStmt
                 TK_RETURN
                 optionalReturn

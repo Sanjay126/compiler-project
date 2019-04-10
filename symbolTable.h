@@ -23,5 +23,9 @@ void freeScopeTable(scopeTable s);
 
 // symbolTable addInGlobal(symbolTable ST,entry *en);
 // entry* makeRecordEntry(ParseTree PT);
+
+Records enterRecords(ParseTree PT);
+
+
 #endif
 

@@ -23,6 +23,11 @@ _main
 		type real: physics; 
 		type real: chemistry;
 	endrecord;
+	record #nomarks
+		type real : maths1; 
+		type real: physics1; 
+		type real: chemistry1;
+	endrecord;
 	% each field above represents the marks obtained in corresponding subject
 
 	type record #marks : d4;
