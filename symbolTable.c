@@ -33,3 +33,7 @@ symbolTable Insert(struct symbolTable ST, char* name,char* type, int lineNo){
 	struct entry *newen = (struct entry*)malloc(sizeof(struct entry));
 	ST->
 }
+
+symbolTable createSymbolTable(parseTree PT, int size){
+	
+}
