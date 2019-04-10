@@ -1,16 +1,17 @@
 #include<stdio.h>
 
+#ifndef symbolTableDef
+#define symbolTableDef
+
 struct recordDecl{
 	char* type;
 	char* name;
 	struct recordDecl *next;
 };
 
-typedef struct *recordDecl rec_dec;
+typedef struct recordDecl* rec_dec;
 
-
-
-typedef struct {
+typedef struct entry{
     char *name;
     char *type;
     char *scope;
@@ -19,20 +20,20 @@ typedef struct {
     int lineNo;
     rec_dec *record;
     struct entry *next;
-    // struct entry *prev;
 }entry;
 
 struct scopetable{
 	int size;
 	int scope;
-	struct scopeTable *prevScope;
-	// struct entry* scopeEntry;
-	struct entry *head;
+	struct scopetable *prevScope;
+	entry** arr;
 };
 typedef struct scopetable *scopeTable;
 
-struct {
+typedef struct{
 	int size;
 	scopeTable curr;
 }symbolTable;
 
+
+#endif
