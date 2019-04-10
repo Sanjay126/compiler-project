@@ -44,7 +44,8 @@ typedef struct entry{
     int global;
     int offset;
     int lineNo;
-    rec_dec *record;
+    RecordValue recVal;
+    rec_dec record;
     struct entry *next;
 }entry;
 
@@ -58,6 +59,7 @@ typedef struct scopetable *scopeTable;
 
 typedef struct{
 	int size;
+	Records recs;
 	scopeTable curr;
 }symbolTable;
 
