@@ -9,17 +9,19 @@
 
 symbolTable createSymbolTable(ParseTree PT, int size);
 
-scopeTable createScopeTable(char* scope,entry *current);
+// scopeTable createScopeTable(char* scope,entry *current);
 
 void printSymbolTable(symbolTable st, int size);
 
-symbolTable Insert(symbolTable ST, entry *en);
-symbolTable closeScope(symbolTable ST);
-symbolTable OpenScope(symbolTable ST,int sz);
+symbolTable insert(symbolTable ST, entry *en);
+// symbolTable closeScope(symbolTable ST);
+// symbolTable openScope(symbolTable ST,int sz);
 
-entry* Lookup(symbolTable ST, char* name);
+entry* lookup(symbolTable ST, char* name);
 
 void freeScopeTable(scopeTable s);
 
+// symbolTable addInGlobal(symbolTable ST,entry *en);
+// entry* makeRecordEntry(ParseTree PT);
 #endif
 
