@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
 				printPARSETREENEW(PT,"parsetree1.txt");
 				PT = createAST(PT);
 				printPARSETREENEW(PT,"parsetree2.txt");
-				Records rs = enterRecords(PT);
+				// Records rs = enterRecords(PT);
 				freeMemory();
 			}break;
 			case 4:

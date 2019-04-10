@@ -9,7 +9,7 @@
 #include "symboltableDef.h"
 #include "symbolTable.h"
 
-char* symbolArray[] = {"assignmentStmt","global_or_not","booleanExpression","highPrecedenceOperators","singleOrRecId","constructedDatatype","dataType","primitiveDatatype","typeDefinitions","more_ids","idList","relationalOp","temp","output_par","stmt","declarations","input_par","logicalOp","newallvar","program","remaining_list","all","term","stmts","returnStmt","declaration","iterativeStmt","otherFunctions","factor","allnew","new_24","function","arithmeticExpression","var","fieldDefinitions","allVar","mainFunction","funCallStmt","parameter_list","fieldDefinition","typeDefinition","expPrime","outputParameters","termPrime","lowPrecedenceOperators","optionalReturn","elsePart","moreFields","conditionalStmt","otherStmts","ioStmt","inputParameters", "TK_WITH","TK_THEN","TK_TYPE","TK_EQ","TK_DOLLAR","TK_COMMA","TK_RNUM","TK_CL","TK_AND","TK_PARAMETER","TK_DIV","TK_ID","TK_GLOBAL","TK_GE","TK_LIST","TK_IF","TK_RECORD","TK_NUM","TK_NE","TK_LE","TK_DOT","TK_INPUT","TK_MAIN","TK_CALL","TK_PLUS","TK_ELSE","TK_COMMENT","TK_ASSIGNOP","TK_WRITE","TK_COLON","TK_WHILE","TK_REAL","TK_READ","TK_NOT","TK_SQL","TK_OUTPUT","TK_SQR","TK_ENDIF","TK_MINUS","TK_SEM","TK_FIELDID","TK_PARAMETERS","TK_OP","TK_ENDWHILE","TK_MUL","TK_FUNID","TK_INT","TK_RETURN","TK_GT","TK_END","TK_LT","TK_OR","TK_ENDRECORD","eps","TK_RECORDID"};
+// char* symbolArray[] = {"assignmentStmt","global_or_not","booleanExpression","highPrecedenceOperators","singleOrRecId","constructedDatatype","dataType","primitiveDatatype","typeDefinitions","more_ids","idList","relationalOp","temp","output_par","stmt","declarations","input_par","logicalOp","newallvar","program","remaining_list","all","term","stmts","returnStmt","declaration","iterativeStmt","otherFunctions","factor","allnew","new_24","function","arithmeticExpression","var","fieldDefinitions","allVar","mainFunction","funCallStmt","parameter_list","fieldDefinition","typeDefinition","expPrime","outputParameters","termPrime","lowPrecedenceOperators","optionalReturn","elsePart","moreFields","conditionalStmt","otherStmts","ioStmt","inputParameters", "TK_WITH","TK_THEN","TK_TYPE","TK_EQ","TK_DOLLAR","TK_COMMA","TK_RNUM","TK_CL","TK_AND","TK_PARAMETER","TK_DIV","TK_ID","TK_GLOBAL","TK_GE","TK_LIST","TK_IF","TK_RECORD","TK_NUM","TK_NE","TK_LE","TK_DOT","TK_INPUT","TK_MAIN","TK_CALL","TK_PLUS","TK_ELSE","TK_COMMENT","TK_ASSIGNOP","TK_WRITE","TK_COLON","TK_WHILE","TK_REAL","TK_READ","TK_NOT","TK_SQL","TK_OUTPUT","TK_SQR","TK_ENDIF","TK_MINUS","TK_SEM","TK_FIELDID","TK_PARAMETERS","TK_OP","TK_ENDWHILE","TK_MUL","TK_FUNID","TK_INT","TK_RETURN","TK_GT","TK_END","TK_LT","TK_OR","TK_ENDRECORD","eps","TK_RECORDID"};
 
 
 int hashKey(char *v, int M){ 
@@ -20,10 +20,10 @@ int hashKey(char *v, int M){
 }
 
 
-Records enterRecords(ParseTree PT){
-	Records rs = (struct records*)malloc(sizeof(struct records));
-	rs->head = NULL;
-	rs->count=0;
+symbolTable enterRecords(ParseTree PT,symbolTable ST){
+	ST.recs = (struct records*)malloc(sizeof(struct records));
+	ST.recs->head = NULL;
+	ST.recs->count=0;
 	ParseTree func = PT->children;
 	while(func){
 		ParseTree stmts;
@@ -34,7 +34,7 @@ Records enterRecords(ParseTree PT){
 			stmts = func->children;
 		}
 		else{
-			return rs;
+			return ST;
 		}
 		if(stmts!=NULL && stmts->children!=NULL && stmts->children->non_term_id==typeDefinitions){
 			ParseTree td = stmts->children->children;
@@ -57,15 +57,15 @@ Records enterRecords(ParseTree PT){
 					fd=fd->next;
 					r->size++;
 				}
-				rs->count++;
-				r->next = rs->head;
-				rs->head = r;
+				ST.recs->count++;
+				r->next = ST.recs->head;
+				ST.recs->head = r;
 				td=td->next;
 			}
 		}
 		func = func->next;
 	}
-	return rs;
+	return ST;
 }
 
 // void printRecords(){
@@ -135,8 +135,8 @@ symbolTable insert(symbolTable ST, entry *en){
 
 entry* lookup(symbolTable ST, char* name){
 	scopeTable ptr = ST.curr;
+	Record record=ST.recs->head;
 	int in;
-
 	while(ptr)
 	{
 		in = hashKey(name,ptr->size);
@@ -154,7 +154,18 @@ entry* lookup(symbolTable ST, char* name){
 			ptr = ptr->prevScope;
 		}
 	}
-
+	while(record){
+		if(strcmp(record->name,name)==0){
+			entry* en=(entry*)malloc(sizeof(entry));
+			strcpy(en->name,name);
+			en->type="record";
+			en->record=record->head;
+			return en;
+		}
+		else{
+			record=record->next;
+		}
+	}
 	return NULL;
 }
 
