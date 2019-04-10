@@ -41,6 +41,7 @@ typedef struct entry{
     char *type;
     char *scope;
     int width;
+    int global;
     int offset;
     int lineNo;
     rec_dec *record;

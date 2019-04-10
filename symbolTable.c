@@ -65,10 +65,65 @@ Records enterRecords(ParseTree PT){
 	return rs;
 }
 
-// void printRecords(){
+symbolTable enterGlobal(ParseTree PT){
+	ParseTree func = PT->children;
+	int gcount = 0;
+	entry* ls = NULL;
+	while(func){
+		ParseTree stmts;		
+		entry* newen = (entry*)malloc(sizeof(entry));
 
-// }
+		if(func->non_term_id==function){
+			stmts = func->children->next->next->next;
+			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
+			newen->name = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
+			strcpy(newen->type,"function");
+			strcpy(newen->name,func->children->tk->name);
+			newen->lineNo = func->children->tk->lineNo;
+		}
+		else if(func->non_term_id==mainFunction){
+			stmts = func->children;
+			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
+			newen->name = (char*)malloc(sizeof(char)*(strlen("main")+1));
+			strcpy(newen->type,"main");
+			strcpy(newen->name,"main");
+		}
 
+		newen->next = head;
+		head = newen;
+
+		if(stmts->children->non_term_id == declarations)
+			ParseTree decl = stmts->children->children;
+		else if(stmts->children->next->non_term_id = declarations)
+			ParseTree decl = stmts->children->next->children;
+		else
+		{
+			func = func->next;
+			continue;
+		}
+
+		while(decl)
+		{
+			entry* newen = (entry*)malloc(sizeof(entry));
+			newen->type = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
+			newen->name = (char*)malloc(sizeof(char)*(strlen(func->children->next->tk->name)+1));
+			strcpy(newen->type,func->children->tk->name);
+			strcpy(newen->name,func->children->next->tk->name);
+			newen->lineNo = func->children->tk->lineNo;
+			newen->global = 0;
+			if(decl->children->next->next)
+			{
+				newen->global = 1;
+				gcount++;
+			}
+			newen->next = head;
+			head = newen;
+			decl = decl->next;
+		}		
+		gcount++;
+		func  = func->next;
+	}
+}
 symbolTable openScope(symbolTable ST,int sz,char* scope){
 	ST.size++;
 	scopeTable s = (scopeTable)malloc(sizeof(struct scopetable));

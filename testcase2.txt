@@ -23,17 +23,18 @@ _main
 		type real: physics; 
 		type real: chemistry;
 	endrecord;
-	record #nomarks
-		type real : maths1; 
-		type real: physics1; 
-		type real: chemistry1;
+
+	record #abcd
+		type real : math; 
+		type real: physi; 
+		type real: chemis;
 	endrecord;
 	% each field above represents the marks obtained in corresponding subject
 
 	type record #marks : d4;
 	% The variable d4 stores the marks of one student
 
-	type int : b5;
+	type int : b5 : global;
 	type int : d5cb34567;
 	type record #marks : b5c6;
 	%The identifier b5c6 stores the sum of marks
