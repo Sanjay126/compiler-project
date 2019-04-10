@@ -24,7 +24,7 @@ typedef struct entry{
 
 struct scopetable{
 	int size;
-	int scope;
+	char* scope;
 	struct scopetable *prevScope;
 	entry** arr;
 };

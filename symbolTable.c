@@ -6,24 +6,24 @@
 #include "parserDef.h"	
 #include "parser.h"	
 #include "ast.h"
-#include "symbolTableDef.h"
+#include "symboltableDef.h"
 #include "symbolTable.h"
 
-int hash(char *v, int M){ 
+int hashKey(char *v, int M){ 
 	int h = 0, a = 257;
     for (; *v != 0; v++)
         h = (a*h + *v) % M;
     return h;
 }
 
-symbolTable OpenScope(symbolTable ST,int sz){
+symbolTable openScope(symbolTable ST,int sz,char* scope){
 	ST.size++;
 	scopeTable s = (scopeTable)malloc(sizeof(struct scopetable));
 	s->size = sz;
 	if(ST.curr)
-		s->scope = ST.curr->scope + 1;
+		s->scope = scope;
 	else
-		s->scope = 1;
+		s->scope = scope;
 	s->arr = (entry**)malloc(sizeof(entry*)*sz);
 	for(int i = 0;i < sz;i++)
 		s->arr[i] == NULL;
@@ -36,24 +36,14 @@ symbolTable closeScope(symbolTable ST){
 	ST.size--;
 	scopeTable s = ST.curr;
 	ST.curr = s->prevScope;
-	freeScopeTable(s);
+	// freeScopeTable(s);
 	return ST;
 }
 
-symbolTable Insert(struct symbolTable ST, char* name,char* type, int lineNo){
-	scopeTable s = ST->curr;
-	struct entry *newen = (struct entry*)malloc(sizeof(struct entry));
-	ST->
-}
 
-
-symbolTable createSymbolTable(parseTree PT, int size){
-}
-
-
-symbolTable Insert(symbolTable ST, entry *en){
+symbolTable insert(symbolTable ST, entry *en){
 	scopeTable s = ST.curr;
-	int in = hash(en->name,s->size);
+	int in = hashKey(en->name,s->size);
 	entry* ptr = s->arr[in];
 	entry* prev = NULL;
 	
@@ -73,13 +63,13 @@ symbolTable Insert(symbolTable ST, entry *en){
 	return ST;
 }
 
-entry* Lookup(symbolTable ST, char* name){
+entry* lookup(symbolTable ST, char* name){
 	scopeTable ptr = ST.curr;
 	int in;
 
 	while(ptr)
 	{
-		in = hash(name,ptr->size);
+		in = hashKey(name,ptr->size);
 		if(ptr->arr[in] = NULL)
 			ptr = ptr->prevScope;
 		else
@@ -104,3 +94,9 @@ void freeScopeTable(scopeTable s){
 	free(s->arr);
 	free(s);
 }
+symbolTable createSymbolTable(ParseTree PT, int size){
+	symbolTable ST;
+	ST.size=0;
+	
+}
+
