@@ -14,6 +14,7 @@
 
 int hashKey(char *v, int M){ 
 	int h = 0, a = 257;
+	// printf("HASH -- %s ---\n", v);
     for (; *v != 0; v++)
         h = (a*h + *v) % M;
     return h;
@@ -91,8 +92,7 @@ symbolTable *createSymbolTable(ParseTree PT){
 			decl = stmts->children->next->children;
 		else
 		{
-			func = func->next;
-			continue;
+			decl = NULL;
 		}
 
 		while(decl)
@@ -131,16 +131,18 @@ symbolTable *createSymbolTable(ParseTree PT){
 				newen2->type = (char*)malloc(sizeof(char)*(strlen(out->tk->name)+1));
 				newen2->name = (char*)malloc(sizeof(char)*(strlen(out->next->tk->name)+1));
 				newen2->scope = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
-				strcpy(newen->scope,func->children->tk->name);
-				strcpy(newen->type,out->tk->name);
-				strcpy(newen->name,out->next->tk->name);
+				strcpy(newen2->scope,func->children->tk->name);
+				strcpy(newen2->type,out->tk->name);
+				strcpy(newen2->name,out->next->tk->name);
 				newen2->lineNo = out->tk->lineNo;
 				newen2->inout = 2;
+				newen2->global = 0;
 				newen2->next = head;
 				head = newen2;
 				newen2->record_or_not = 0;
 				if(out->tk->tid == TK_RECORDID)
 					newen2->record_or_not = 1;
+				varCount++;
 				out = out->next->next;
 			}
 			while(in)
@@ -149,19 +151,20 @@ symbolTable *createSymbolTable(ParseTree PT){
 				newen2->type = (char*)malloc(sizeof(char)*(strlen(in->tk->name)+1));
 				newen2->name = (char*)malloc(sizeof(char)*(strlen(in->next->tk->name)+1));
 				newen2->scope = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
-				strcpy(newen->scope,func->children->tk->name);
-				strcpy(newen->type,in->tk->name);
-				strcpy(newen->name,in->next->tk->name);
+				strcpy(newen2->type,in->tk->name);
+				strcpy(newen2->name,in->next->tk->name);
+				strcpy(newen2->scope,func->children->tk->name);
 				newen2->lineNo = in->tk->lineNo;
 				newen2->inout = 1;
+				newen2->global = 0;
 				newen2->next = head;
 				head = newen2;
 				newen2->record_or_not = 0;
 				if(in->tk->tid == TK_RECORDID)
 					newen2->record_or_not = 1;
+				varCount++;
 				in = in->next->next;
 			}
-			entry* newen = (entry*)malloc(sizeof(struct entry));
 			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
 			newen->name = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
 			newen->scope = (char*)malloc(sizeof(char)*(strlen("global")+1));
@@ -172,6 +175,8 @@ symbolTable *createSymbolTable(ParseTree PT){
 			newen->lineNo = func->children->tk->lineNo;
 			newen->global = 1;
 			newen->inout = 0;
+			newen->next = head;
+			head = newen;
 
 		}
 		else if(func->non_term_id==mainFunction){
@@ -184,10 +189,10 @@ symbolTable *createSymbolTable(ParseTree PT){
 			newen->countVariables = varCount;
 			newen->global = 1;
 			newen->inout = 0;
+			newen->next = head;
+			head = newen;
 		}
 
-		newen->next = head;
-		head = newen;
 
 		func  = func->next;
 	}
@@ -195,33 +200,38 @@ symbolTable *createSymbolTable(ParseTree PT){
 	symbolTable *ST  = (symbolTable*)malloc(sizeof(symbolTable));
 	
 	ST->size = 0;
+	ST->curr = NULL;
 	ST =  enterRecords(PT,ST);
 	ST = openScope(ST,gcount,"global");
 
+
 	entry* ptr = head;
+	// entry* prev = head;
 	while(ptr)
 	{
+		printf("%s--->", ptr->name);
 		if(ptr->global){
 			ST = insert(ST, ptr);
 		}
+		// printf("%s - %s - %d\n", ptr->name, ptr->type, ptr->global);
 		ptr = ptr->next;
 	}
 
+	printf("\n");
 	ptr = head;
 	while(ptr)
 	{
 		if(strcmp(ptr->type,"function") == 0)
 		{
 			entry* funcEntry = lookup(ST, ptr->name);
-			ST =  openScope(ST,funcEntry->countVariables,ptr->name);
+			ST =  openScope(ST,ptr->countVariables,ptr->name);
 			funcEntry->funcScopePtr = ST->curr;
+			entry* funcPtrr = ptr;
 			ptr = ptr->next;
-			while(ptr && strcmp(ptr->type,"function") != 0)
-			{
-				if(strcmp(ptr->name,"mainFunction") != 0)
-				{
-					while(ptr && ptr->inout == 1 && !ptr->global)
-					{
+
+			while(ptr && strcmp(ptr->type,"function") != 0){
+				if(strcmp(funcPtrr->name,"mainFunction") != 0){
+					while(ptr && ptr->inout == 1 && !ptr->global){
 						ST = insert(ST,ptr);
 						ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
 						newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
@@ -232,8 +242,7 @@ symbolTable *createSymbolTable(ParseTree PT){
 					}
 
 
-					while(ptr && ptr->inout == 2 && !ptr->global)
-					{
+					while(ptr && ptr->inout == 2 && !ptr->global){
 						ST = insert(ST,ptr);
 						ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
 						newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
@@ -243,9 +252,10 @@ symbolTable *createSymbolTable(ParseTree PT){
 						ptr = ptr->next;
 					}
 				}
-				if(!ptr->global)
+				if(ptr  &&  !ptr->global)
 					ST = insert(ST,ptr);
-				ptr = ptr->next;
+				if(ptr)
+					ptr = ptr->next;
 			}
 			ST = closeScope(ST);
 		}
@@ -286,12 +296,15 @@ int numberOfDeclarations(ParseTree PT){
 }
 
 symbolTable* insert(symbolTable* ST, entry *en){
+	// printf("aaa--%s\n", en->name);
 	scopeTable s;
 	int in;
 	entry* lookedup=lookup(ST,en->name);
 	if(lookedup){
-		printf("variable already declared %s",en->name);
+
+		printf("variable already declared %s\n",en->name);
 		//TODO error reporting
+		// printf("\naa%daa\n", lookedup->global);
 		return ST;
 	}
 	// if(strcmp(en->scope, "global")==0){
@@ -335,10 +348,29 @@ symbolTable* insert(symbolTable* ST, entry *en){
 		}
 	}
 	in = hashKey(en->name,s->size);
+
+	entry* en1 = (entry*)malloc(sizeof(entry));
+	en1->name = (char*)malloc(sizeof(char)*(strlen(en->name)+1));
+	en1->type = (char*)malloc(sizeof(char)*(strlen(en->type)+1));
+	if(en->scope){
+		en1->scope = (char*)malloc(sizeof(char)*(strlen(en->scope)+1));
+		strcpy(en1->scope, en->scope);
+	}
+	strcpy(en1->name, en->name);
+	strcpy(en1->type, en->type);
+	en1->lineNo =  en->lineNo;
+	en1->global =  en->global;
+	en1->next =  NULL;
+	en1->recVal =  en->recVal;
+	en1->record_or_not =  en->record_or_not;
+	en1->inout =  en->inout;
+	en1->countVariables =  en->countVariables;
+	en1->funcScopePtr =  en->funcScopePtr;
 	entry* ptr = s->arr[in];
 	entry* prev = NULL;
+
 	if(ptr == NULL)
-		s->arr[in] = en;
+		s->arr[in] = en1;
 	else
 	{
 		while(ptr)
@@ -346,17 +378,18 @@ symbolTable* insert(symbolTable* ST, entry *en){
 			prev = ptr;
 			ptr = ptr->next;
 		}
-		prev->next = en;
-		en->next = NULL;
+		prev->next = en1;
 	}
 
 	return ST;
 }
 
 entry* lookup(symbolTable* ST, char* name){
+	if(!ST || ST->curr->size ==  0)
+		return  NULL;
 	scopeTable ptr = ST->curr;
 	int in;
-	while(ptr)
+	while(ptr!=NULL)
 	{
 		in = hashKey(name,ptr->size);
 		if(ptr->arr[in] != NULL)
@@ -391,4 +424,24 @@ void freeScopeTable(scopeTable s){
 	free(s);
 }
 
+void printScopeTable(scopeTable s, int spaces){
+	entry** arr = s->arr;
+	for(int i=0; i<s->size; i++){
+		if(arr[i]!=NULL){
+			entry* ptr = arr[i];
+			while(ptr){
+				for(int j=0; j<spaces; j++)
+					printf("\t\t");
+				printf("TYPE  --  %20s\t\t NAME  --  %20s\n", ptr->type, ptr->name);
+				if(strcmp(ptr->type, "function")==0)
+					printScopeTable(ptr->funcScopePtr, spaces+1);
+				ptr=ptr->next;
+			}
+		}
+	}
+}
 
+void printSymbolTable(symbolTable* ST){
+	scopeTable s = ST->curr;
+	printScopeTable(s, 0);
+}

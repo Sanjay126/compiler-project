@@ -70,6 +70,7 @@ int main(int argc, char *argv[]){
 				printPARSETREENEW(PT,"parsetree2.txt");
 				symbolTable* ST =  createSymbolTable(PT);
 				// Records rs = enterRecords(PT);
+				printSymbolTable(ST);
 				freeMemory();
 			}break;
 			case 4:
