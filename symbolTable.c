@@ -5,7 +5,7 @@
 #include "lexer.h"
 #include "parserDef.h"	
 #include "parser.h"	
-#include "aST->h"
+#include "ast.h"
 #include "symboltableDef.h"
 #include "symbolTable.h"
 
@@ -84,11 +84,11 @@ symbolTable *createSymbolTable(ParseTree PT){
 		else if(func->non_term_id==mainFunction){
 			stmts = func->children;
 		}
-
+		ParseTree decl;
 		if(stmts->children->non_term_id == declarations)
-			ParseTree decl = stmts->children->children;
+			decl = stmts->children->children;
 		else if(stmts->children->next->non_term_id = declarations)
-			ParseTree decl = stmts->children->next->children;
+			decl = stmts->children->next->children;
 		else
 		{
 			func = func->next;
@@ -104,6 +104,9 @@ symbolTable *createSymbolTable(ParseTree PT){
 			strcpy(newen2->name,func->children->next->tk->name);
 			newen2->lineNo = func->children->tk->lineNo;
 			newen2->global = 0;
+			newen2->record_or_not = 1;
+			if(decl->children->tk->tid == TK_RECORDID)
+				newen2->record_or_not = 1;
 			if(decl->children->next->next)
 			{
 				newen2->global = 1;
@@ -157,7 +160,7 @@ symbolTable *createSymbolTable(ParseTree PT){
 	while(ptr)
 	{
 		if(ptr->global){
-			ST = insert(ST,ptr);
+			ST = insert(ST, ptr);
 		}
 		ptr = ptr->next;
 	}
@@ -167,7 +170,9 @@ symbolTable *createSymbolTable(ParseTree PT){
 	{
 		if(strcmp(ptr->type,"function") == 0)
 		{
-			ST =  openScope(ST,countVariables,ptr->name);
+			entry* funcEntry = lookup(ST, ptr->name);
+			ST =  openScope(ST,funcEntry->countVariables,ptr->name);
+			funcEntry->funcScopePtr = ST->curr;
 			ptr = ptr->next;
 			while(strcmp(ptr->type,"function") != 0)
 			{
@@ -198,7 +203,7 @@ symbolTable *openScope(symbolTable *ST,int sz,char* scope){
 	return ST;
 }
 
-symbolTable closeScope(symbolTable ST){
+symbolTable* closeScope(symbolTable* ST){
 	// ST->size--;
 	// scopeTable s = ST->curr;
 	ST->curr = ST->curr->prevScope;
