@@ -69,6 +69,24 @@ symbolTable* enterRecords(ParseTree PT,symbolTable* ST){
 	return ST;
 }
 
+entry* makeNewEntry(int global, int record_or_not, int inout){
+	entry* en1 = (entry*)malloc(sizeof(entry));
+	
+	en1->name = NULL;
+	en1->type = NULL;
+	en1->scope = NULL;
+	en1->next =  NULL;
+	en1->recVal =  NULL;
+	en1->funcScopePtr =  NULL;
+
+	en1->global =  global;
+	en1->record_or_not =  record_or_not;
+	en1->inout = inout;
+	en1->countVariables =  0;
+	
+	en1->lineNo =  0;
+	return en1;
+}
 
 symbolTable *createSymbolTable(ParseTree PT){
 	ParseTree func = PT->children;
@@ -76,43 +94,30 @@ symbolTable *createSymbolTable(ParseTree PT){
 	entry* head = NULL;
 	while(func){
 		ParseTree stmts;		
-		entry* newen = (entry*)malloc(sizeof(entry));
+		entry* newen = makeNewEntry(1, 0, 0);
 		int varCount  = 0;
 
-		if(func->non_term_id==function){
+		if(func->non_term_id==function)
 			stmts = func->children->next->next->next;
-		}
-		else if(func->non_term_id==mainFunction){
+		else if(func->non_term_id==mainFunction)
 			stmts = func->children;
-		}
 		ParseTree decl;
 		if(stmts->children->non_term_id == declarations)
 			decl = stmts->children->children;
 		else if(stmts->children->next->non_term_id == declarations)
 			decl = stmts->children->next->children;
 		else
-		{
 			decl = NULL;
-		}
 
-		while(decl)
-		{
-			entry* newen2 = (entry*)malloc(sizeof(entry));
+		while(decl){
+			entry* newen2 = makeNewEntry(decl->children->next->next!=NULL, decl->children->tk->tid == TK_RECORDID, 0);
 			newen2->type = (char*)malloc(sizeof(char)*(strlen(decl->children->tk->name)+1));
 			newen2->name = (char*)malloc(sizeof(char)*(strlen(decl->children->next->tk->name)+1));
 			strcpy(newen2->type,decl->children->tk->name);
 			strcpy(newen2->name,decl->children->next->tk->name);
 			newen2->lineNo = decl->children->tk->lineNo;
-			newen2->global = 0;
-			newen2->inout = 0;
-			newen2->record_or_not = 0;
-			if(decl->children->tk->tid == TK_RECORDID)
-				newen2->record_or_not = 1;
-			if(decl->children->next->next)
-			{
-				newen2->global = 1;
+			if(decl->children->next->next!=NULL)
 				gcount++;
-			}
 			else{
 				varCount++;
 			}
@@ -125,9 +130,8 @@ symbolTable *createSymbolTable(ParseTree PT){
 		if(func->non_term_id==function){
 			ParseTree in = func->children->next->children;
 			ParseTree out = func->children->next->next->children;
-			while(out)
-			{
-				entry* newen2 = (entry*)malloc(sizeof(struct entry));
+			while(out){
+				entry* newen2 = makeNewEntry(0,out->tk->tid == TK_RECORDID, 2);
 				newen2->type = (char*)malloc(sizeof(char)*(strlen(out->tk->name)+1));
 				newen2->name = (char*)malloc(sizeof(char)*(strlen(out->next->tk->name)+1));
 				newen2->scope = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
@@ -135,19 +139,13 @@ symbolTable *createSymbolTable(ParseTree PT){
 				strcpy(newen2->type,out->tk->name);
 				strcpy(newen2->name,out->next->tk->name);
 				newen2->lineNo = out->tk->lineNo;
-				newen2->inout = 2;
-				newen2->global = 0;
 				newen2->next = head;
 				head = newen2;
-				newen2->record_or_not = 0;
-				if(out->tk->tid == TK_RECORDID)
-					newen2->record_or_not = 1;
 				varCount++;
 				out = out->next->next;
 			}
-			while(in)
-			{
-				entry* newen2 = (entry*)malloc(sizeof(struct entry));
+			while(in){
+				entry* newen2 = makeNewEntry(0, in->tk->tid==TK_RECORDID, 1);
 				newen2->type = (char*)malloc(sizeof(char)*(strlen(in->tk->name)+1));
 				newen2->name = (char*)malloc(sizeof(char)*(strlen(in->next->tk->name)+1));
 				newen2->scope = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
@@ -155,13 +153,8 @@ symbolTable *createSymbolTable(ParseTree PT){
 				strcpy(newen2->name,in->next->tk->name);
 				strcpy(newen2->scope,func->children->tk->name);
 				newen2->lineNo = in->tk->lineNo;
-				newen2->inout = 1;
-				newen2->global = 0;
 				newen2->next = head;
 				head = newen2;
-				newen2->record_or_not = 0;
-				if(in->tk->tid == TK_RECORDID)
-					newen2->record_or_not = 1;
 				varCount++;
 				in = in->next->next;
 			}
@@ -173,11 +166,8 @@ symbolTable *createSymbolTable(ParseTree PT){
 			strcpy(newen->name,func->children->tk->name);
 			newen->countVariables = varCount;
 			newen->lineNo = func->children->tk->lineNo;
-			newen->global = 1;
-			newen->inout = 0;
 			newen->next = head;
 			head = newen;
-
 		}
 		else if(func->non_term_id==mainFunction){
 			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
@@ -206,23 +196,16 @@ symbolTable *createSymbolTable(ParseTree PT){
 
 
 	entry* ptr = head;
-	// entry* prev = head;
-	while(ptr)
-	{
-		printf("%s--->", ptr->name);
+	while(ptr){
 		if(ptr->global){
 			ST = insert(ST, ptr);
 		}
-		// printf("%s - %s - %d\n", ptr->name, ptr->type, ptr->global);
 		ptr = ptr->next;
 	}
 
-	printf("\n");
 	ptr = head;
-	while(ptr)
-	{
-		if(strcmp(ptr->type,"function") == 0)
-		{
+	while(ptr){
+		if(strcmp(ptr->type,"function") == 0){
 			entry* funcEntry = lookup(ST, ptr->name);
 			ST =  openScope(ST,ptr->countVariables,ptr->name);
 			funcEntry->funcScopePtr = ST->curr;
@@ -247,8 +230,8 @@ symbolTable *createSymbolTable(ParseTree PT){
 						ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
 						newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
 						strcpy(newNode->paramName,ptr->name);
-						newNode->next = ST->curr->inputParams;
-						ST->curr->inputParams = newNode;
+						newNode->next = ST->curr->outputParams;
+						ST->curr->outputParams = newNode;
 						ptr = ptr->next;
 					}
 				}
@@ -269,22 +252,20 @@ symbolTable *openScope(symbolTable *ST,int sz,char* scope){
 	ST->size++;
 	scopeTable s = (scopeTable)malloc(sizeof(struct scopetable));
 	s->size = sz;
+	s->inputParams = NULL;
+	s->outputParams = NULL;
 	s->scope = (char*)malloc(sizeof(char)*(strlen(scope)+1));
 	strcpy(s->scope, scope);
 	s->arr = (entry**)malloc(sizeof(entry*)*sz);
 	for(int i = 0;i < sz;i++)
 		s->arr[i] = NULL;
-
 	s->prevScope = ST->curr;
 	ST->curr = s;
 	return ST;
 }
 
 symbolTable* closeScope(symbolTable* ST){
-	// ST->size--;
-	// scopeTable s = ST->curr;
 	ST->curr = ST->curr->prevScope;
-	// freeScopeTable(s);
 	return ST;
 }
 
@@ -323,7 +304,7 @@ symbolTable* insert(symbolTable* ST, entry *en){
 			while(recPtr){
 				ptr->name = (char*)malloc((strlen(recPtr->name)+1)*sizeof(char));
 				strcpy(ptr->name, recPtr->name);
-				if(strcmp(recPtr->type, "int")){
+				if(strcmp(recPtr->type, "int")==0){
 					ptr->isInt = 1;
 					// ptr->value=0;
 				}
@@ -349,7 +330,7 @@ symbolTable* insert(symbolTable* ST, entry *en){
 	}
 	in = hashKey(en->name,s->size);
 
-	entry* en1 = (entry*)malloc(sizeof(entry));
+	entry* en1 = makeNewEntry(en->global, en->record_or_not, en->inout);
 	en1->name = (char*)malloc(sizeof(char)*(strlen(en->name)+1));
 	en1->type = (char*)malloc(sizeof(char)*(strlen(en->type)+1));
 	if(en->scope){
@@ -359,13 +340,11 @@ symbolTable* insert(symbolTable* ST, entry *en){
 	strcpy(en1->name, en->name);
 	strcpy(en1->type, en->type);
 	en1->lineNo =  en->lineNo;
-	en1->global =  en->global;
 	en1->next =  NULL;
 	en1->recVal =  en->recVal;
-	en1->record_or_not =  en->record_or_not;
-	en1->inout =  en->inout;
 	en1->countVariables =  en->countVariables;
 	en1->funcScopePtr =  en->funcScopePtr;
+
 	entry* ptr = s->arr[in];
 	entry* prev = NULL;
 
@@ -432,13 +411,37 @@ void printScopeTable(scopeTable s, int spaces){
 			while(ptr){
 				for(int j=0; j<spaces; j++)
 					printf("\t\t");
-				printf("TYPE  --  %20s\t\t NAME  --  %20s\n", ptr->type, ptr->name);
+				printf("%20s\t\t%20s\t%d\n", ptr->type, ptr->name, ptr->record_or_not);
 				if(strcmp(ptr->type, "function")==0)
 					printScopeTable(ptr->funcScopePtr, spaces+1);
+
+				if(ptr->record_or_not){
+					RecordValue recval = ptr->recVal;
+					while(recval){
+						printf("\t\t\t\t%20s\t\t%20d\n", recval->name, recval->isInt);
+						recval = recval->next;
+					}
+				}
 				ptr=ptr->next;
 			}
 		}
 	}
+	
+	ParamNode in = s->inputParams;
+	ParamNode out = s->outputParams;
+	
+	printf("\n");
+	while(in){
+		printf("\t\tINPUT  --  %20s\n", in->paramName);
+		in = in->next;
+	}
+	
+	printf("\n");
+	while(out){
+		printf("\t\tOUTPUT  --  %20s\n", out->paramName);
+		out = out->next;
+	}
+	printf("\n");
 }
 
 void printSymbolTable(symbolTable* ST){

@@ -25,8 +25,8 @@ _main
 	endrecord;
 
 	record #abcd
-		type real : math; 
-		type real: physi; 
+		type int : math; 
+		type int: physi; 
 		type real: chemis;
 	endrecord;
 	% each field above represents the marks obtained in corresponding subject
@@ -37,6 +37,7 @@ _main
 	type int : b5 : global;
 	type int : d5cb34567;
 	type record #marks : b5c6;
+	type record #abcd : b5b7;
 	%The identifier b5c6 stores the sum of marks
 
 	b5 <--- 1;
