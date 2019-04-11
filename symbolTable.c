@@ -68,6 +68,7 @@ symbolTable enterRecords(ParseTree PT,symbolTable ST){
 	return ST;
 }
 
+
 symbolTable enterGlobal(ParseTree PT){
 	ParseTree func = PT->children;
 	int gcount = 0;
@@ -86,9 +87,9 @@ symbolTable enterGlobal(ParseTree PT){
 		}
 		else if(func->non_term_id==mainFunction){
 			stmts = func->children;
-			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
+			newen->type = (char*)malloc(sizeof(char)*(strlen("mainFunction")+1));
 			newen->name = (char*)malloc(sizeof(char)*(strlen("main")+1));
-			strcpy(newen->type,"main");
+			strcpy(newen->type,"mainFunction");
 			strcpy(newen->name,"main");
 		}
 
@@ -127,6 +128,8 @@ symbolTable enterGlobal(ParseTree PT){
 		func  = func->next;
 	}
 }
+
+
 symbolTable openScope(symbolTable ST,int sz,char* scope){
 	ST.size++;
 	scopeTable s = (scopeTable)malloc(sizeof(struct scopetable));
