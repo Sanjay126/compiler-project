@@ -35,18 +35,21 @@ struct recordValue{
 };
 typedef struct recordValue* RecordValue;
 
-
+tydef struct scopetable;
 typedef struct entry{
     char *name;
     char *type;
     char *scope;
-    int width;
+    int record_or_not;
+    // int width;
     int global;
-    int offset;
+    // int offset;
     int lineNo;
     RecordValue recVal;
-    rec_dec record;
+    // rec_dec record;
     struct entry *next;
+	int countVariables;
+	struct scopetable *funcScopeTable;
 }entry;
 
 struct scopetable{

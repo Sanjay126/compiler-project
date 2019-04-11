@@ -5,7 +5,7 @@
 #include "lexer.h"
 #include "parserDef.h"	
 #include "parser.h"	
-#include "ast.h"
+#include "aST->h"
 #include "symboltableDef.h"
 #include "symbolTable.h"
 
@@ -20,10 +20,10 @@ int hashKey(char *v, int M){
 }
 
 
-symbolTable enterRecords(ParseTree PT,symbolTable ST){
-	ST.recs = (struct records*)malloc(sizeof(struct records));
-	ST.recs->head = NULL;
-	ST.recs->count=0;
+symbolTable* enterRecords(ParseTree PT,symbolTable* ST){
+	ST->recs = (struct records*)malloc(sizeof(struct records));
+	ST->recs->head = NULL;
+	ST->recs->count=0;
 	ParseTree func = PT->children;
 	while(func){
 		ParseTree stmts;
@@ -57,9 +57,9 @@ symbolTable enterRecords(ParseTree PT,symbolTable ST){
 					fd=fd->next;
 					r->size++;
 				}
-				ST.recs->count++;
-				r->next = ST.recs->head;
-				ST.recs->head = r;
+				ST->recs->count++;
+				r->next = ST->recs->head;
+				ST->recs->head = r;
 				td=td->next;
 			}
 		}
@@ -69,32 +69,21 @@ symbolTable enterRecords(ParseTree PT,symbolTable ST){
 }
 
 
-symbolTable enterGlobal(ParseTree PT){
+symbolTable *createSymbolTable(ParseTree PT){
 	ParseTree func = PT->children;
 	int gcount = 0;
-	entry* ls = NULL;
+	entry* head = NULL;
 	while(func){
 		ParseTree stmts;		
 		entry* newen = (entry*)malloc(sizeof(entry));
+		int varCount  = 0;
 
 		if(func->non_term_id==function){
 			stmts = func->children->next->next->next;
-			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
-			newen->name = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
-			strcpy(newen->type,"function");
-			strcpy(newen->name,func->children->tk->name);
-			newen->lineNo = func->children->tk->lineNo;
 		}
 		else if(func->non_term_id==mainFunction){
 			stmts = func->children;
-			newen->type = (char*)malloc(sizeof(char)*(strlen("mainFunction")+1));
-			newen->name = (char*)malloc(sizeof(char)*(strlen("main")+1));
-			strcpy(newen->type,"mainFunction");
-			strcpy(newen->name,"main");
 		}
-
-		newen->next = head;
-		head = newen;
 
 		if(stmts->children->non_term_id == declarations)
 			ParseTree decl = stmts->children->children;
@@ -108,51 +97,111 @@ symbolTable enterGlobal(ParseTree PT){
 
 		while(decl)
 		{
-			entry* newen = (entry*)malloc(sizeof(entry));
-			newen->type = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
-			newen->name = (char*)malloc(sizeof(char)*(strlen(func->children->next->tk->name)+1));
-			strcpy(newen->type,func->children->tk->name);
-			strcpy(newen->name,func->children->next->tk->name);
-			newen->lineNo = func->children->tk->lineNo;
-			newen->global = 0;
+			entry* newen2 = (entry*)malloc(sizeof(entry));
+			newen2->type = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
+			newen2->name = (char*)malloc(sizeof(char)*(strlen(func->children->next->tk->name)+1));
+			strcpy(newen2->type,func->children->tk->name);
+			strcpy(newen2->name,func->children->next->tk->name);
+			newen2->lineNo = func->children->tk->lineNo;
+			newen2->global = 0;
 			if(decl->children->next->next)
 			{
-				newen->global = 1;
+				newen2->global = 1;
 				gcount++;
 			}
-			newen->next = head;
-			head = newen;
+			else{
+				varCount++;
+			}
+			newen2->next = head;
+			head = newen2;
 			decl = decl->next;
 		}		
 		gcount++;
+
+		if(func->non_term_id==function){
+			stmts = func->children->next->next->next;
+			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
+			newen->name = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
+			newen->scope = (char*)malloc(sizeof(char)*(strlen("global")+1));
+			strcpy(newen->scope,"global");
+			strcpy(newen->type,"function");
+			strcpy(newen->name,func->children->tk->name);
+			newen->countVariables = varCount;
+			newen->lineNo = func->children->tk->lineNo;
+			newen->global = 1;
+		}
+		else if(func->non_term_id==mainFunction){
+			stmts = func->children;
+			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
+			newen->name = (char*)malloc(sizeof(char)*(strlen("mainFunction")+1));
+			newen->scope = (char*)malloc(sizeof(char)*(strlen("global")+1));
+			strcpy(newen->scope,"global");
+			strcpy(newen->type,"mainFunction");
+			strcpy(newen->name,"main");
+			newen->global = 1;
+		}
+
+		newen->next = head;
+		head = newen;
+
 		func  = func->next;
 	}
+
+	symbolTable *ST  = (symbolTable*)malloc(sizeof(symbolTable));
+	
+	ST->size = 0;
+	ST =  enterRecords(PT,ST);
+	ST = openScope(ST,gcount,"global");
+
+	entry* ptr = head;
+	while(ptr)
+	{
+		if(ptr->global){
+			ST = insert(ST,ptr);
+		}
+		ptr = ptr->next;
+	}
+
+	ptr = head;
+	while(ptr)
+	{
+		if(strcmp(ptr->type,"function") == 0)
+		{
+			ST =  openScope(ST,countVariables,ptr->name);
+			ptr = ptr->next;
+			while(strcmp(ptr->type,"function") != 0)
+			{
+				if(!ptr->global)
+					ST = insert(ST,ptr);
+				ptr = ptr->next;
+			}
+			ST = closeScope(ST);
+		}
+	}
+
+	return ST;
 }
 
 
-symbolTable openScope(symbolTable ST,int sz,char* scope){
-	ST.size++;
+symbolTable *openScope(symbolTable *ST,int sz,char* scope){
+	ST->size++;
 	scopeTable s = (scopeTable)malloc(sizeof(struct scopetable));
 	s->size = sz;
+	s->scope = (char*)malloc(sizeof(char)*(strlen(scope)+1));
 	strcpy(s->scope, scope);
 	s->arr = (entry**)malloc(sizeof(entry*)*sz);
 	for(int i = 0;i < sz;i++)
 		s->arr[i] == NULL;
-	if(ST.curr){
-		s->prevScope = ST.curr->prevScope;
-		ST.curr->prevScope = s;
-	}
-	else{
-		s->prevScope = NULL;
-		ST.curr = s;
-	}
+
+	s->prevScope = ST->curr;
+	ST->curr = s;
 	return ST;
 }
 
 symbolTable closeScope(symbolTable ST){
-	ST.size--;
-	scopeTable s = ST.curr;
-	ST.curr = s->prevScope;
+	// ST->size--;
+	// scopeTable s = ST->curr;
+	ST->curr = ST->curr->prevScope;
 	// freeScopeTable(s);
 	return ST;
 }
@@ -164,43 +213,81 @@ int numberOfDeclarations(ParseTree PT){
 	ParseTree input_par = PT->children->next;
 }
 
-symbolTable insert(symbolTable ST, entry *en){
-	scopeTable s = ST.curr->prevScope;
-	scopeTable s1 = ST.curr;
-	int in = hashKey(en->name,s->size);
-	if(strcmp(en->scope, "global")){
-		entry* ptr = s1->arr[in];
-		entry* prev = NULL;
-		if(ptr == NULL)
-			s->arr[in] = en;
-		else
-		{
-			while(ptr)
-			{
-				prev = ptr;
-				ptr = ptr->next;
+symbolTable* insert(symbolTable* ST, entry *en){
+	scopeTable s;
+	int in;
+	entry* lookedup=lookup(ST,en->name);
+	if(lookedup){
+		printf("variable already declared %s",en->name);
+		//TODO error reporting
+		return ST;
+	}
+	// if(strcmp(en->scope, "global")==0){
+	// 	s = ST->curr->prevScope;
+	// }
+	// else{
+	s = ST->curr;
+	// }
+	if(en->record_or_not==1){
+		Record rec=lookupRecord(ST->recs,en->type);
+		if(rec){
+			// en->record = rec->head;
+			rec_dec recPtr = rec->head;
+			RecordValue head = (RecordValue)malloc(sizeof(struct recordValue));
+			RecordValue ptr = head, curr;
+			while(recPtr){
+				ptr->name = (char*)malloc((strlen(recPtr->name)+1)*sizeof(char));
+				strcpy(ptr->name, recPtr->name);
+				if(strcmp(recPtr->type, "int")){
+					ptr->isInt = 1;
+					// ptr->value=0;
+				}
+				else{
+					ptr->isInt = 0;
+				}
+				recPtr = recPtr->next;
+				if(recPtr){
+					curr = (RecordValue)malloc(sizeof(struct recordValue));
+					curr->next = NULL;
+					ptr->next = curr;
+					ptr = curr;
+				}
 			}
-			prev->next = en;
-			en->next = NULL;
+			en->recVal = head;
+			//TODO  make a recval  and add  entry to  scopeTable
+		}
+		else{
+			printf("no such  record defined %s",en->type);
+			//TODO report error
+			return ST;
 		}
 	}
-	else{
-
+	in = hashKey(en->name,s->size);
+	entry* ptr = s->arr[in];
+	entry* prev = NULL;
+	if(ptr == NULL)
+		s->arr[in] = en;
+	else
+	{
+		while(ptr)
+		{
+			prev = ptr;
+			ptr = ptr->next;
+		}
+		prev->next = en;
+		en->next = NULL;
 	}
 
 	return ST;
 }
 
-entry* lookup(symbolTable ST, char* name){
-	scopeTable ptr = ST.curr;
-	Record record=ST.recs->head;
+entry* lookup(symbolTable* ST, char* name){
+	scopeTable ptr = ST->curr;
 	int in;
 	while(ptr)
 	{
 		in = hashKey(name,ptr->size);
-		if(ptr->arr[in] = NULL)
-			ptr = ptr->prevScope;
-		else
+		if(ptr->arr[in] != NULL)
 		{
 			entry* ptr2 = ptr->arr[in];
 			while(ptr2)
@@ -209,20 +296,18 @@ entry* lookup(symbolTable ST, char* name){
 					return ptr2;
 				ptr2 = ptr2->next;
 			}
-			ptr = ptr->prevScope;
 		}
+		ptr = ptr->prevScope;
 	}
+	
+	return NULL;
+}
+Record  lookupRecord(Records r,char* name){
+	Record record=r->head;
 	while(record){
-		if(strcmp(record->name,name)==0){
-			entry* en=(entry*)malloc(sizeof(entry));
-			strcpy(en->name,name);
-			en->type="record";
-			en->record=record->head;
-			return en;
-		}
-		else{
-			record=record->next;
-		}
+		if(strcmp(record->name,name)==0)
+			return record;
+		record=record->next;
 	}
 	return NULL;
 }
@@ -232,42 +317,6 @@ void freeScopeTable(scopeTable s){
 		free(s->arr[i]);
 	free(s->arr);
 	free(s);
-}
-// symbolTable createSymbolTable(ParseTree PT, int size){
-// 	symbolTable ST;
-// 	ST.size=0;
-// 	ST=openScope(ST,50,"global");
-// 	ParseTree ptr= PT->children;
-// 	if(PT==NULL)
-// 		return ST;
-// 	else{
-// 		while(ptr){
-// 			entry *en=(entry*)malloc(sizeof(entry));
-// 			en->name=ptr->next->tk->name;
-// 			en->type="function";
-// 			en->lineNo=ptr->next->tk->lineNo;
-// 			ST=insert(ST,en)
-// 			int size=noOfDeclarations(ptr);
-// 			ST=openScope(ST,size,en->name);
-			
-// 			while(ptr)
-
-// 		}
-// 	}
-
-// }
-
-
-symbolTable addInGlobal(symbolTable ST,entry *en){
-
-}
-// entry* makeRecordEntry(ParseTree PT);
-
-
-symbolTable createSymbolTable(ParseTree PT, int size){
-	symbolTable ST;
-	ST.size=0;
-	
 }
 
 
