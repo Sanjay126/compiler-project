@@ -47,14 +47,24 @@ typedef struct entry{
     int lineNo;
     RecordValue recVal;
     // rec_dec record;
+    int inout;
     struct entry *next;
 	int countVariables;
 	struct scopetable *funcScopeTable;
 }entry;
 
+struct paramNode{
+	char* paramName;
+	struct paramNode* next;
+};
+
+typedef paramNode* ParamNode;
+
 struct scopetable{
 	int size;
 	char* scope;
+	ParamNode inputParams;
+	ParamNode outputParams;
 	struct scopetable *prevScope;
 	entry** arr;
 };

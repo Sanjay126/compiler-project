@@ -104,6 +104,7 @@ symbolTable *createSymbolTable(ParseTree PT){
 			strcpy(newen2->name,func->children->next->tk->name);
 			newen2->lineNo = func->children->tk->lineNo;
 			newen2->global = 0;
+			newen2->inout = 0;
 			if(decl->children->next->next)
 			{
 				newen2->global = 1;
@@ -119,7 +120,38 @@ symbolTable *createSymbolTable(ParseTree PT){
 		gcount++;
 
 		if(func->non_term_id==function){
-			stmts = func->children->next->next->next;
+			ParseTree inp = func->children->next->children;
+			ParseTree out = func->children->next->next-children;
+
+			while(out)
+			{
+				newen2->type = (char*)malloc(sizeof(char)*(strlen(out->tk->name)+1));
+				newen2->name = (char*)malloc(sizeof(char)*(strlen(out->next->tk->name)+1));
+				newen2->scope = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
+				strcpy(newen->scope,func->children->tk->name);
+				strcpy(newen->type,out->tk->name);
+				strcpy(newen->name,out->next->tk->name);
+				newen2->lineNo = out->tk->lineNo;
+				newen2->inout = 2;
+				newen2->next = head;
+				head = newen2;
+				out = out->next->next;
+			}
+			while(inp)
+			{
+				newen2->type = (char*)malloc(sizeof(char)*(strlen(in->tk->name)+1));
+				newen2->name = (char*)malloc(sizeof(char)*(strlen(in->next->tk->name)+1));
+				newen2->scope = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
+				strcpy(newen->scope,func->children->tk->name);
+				strcpy(newen->type,in->tk->name);
+				strcpy(newen->name,in->next->tk->name);
+				newen2->lineNo = in->tk->lineNo;
+				newen2->inout = 1;
+				newen2->next = head;
+				head = newen2;
+				in = in->next->next;
+			}
+
 			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
 			newen->name = (char*)malloc(sizeof(char)*(strlen(func->children->tk->name)+1));
 			newen->scope = (char*)malloc(sizeof(char)*(strlen("global")+1));
@@ -129,9 +161,10 @@ symbolTable *createSymbolTable(ParseTree PT){
 			newen->countVariables = varCount;
 			newen->lineNo = func->children->tk->lineNo;
 			newen->global = 1;
+			newen->inout = 0;
+
 		}
 		else if(func->non_term_id==mainFunction){
-			stmts = func->children;
 			newen->type = (char*)malloc(sizeof(char)*(strlen("function")+1));
 			newen->name = (char*)malloc(sizeof(char)*(strlen("mainFunction")+1));
 			newen->scope = (char*)malloc(sizeof(char)*(strlen("global")+1));
@@ -139,6 +172,7 @@ symbolTable *createSymbolTable(ParseTree PT){
 			strcpy(newen->type,"mainFunction");
 			strcpy(newen->name,"main");
 			newen->global = 1;
+			newen->inout = 0;
 		}
 
 		newen->next = head;
@@ -171,6 +205,31 @@ symbolTable *createSymbolTable(ParseTree PT){
 			ptr = ptr->next;
 			while(strcmp(ptr->type,"function") != 0)
 			{
+				if(strcmp(ptr->name,"mainFunction") != 0)
+				{
+					while(ptr->inout = 1 && !ptr->global)
+					{
+						ST = insert(ST,ptr);
+						ParamNode newNode = (ParamNode)malloc(sizeof(node));
+						newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
+						strcpy(newNode->paramName,ptr->name);
+						newNode->next = ST->curr->inputParams;
+						ST->curr->inputParams = newNode;
+						ptr = ptr->next;
+					}
+
+
+					while(ptr->inout = 2 && !ptr->global)
+					{
+						ST = insert(ST,ptr);
+						ParamNode newNode = (ParamNode)malloc(sizeof(node));
+						newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
+						strcpy(newNode->paramName,ptr->name);
+						newNode->next = ST->curr->inputParams;
+						ST->curr->inputParams = newNode;
+						ptr = ptr->next;
+					}
+				}
 				if(!ptr->global)
 					ST = insert(ST,ptr);
 				ptr = ptr->next;
