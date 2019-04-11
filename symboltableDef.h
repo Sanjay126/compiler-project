@@ -58,7 +58,7 @@ struct paramNode{
 	struct paramNode* next;
 };
 
-typedef paramNode* ParamNode;
+typedef struct paramNode* ParamNode;
 
 struct scopetable{
 	int size;

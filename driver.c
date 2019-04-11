@@ -68,6 +68,7 @@ int main(int argc, char *argv[]){
 				printPARSETREENEW(PT,"parsetree1.txt");
 				PT = createAST(PT);
 				printPARSETREENEW(PT,"parsetree2.txt");
+				symbolTable* ST =  createSymbolTable(PT);
 				// Records rs = enterRecords(PT);
 				freeMemory();
 			}break;
