@@ -35,7 +35,7 @@ struct recordValue{
 };
 typedef struct recordValue* RecordValue;
 
-tydef struct scopetable;
+struct scopetable;
 typedef struct entry{
     char *name;
     char *type;
@@ -50,7 +50,7 @@ typedef struct entry{
     int inout;
     struct entry *next;
 	int countVariables;
-	struct scopetable *funcScopeTable;
+	struct scopetable *funcScopePtr;
 }entry;
 
 struct paramNode{
