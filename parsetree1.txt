@@ -13,7 +13,14 @@ program
                             TK_INT
                     TK_ID
                     remaining_list
-                        eps
+                        TK_COMMA
+                        parameter_list
+                            dataType
+                                primitiveDatatype
+                                    TK_INT
+                            TK_ID
+                            remaining_list
+                                eps
                 TK_SQR
             output_par
                 TK_OUTPUT
@@ -23,51 +30,24 @@ program
                 parameter_list
                     dataType
                         primitiveDatatype
-                            TK_REAL
+                            TK_INT
                     TK_ID
                     remaining_list
-                        eps
+                        TK_COMMA
+                        parameter_list
+                            dataType
+                                primitiveDatatype
+                                    TK_INT
+                            TK_ID
+                            remaining_list
+                                eps
                 TK_SQR
             TK_SEM
             stmts
                 typeDefinitions
                     eps
                 declarations
-                    declaration
-                        TK_TYPE
-                        dataType
-                            primitiveDatatype
-                                TK_INT
-                        TK_COLON
-                        TK_ID
-                        global_or_not
-                            TK_COLON
-                            TK_GLOBAL
-                        TK_SEM
-                    declarations
-                        declaration
-                            TK_TYPE
-                            dataType
-                                primitiveDatatype
-                                    TK_INT
-                            TK_COLON
-                            TK_ID
-                            global_or_not
-                                eps
-                            TK_SEM
-                        declarations
-                            declaration
-                                TK_TYPE
-                                dataType
-                                    primitiveDatatype
-                                        TK_REAL
-                                TK_COLON
-                                TK_ID
-                                global_or_not
-                                    eps
-                                TK_SEM
-                            declarations
-                                eps
+                    eps
                 otherStmts
                     stmt
                         assignmentStmt
@@ -80,7 +60,9 @@ program
                                 term
                                     factor
                                         all
-                                            TK_NUM
+                                            TK_ID
+                                            allnew
+                                                eps
                                     termPrime
                                         eps
                                 expPrime
@@ -98,71 +80,16 @@ program
                                     term
                                         factor
                                             all
-                                                TK_RNUM
+                                                TK_ID
+                                                allnew
+                                                    eps
                                         termPrime
                                             eps
                                     expPrime
                                         eps
                                 TK_SEM
                         otherStmts
-                            stmt
-                                iterativeStmt
-                                    TK_WHILE
-                                    TK_OP
-                                    booleanExpression
-                                        var
-                                            TK_ID
-                                        relationalOp
-                                            TK_LE
-                                        var
-                                            TK_ID
-                                    TK_CL
-                                    stmt
-                                        ioStmt
-                                            TK_READ
-                                            TK_OP
-                                            singleOrRecId
-                                                TK_ID
-                                                new_24
-                                                    eps
-                                            TK_CL
-                                            TK_SEM
-                                    otherStmts
-                                        stmt
-                                            assignmentStmt
-                                                singleOrRecId
-                                                    TK_ID
-                                                    new_24
-                                                        eps
-                                                TK_ASSIGNOP
-                                                arithmeticExpression
-                                                    term
-                                                        factor
-                                                            all
-                                                                TK_ID
-                                                                allnew
-                                                                    eps
-                                                        termPrime
-                                                            eps
-                                                    expPrime
-                                                        lowPrecedenceOperators
-                                                            TK_PLUS
-                                                        term
-                                                            factor
-                                                                all
-                                                                    TK_ID
-                                                                    allnew
-                                                                        eps
-                                                            termPrime
-                                                                eps
-                                                        expPrime
-                                                            eps
-                                                TK_SEM
-                                        otherStmts
-                                            eps
-                                    TK_ENDWHILE
-                            otherStmts
-                                eps
+                            eps
                 returnStmt
                     TK_RETURN
                     optionalReturn
@@ -170,39 +97,65 @@ program
                         idList
                             TK_ID
                             more_ids
-                                eps
+                                TK_COMMA
+                                idList
+                                    TK_ID
+                                    more_ids
+                                        eps
                         TK_SQR
                     TK_SEM
             TK_END
         otherFunctions
-            eps
-    mainFunction
-        TK_MAIN
-        stmts
-            typeDefinitions
-                eps
-            declarations
-                declaration
-                    TK_TYPE
-                    dataType
-                        primitiveDatatype
-                            TK_REAL
-                    TK_COLON
-                    TK_ID
-                    global_or_not
-                        eps
-                    TK_SEM
-                declarations
-                    declaration
-                        TK_TYPE
+            function
+                TK_FUNID
+                input_par
+                    TK_INPUT
+                    TK_PARAMETER
+                    TK_LIST
+                    TK_SQL
+                    parameter_list
                         dataType
-                            primitiveDatatype
-                                TK_INT
-                        TK_COLON
+                            constructedDatatype
+                                TK_RECORD
+                                TK_RECORDID
                         TK_ID
-                        global_or_not
-                            eps
-                        TK_SEM
+                        remaining_list
+                            TK_COMMA
+                            parameter_list
+                                dataType
+                                    constructedDatatype
+                                        TK_RECORD
+                                        TK_RECORDID
+                                TK_ID
+                                remaining_list
+                                    eps
+                    TK_SQR
+                output_par
+                    TK_OUTPUT
+                    TK_PARAMETER
+                    TK_LIST
+                    TK_SQL
+                    parameter_list
+                        dataType
+                            constructedDatatype
+                                TK_RECORD
+                                TK_RECORDID
+                        TK_ID
+                        remaining_list
+                            TK_COMMA
+                            parameter_list
+                                dataType
+                                    constructedDatatype
+                                        TK_RECORD
+                                        TK_RECORDID
+                                TK_ID
+                                remaining_list
+                                    eps
+                    TK_SQR
+                TK_SEM
+                stmts
+                    typeDefinitions
+                        eps
                     declarations
                         declaration
                             TK_TYPE
@@ -212,18 +165,154 @@ program
                             TK_COLON
                             TK_ID
                             global_or_not
-                                TK_COLON
-                                TK_GLOBAL
+                                eps
                             TK_SEM
                         declarations
                             eps
+                    otherStmts
+                        stmt
+                            funCallStmt
+                                outputParameters
+                                    TK_SQL
+                                    idList
+                                        TK_ID
+                                        more_ids
+                                            TK_COMMA
+                                            idList
+                                                TK_ID
+                                                more_ids
+                                                    eps
+                                    TK_SQR
+                                    TK_ASSIGNOP
+                                TK_CALL
+                                TK_FUNID
+                                TK_WITH
+                                TK_PARAMETERS
+                                inputParameters
+                                    TK_SQL
+                                    idList
+                                        TK_ID
+                                        more_ids
+                                            TK_COMMA
+                                            idList
+                                                TK_ID
+                                                more_ids
+                                                    eps
+                                    TK_SQR
+                                TK_SEM
+                        otherStmts
+                            stmt
+                                funCallStmt
+                                    outputParameters
+                                        TK_SQL
+                                        idList
+                                            TK_ID
+                                            more_ids
+                                                TK_COMMA
+                                                idList
+                                                    TK_ID
+                                                    more_ids
+                                                        eps
+                                        TK_SQR
+                                        TK_ASSIGNOP
+                                    TK_CALL
+                                    TK_FUNID
+                                    TK_WITH
+                                    TK_PARAMETERS
+                                    inputParameters
+                                        TK_SQL
+                                        idList
+                                            TK_ID
+                                            more_ids
+                                                TK_COMMA
+                                                idList
+                                                    TK_ID
+                                                    more_ids
+                                                        eps
+                                        TK_SQR
+                                    TK_SEM
+                            otherStmts
+                                eps
+                    returnStmt
+                        TK_RETURN
+                        optionalReturn
+                            TK_SQL
+                            idList
+                                TK_ID
+                                more_ids
+                                    TK_COMMA
+                                    idList
+                                        TK_ID
+                                        more_ids
+                                            eps
+                            TK_SQR
+                        TK_SEM
+                TK_END
+            otherFunctions
+                eps
+    mainFunction
+        TK_MAIN
+        stmts
+            typeDefinitions
+                typeDefinition
+                    TK_RECORD
+                    TK_RECORDID
+                    fieldDefinitions
+                        fieldDefinition
+                            TK_TYPE
+                            primitiveDatatype
+                                TK_INT
+                            TK_COLON
+                            TK_FIELDID
+                            TK_SEM
+                        fieldDefinition
+                            TK_TYPE
+                            primitiveDatatype
+                                TK_INT
+                            TK_COLON
+                            TK_FIELDID
+                            TK_SEM
+                        moreFields
+                            eps
+                    TK_ENDRECORD
+                    TK_SEM
+                typeDefinitions
+                    eps
+            declarations
+                declaration
+                    TK_TYPE
+                    dataType
+                        constructedDatatype
+                            TK_RECORD
+                            TK_RECORDID
+                    TK_COLON
+                    TK_ID
+                    global_or_not
+                        eps
+                    TK_SEM
+                declarations
+                    declaration
+                        TK_TYPE
+                        dataType
+                            constructedDatatype
+                                TK_RECORD
+                                TK_RECORDID
+                        TK_COLON
+                        TK_ID
+                        global_or_not
+                            TK_COLON
+                            TK_GLOBAL
+                        TK_SEM
+                    declarations
+                        eps
             otherStmts
                 stmt
                     assignmentStmt
                         singleOrRecId
                             TK_ID
                             new_24
-                                eps
+                                TK_DOT
+                                TK_FIELDID
                         TK_ASSIGNOP
                         arithmeticExpression
                             term
@@ -237,54 +326,115 @@ program
                         TK_SEM
                 otherStmts
                     stmt
-                        ioStmt
-                            TK_READ
-                            TK_OP
+                        assignmentStmt
                             singleOrRecId
                                 TK_ID
                                 new_24
+                                    TK_DOT
+                                    TK_FIELDID
+                            TK_ASSIGNOP
+                            arithmeticExpression
+                                term
+                                    factor
+                                        all
+                                            TK_NUM
+                                    termPrime
+                                        eps
+                                expPrime
                                     eps
-                            TK_CL
                             TK_SEM
                     otherStmts
                         stmt
-                            funCallStmt
-                                outputParameters
-                                    TK_SQL
-                                    idList
-                                        TK_ID
-                                        more_ids
+                            assignmentStmt
+                                singleOrRecId
+                                    TK_ID
+                                    new_24
+                                        TK_DOT
+                                        TK_FIELDID
+                                TK_ASSIGNOP
+                                arithmeticExpression
+                                    term
+                                        factor
+                                            all
+                                                TK_RNUM
+                                        termPrime
                                             eps
-                                    TK_SQR
-                                    TK_ASSIGNOP
-                                TK_CALL
-                                TK_FUNID
-                                TK_WITH
-                                TK_PARAMETERS
-                                inputParameters
-                                    TK_SQL
-                                    idList
-                                        TK_ID
-                                        more_ids
-                                            eps
-                                    TK_SQR
+                                    expPrime
+                                        eps
                                 TK_SEM
                         otherStmts
                             stmt
-                                ioStmt
-                                    TK_WRITE
-                                    TK_OP
-                                    allVar
+                                assignmentStmt
+                                    singleOrRecId
                                         TK_ID
-                                        newallvar
+                                        new_24
+                                            TK_DOT
+                                            TK_FIELDID
+                                    TK_ASSIGNOP
+                                    arithmeticExpression
+                                        term
+                                            factor
+                                                all
+                                                    TK_NUM
+                                            termPrime
+                                                eps
+                                        expPrime
                                             eps
-                                    TK_CL
                                     TK_SEM
                             otherStmts
-                                eps
+                                stmt
+                                    funCallStmt
+                                        outputParameters
+                                            TK_SQL
+                                            idList
+                                                TK_ID
+                                                more_ids
+                                                    TK_COMMA
+                                                    idList
+                                                        TK_ID
+                                                        more_ids
+                                                            eps
+                                            TK_SQR
+                                            TK_ASSIGNOP
+                                        TK_CALL
+                                        TK_FUNID
+                                        TK_WITH
+                                        TK_PARAMETERS
+                                        inputParameters
+                                            TK_SQL
+                                            idList
+                                                TK_ID
+                                                more_ids
+                                                    TK_COMMA
+                                                    idList
+                                                        TK_ID
+                                                        more_ids
+                                                            eps
+                                            TK_SQR
+                                        TK_SEM
+                                otherStmts
+                                    stmt
+                                        ioStmt
+                                            TK_WRITE
+                                            TK_OP
+                                            allVar
+                                                TK_ID
+                                                newallvar
+                                                    eps
+                                            TK_CL
+                                            TK_SEM
+                                    otherStmts
+                                        stmt
+                                            ioStmt
+                                                TK_WRITE
+                                                TK_OP
+                                                allVar
+                                                    TK_ID
+                                                    newallvar
+                                                        eps
+                                                TK_CL
+                                                TK_SEM
+                                        otherStmts
+                                            eps
             returnStmt
-                TK_RETURN
-                optionalReturn
-                    eps
-                TK_SEM
         TK_END

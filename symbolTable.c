@@ -464,19 +464,21 @@ void printSymbolTable(symbolTable* ST){
 	printScopeTable(s, 0);
 }
 
-void recSem(symbolTable* ST, ParseTree p){
-	ParseTree ptr = p;
-	if(p==NULL)
+void recSem(symbolTable* ST, ParseTree ptr){
+	if(ptr==NULL)
 		return;
+	ParseTree p = ptr->children;
+	// if(p==NULL)
+	// 	return;	
 	while(p){
-		if(p->non_term_id==TK_ID){
+		if(p->non_term_id==TK_ID + no_of_nt){
 			entry* en = lookup(ST, p->tk->name);
 			if(en==NULL){
 				//TODO ERROR HANDLING
-				printf("Variable not defined - %s\n", en->name);
+				printf("Variable not defined - %s\n", p->tk->name);
 				// return;
 			}
-			else if(p->next!=NULL && p->next->non_term_id==TK_FIELDID){
+			else if(p->next!=NULL && p->next->non_term_id==TK_FIELDID + no_of_nt){
 				RecordValue recv = en->recVal;
 				int flag=0;
 				while(recv){
@@ -490,9 +492,10 @@ void recSem(symbolTable* ST, ParseTree p){
 					printf("no such field for the record%s\n", p->next->tk->name);
 				p = p->next;
 			}
+			printf("VAR-------------------------%s\n", p->tk->name);
 		}
 		else{
-			recSem(ST, p->children);
+			recSem(ST, p);
 		}
 		p = p->next;
 	}
@@ -506,7 +509,13 @@ void semanticAnalysis(symbolTable* ST, ParseTree PT){
 			entry* funcEntry = lookup(ST, funcPT->children->tk->name);
 			ST->curr = funcEntry->funcScopePtr;
 			ParseTree ptr = funcPT->children->next->next->next;
-
+			if(ptr->children == NULL){
+				funcPT = funcPT->next;
+				continue;
+			}
+			ptr = ptr->children;
+			while(ptr && (ptr->non_term_id==declarations || ptr->non_term_id==typeDefinitions))
+				ptr = ptr->next;
 			recSem(ST, ptr);
 			ST->curr = ST->curr->prevScope;
 		}
