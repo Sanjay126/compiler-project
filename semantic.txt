@@ -1,0 +1,9 @@
+1. The types and the number of parameters returned by a function must be the same as that of the parameters used in invoking the function
+2. The parameters being returned by a function must be assigned a value. If a parameter does not get a value assigned within the function definition, it should be reported as an error.
+3. The function cannot be invoked recursively.
+4. The right hand side expression of an assignment statement must be of the same type as that of the left hand side identifier
+5. An identifier used beyond its scope must be viewed as undefined
+6. function definition precedence
+7. None of the variables participating in the iterations of the while loop gets updated.
+8. undeclared variables
+9. The test expression of an ‘if statement’ must have boolean type

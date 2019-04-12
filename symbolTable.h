@@ -28,7 +28,7 @@ symbolTable* enterRecords(ParseTree PT,symbolTable* ST);
 Record  lookupRecord(Records r,char* name);
 symbolTable* closeScope(symbolTable* ST);
 symbolTable *openScope(symbolTable *ST,int sz,char* scope);
-
+void semanticAnalysis(symbolTable* ST, ParseTree PT);
 
 #endif
 

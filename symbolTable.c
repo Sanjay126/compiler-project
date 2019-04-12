@@ -197,6 +197,8 @@ symbolTable *createSymbolTable(ParseTree PT){
 
 	entry* ptr = head;
 	while(ptr){
+		printf("  --->  %s", ptr->name);
+
 		if(ptr->global){
 			ST = insert(ST, ptr);
 		}
@@ -204,44 +206,55 @@ symbolTable *createSymbolTable(ParseTree PT){
 	}
 
 	ptr = head;
-	while(ptr){
-		if(strcmp(ptr->type,"function") == 0){
-			entry* funcEntry = lookup(ST, ptr->name);
-			ST =  openScope(ST,ptr->countVariables,ptr->name);
-			funcEntry->funcScopePtr = ST->curr;
-			entry* funcPtrr = ptr;
-			ptr = ptr->next;
 
-			while(ptr && strcmp(ptr->type,"function") != 0){
-				if(strcmp(funcPtrr->name,"mainFunction") != 0){
-					while(ptr && ptr->inout == 1 && !ptr->global){
-						ST = insert(ST,ptr);
-						ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
-						newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
-						strcpy(newNode->paramName,ptr->name);
-						newNode->next = ST->curr->inputParams;
-						ST->curr->inputParams = newNode;
-						ptr = ptr->next;
-					}
+	while(ptr && strcmp(ptr->type,"function") == 0){
+		entry* funcEntry = lookup(ST, ptr->name);
+		ST =  openScope(ST,ptr->countVariables,ptr->name);
+		funcEntry->funcScopePtr = ST->curr;
+		entry* funcPtrr = ptr;
+printf("\n\nFUNCTION-----------%s-----------\n\n", ptr->name);
+		ptr = ptr->next;
 
-
-					while(ptr && ptr->inout == 2 && !ptr->global){
-						ST = insert(ST,ptr);
-						ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
-						newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
-						strcpy(newNode->paramName,ptr->name);
-						newNode->next = ST->curr->outputParams;
-						ST->curr->outputParams = newNode;
-						ptr = ptr->next;
-					}
-				}
-				if(ptr  &&  !ptr->global)
+		while(ptr && strcmp(ptr->type,"function") != 0){
+			if(strcmp(funcPtrr->name,"mainFunction") != 0){
+				while(ptr && ptr->inout == 1 && !ptr->global){
 					ST = insert(ST,ptr);
-				if(ptr)
+					ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
+					newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
+					strcpy(newNode->paramName,ptr->name);
+					newNode->next = ST->curr->inputParams;
+					ST->curr->inputParams = newNode;
+printf("\n\nINPUT-----------%s-----------\n\n", ptr->name);
+
 					ptr = ptr->next;
+				}
+
+
+				while(ptr && ptr->inout == 2 && !ptr->global){
+					ST = insert(ST,ptr);
+					ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
+					newNode->paramName = (char*)malloc(strlen(ptr->name)+1);
+					strcpy(newNode->paramName,ptr->name);
+					newNode->next = ST->curr->outputParams;
+					ST->curr->outputParams = newNode;
+printf("\n\nOUTPUT-----------%s-----------\n\n", ptr->name);
+					ptr = ptr->next;
+				}
 			}
-			ST = closeScope(ST);
+			if(ptr){
+				if(!ptr->global){
+					ST = insert(ST,ptr);
+printf("\n\nVAR-----------%s-----------\n\n", ptr->name);
+
+					ptr = ptr->next;
+				}
+				else if(strcmp(ptr->type, "function")!=0){
+					ptr = ptr->next;
+				}
+			}
+
 		}
+		ST = closeScope(ST);
 	}
 
 	return ST;
@@ -404,6 +417,8 @@ void freeScopeTable(scopeTable s){
 }
 
 void printScopeTable(scopeTable s, int spaces){
+	if(!s)
+		return;
 	entry** arr = s->arr;
 	for(int i=0; i<s->size; i++){
 		if(arr[i]!=NULL){
@@ -447,4 +462,61 @@ void printScopeTable(scopeTable s, int spaces){
 void printSymbolTable(symbolTable* ST){
 	scopeTable s = ST->curr;
 	printScopeTable(s, 0);
+}
+
+void recSem(symbolTable* ST, ParseTree p){
+	ParseTree ptr = p;
+	if(p==NULL)
+		return;
+	while(p){
+		if(p->non_term_id==TK_ID){
+			entry* en = lookup(ST, p->tk->name);
+			if(en==NULL){
+				//TODO ERROR HANDLING
+				printf("Variable not defined - %s\n", en->name);
+				// return;
+			}
+			else if(p->next!=NULL && p->next->non_term_id==TK_FIELDID){
+				RecordValue recv = en->recVal;
+				int flag=0;
+				while(recv){
+					if(strcmp(recv->name, p->next->tk->name)==0){
+						flag = 1;
+						break;
+					}
+					recv = recv->next;
+				}
+				if(!flag)
+					printf("no such field for the record%s\n", p->next->tk->name);
+				p = p->next;
+			}
+		}
+		else{
+			recSem(ST, p->children);
+		}
+		p = p->next;
+	}
+}
+
+void semanticAnalysis(symbolTable* ST, ParseTree PT){
+	scopeTable globalScopeTable = ST->curr;
+	ParseTree funcPT = PT->children;
+	while(funcPT){
+		if(funcPT->non_term_id == function){
+			entry* funcEntry = lookup(ST, funcPT->children->tk->name);
+			ST->curr = funcEntry->funcScopePtr;
+			ParseTree ptr = funcPT->children->next->next->next;
+
+			recSem(ST, ptr);
+			ST->curr = ST->curr->prevScope;
+		}
+		else{
+			entry* funcEntry = lookup(ST, "mainFunction");
+			ST->curr = funcEntry->funcScopePtr;
+			ParseTree ptr = funcPT->children;
+
+			recSem(ST, ptr);
+		}
+		funcPT = funcPT->next;
+	}
 }

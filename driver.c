@@ -71,6 +71,8 @@ int main(int argc, char *argv[]){
 				symbolTable* ST =  createSymbolTable(PT);
 				// Records rs = enterRecords(PT);
 				printSymbolTable(ST);
+				semanticAnalysis(ST, PT);
+
 				freeMemory();
 			}break;
 			case 4:
