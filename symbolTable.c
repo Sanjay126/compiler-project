@@ -475,6 +475,7 @@ void recSem(symbolTable* ST, ParseTree ptr){
 			entry* en = lookup(ST, p->tk->name);
 			if(en==NULL){
 				//TODO ERROR HANDLING
+				p->notFound = 1;
 				printf("Variable not defined - %s\n", p->tk->name);
 				// return;
 			}
@@ -496,6 +497,13 @@ void recSem(symbolTable* ST, ParseTree ptr){
 		}
 		else{
 			recSem(ST, p);
+			if(p->non_term_id == funCallStmt){
+				entry* funcEntry = lookup(ST, p->children->next->tk->name);
+				if(funcEntry!=NULL){
+
+				}
+
+			}
 		}
 		p = p->next;
 	}

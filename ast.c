@@ -803,6 +803,7 @@ ParseTree case93(ParseTree p){
 	//<more_ids> ===> TK_COMMA <idList>
 
 	p = del_child(p, 0);
+	p = del_child(p, 0);
 	return p;
 }
 

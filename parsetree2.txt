@@ -24,8 +24,7 @@ program
                     TK_ID
             returnStmt
                 TK_ID
-                idList
-                    TK_ID
+                TK_ID
     function
         TK_FUNID
         input_par
@@ -46,27 +45,22 @@ program
             funCallStmt
                 outputParameters
                     TK_ID
-                    idList
-                        TK_ID
+                    TK_ID
                 TK_FUNID
                 inputParameters
                     TK_ID
-                    idList
-                        TK_ID
+                    TK_ID
             funCallStmt
                 outputParameters
                     TK_ID
-                    idList
-                        TK_ID
+                    TK_ID
                 TK_FUNID
                 inputParameters
                     TK_ID
-                    idList
-                        TK_ID
+                    TK_ID
             returnStmt
                 TK_ID
-                idList
-                    TK_ID
+                TK_ID
     mainFunction
         stmts
             typeDefinitions
@@ -113,13 +107,11 @@ program
             funCallStmt
                 outputParameters
                     TK_ID
-                    idList
-                        TK_ID
+                    TK_ID
                 TK_FUNID
                 inputParameters
                     TK_ID
-                    idList
-                        TK_ID
+                    TK_ID
             ioStmt
                 TK_WRITE
                 allVar
