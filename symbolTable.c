@@ -464,10 +464,55 @@ void printSymbolTable(symbolTable* ST){
 	printScopeTable(s, 0);
 }
 
-void recSem(symbolTable* ST, ParseTree ptr){
+void checkTypeAssign(symbolTable* ST, ParseTree p,char* type)
+{
+	if(p == NULL)
+		return;
+	ParseTree ptr = p->children;
+	while(ptr)
+	{
+		checkTypeAssign(ST,ptr,type);
+		if(ptr->non_term_id==TK_ID + no_of_nt && !ptr->notFound)
+		{
+			entry* tmp = lookup(ST,ptr->tk->name);
+			char* c;
+			if(!tmp->record_or_not)
+				c = tmp->type;
+			else
+			{
+				if(!ptr->next || ptr->next->non_term_id != TK_FIELDID + no_of_nt)
+					c = tmp->type;
+				if(ptr->next && ptr->next->non_term_id == TK_FIELDID + no_of_nt)
+				{
+					entry* tmp2 = lookup(ST,ptr->next->tk->name);
+					RecordValue ls = tmp->recVal;
+					while(ls)
+					{
+						if(strcmp(ls->name,ptr->next->tk->name) == 0)
+							break;
+						ls = ls->next;
+					}
+					if(ls->isInt)
+						c = "int";
+					else
+						c = "real";
+				}
+			}
+
+			if(strcmp(c,type) == 0)
+				printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,c);
+		}
+		p = p->next;	
+	}
+	return;
+}
+
+void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 	if(ptr==NULL)
 		return;
 	ParseTree p = ptr->children;
+	while(p && (p->non_term_id==declarations || p->non_term_id==typeDefinitions))
+				p = p->next;
 	// if(p==NULL)
 	// 	return;	
 	while(p){
@@ -490,19 +535,105 @@ void recSem(symbolTable* ST, ParseTree ptr){
 					recv = recv->next;
 				}
 				if(!flag)
-					printf("no such field for the record%s\n", p->next->tk->name);
+					printf("Line No %llu : No such field for the record : %s\n", p->next->tk->lineNo,p->next->tk->name);
 				p = p->next;
 			}
 			printf("VAR-------------------------%s\n", p->tk->name);
 		}
 		else{
-			recSem(ST, p);
+			semanticAnalyser(ST, p);
 			if(p->non_term_id == funCallStmt){
 				entry* funcEntry = lookup(ST, p->children->next->tk->name);
 				if(funcEntry!=NULL){
+					ParamNode outputParams = funcEntry->funcScopePtr->outputParams;
+					ParamNode inputParams = funcEntry->funcScopePtr->inputParams;
+					ParseTree outputCall = p->children->children;
+					ParseTree inputCall = p->children->next->next->children;
+				
+					while(outputCall && outputParams)
+					{
+						char* callType = lookup(ST,outputCall->tk->name)->type;
+						char* paramType = lookup(ST,outputParams->paramName)->type;
+						if(strcmp(callType,paramType) != 0)
+						{
+							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s",p->children->next->tk->lineNo,paramType,callType);
+						}
+						outputCall = outputCall->next;
+						outputParams = outputParams->next;
+					}
+					if(outputCall)
+						printf("Line No %llu: Output Arguements more than required\n", p->children->next->tk->lineNo);
+					if(outputParams)
+						printf("Line No %llu: Output Arguements more than required\n", p->children->next->tk->lineNo);
 
+					while(inputCall && inputParams)
+					{
+						char* callType = lookup(ST,inputCall->tk->name)->type;
+						char* paramType = lookup(ST,inputParams->paramName)->type;
+						if(strcmp(callType,paramType) != 0)
+						{
+							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s",p->children->next->tk->lineNo,paramType,callType);
+						}
+						inputCall = inputCall->next;
+						inputParams = inputParams->next;
+					}
+					if(inputCall)
+						printf("Line No %llu: input Arguements more than required\n", p->children->next->tk->lineNo);
+					if(inputParams)
+						printf("Line No %llu: input Arguements more than required\n", p->children->next->tk->lineNo);
+					
 				}
-
+				else{
+					printf("Line No %llu : Function %s Not Find\n",p->children->next->tk->lineNo,p->children->next->tk->name);
+				}
+			}
+			if(p->non_term_id == returnStmt)
+			{
+				ParamNode outputParams = ST->curr->outputParams;
+				ParseTree returnParams = p->children;
+				while(returnParams && outputParams)
+				{
+					char* returnName = returnParams->tk->name;
+					char* outputName = outputParams->paramName;
+					if(strcmp(returnName,outputName) != 0)
+						printf("Line No %llu: Expected Return identifier %s not %s\n",returnParams->tk->lineNo, outputName,returnName);
+					returnParams = returnParams->next;
+					outputParams = outputParams->next;
+				}
+				if(returnParams)
+					printf("Line No %llu: More than required of variables are returned\n",returnParams->tk->lineNo);
+				if(outputParams)
+					printf("Line No %llu: Less than required of variables are returned\n",p->children->tk->lineNo);
+			}
+			if(p->non_term_id == assignmentStmt)
+			{
+				ParseTree ptr = p->children->children;
+				if(!ptr->notFound)
+				{
+					entry* en = lookup(ST,ptr->tk->name);
+					if(!en->record_or_not)
+						checkTypeAssign(ST,p,en->type);
+					else
+					{
+						if(!ptr->next)
+							checkTypeAssign(ST,p,en->type);
+						if(ptr->next && !ptr->next->notFound)
+						{
+							RecordValue ls = en->recVal;
+							while(ls)
+							{
+								if(strcmp(ls->name,ptr->next->tk->name) == 0)
+									break;
+								ls = ls->next;
+							}
+							if(ls->isInt)
+								checkTypeAssign(ST,p,"int");
+							else
+								checkTypeAssign(ST,p,"real");
+						}
+					}	
+				}
+				
 			}
 		}
 		p = p->next;
@@ -521,18 +652,24 @@ void semanticAnalysis(symbolTable* ST, ParseTree PT){
 				funcPT = funcPT->next;
 				continue;
 			}
-			ptr = ptr->children;
-			while(ptr && (ptr->non_term_id==declarations || ptr->non_term_id==typeDefinitions))
-				ptr = ptr->next;
-			recSem(ST, ptr);
+			// ptr = ptr->children;
+			// while(ptr && (ptr->non_term_id==declarations || ptr->non_term_id==typeDefinitions))
+			// 	ptr = ptr->next;
+			semanticAnalyser(ST, ptr);
 			ST->curr = ST->curr->prevScope;
 		}
 		else{
 			entry* funcEntry = lookup(ST, "mainFunction");
 			ST->curr = funcEntry->funcScopePtr;
 			ParseTree ptr = funcPT->children;
-
-			recSem(ST, ptr);
+			if(ptr->children == NULL){
+				funcPT = funcPT->next;
+				continue;
+			}
+			ptr = ptr->children;
+			while(ptr && (ptr->non_term_id==declarations || ptr->non_term_id==typeDefinitions))
+				ptr = ptr->next;
+			semanticAnalyser(ST, ptr);
 		}
 		funcPT = funcPT->next;
 	}
