@@ -72,7 +72,6 @@ int main(int argc, char *argv[]){
 				// Records rs = enterRecords(PT);
 				printSymbolTable(ST);
 				semanticAnalysis(ST, PT);
-
 				freeMemory();
 			}break;
 			case 4:

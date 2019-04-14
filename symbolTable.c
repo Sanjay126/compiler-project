@@ -197,8 +197,6 @@ symbolTable *createSymbolTable(ParseTree PT){
 
 	entry* ptr = head;
 	while(ptr){
-		printf("  --->  %s", ptr->name);
-
 		if(ptr->global){
 			ST = insert(ST, ptr);
 		}
@@ -212,7 +210,6 @@ symbolTable *createSymbolTable(ParseTree PT){
 		ST =  openScope(ST,ptr->countVariables,ptr->name);
 		funcEntry->funcScopePtr = ST->curr;
 		entry* funcPtrr = ptr;
-printf("\n\nFUNCTION-----------%s-----------\n\n", ptr->name);
 		ptr = ptr->next;
 
 		while(ptr && strcmp(ptr->type,"function") != 0){
@@ -224,7 +221,6 @@ printf("\n\nFUNCTION-----------%s-----------\n\n", ptr->name);
 					strcpy(newNode->paramName,ptr->name);
 					newNode->next = ST->curr->inputParams;
 					ST->curr->inputParams = newNode;
-printf("\n\nINPUT-----------%s-----------\n\n", ptr->name);
 
 					ptr = ptr->next;
 				}
@@ -237,14 +233,12 @@ printf("\n\nINPUT-----------%s-----------\n\n", ptr->name);
 					strcpy(newNode->paramName,ptr->name);
 					newNode->next = ST->curr->outputParams;
 					ST->curr->outputParams = newNode;
-printf("\n\nOUTPUT-----------%s-----------\n\n", ptr->name);
 					ptr = ptr->next;
 				}
 			}
 			if(ptr){
 				if(!ptr->global){
 					ST = insert(ST,ptr);
-printf("\n\nVAR-----------%s-----------\n\n", ptr->name);
 
 					ptr = ptr->next;
 				}
@@ -290,7 +284,6 @@ int numberOfDeclarations(ParseTree PT){
 }
 
 symbolTable* insert(symbolTable* ST, entry *en){
-	// printf("aaa--%s\n", en->name);
 	scopeTable s;
 	int in;
 	entry* lookedup=lookup(ST,en->name);
@@ -298,7 +291,6 @@ symbolTable* insert(symbolTable* ST, entry *en){
 
 		printf("variable already declared %s\n",en->name);
 		//TODO error reporting
-		// printf("\naa%daa\n", lookedup->global);
 		return ST;
 	}
 	// if(strcmp(en->scope, "global")==0){
@@ -475,13 +467,13 @@ void checkTypeAssign(symbolTable* ST, ParseTree p,char* type)
 		if(ptr->non_term_id==TK_ID + no_of_nt && !ptr->notFound)
 		{
 			entry* tmp = lookup(ST,ptr->tk->name);
-			char* c;
+			char c[25];
 			if(!tmp->record_or_not)
-				c = tmp->type;
+				strcpy(c,tmp->type);
 			else
 			{
 				if(!ptr->next || ptr->next->non_term_id != TK_FIELDID + no_of_nt)
-					c = tmp->type;
+					strcpy(c,tmp->type);
 				if(ptr->next && ptr->next->non_term_id == TK_FIELDID + no_of_nt)
 				{
 					entry* tmp2 = lookup(ST,ptr->next->tk->name);
@@ -493,24 +485,24 @@ void checkTypeAssign(symbolTable* ST, ParseTree p,char* type)
 						ls = ls->next;
 					}
 					if(ls->isInt)
-						c = "int";
+						strcpy(c,"int");
 					else
-						c = "real";
+						strcpy(c,"real");
 				}
 			}
 
-			if(strcmp(c,type) == 0)
-				printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,c);
+			if(strcmp(c,type) != 0)
+				printf("1...Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,c);
 		}
 
 		if(ptr->non_term_id == TK_NUM + no_of_nt && strcmp(type,"real")==0)
-			printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"int");
+			printf("2...Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"int");
 
 
 		if(ptr->non_term_id == TK_RNUM + no_of_nt && strcmp(type,"int")==0)
-			printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"real");
+			printf("3...Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"real");
 
-		p = p->next;	
+		ptr = ptr->next;	
 	}
 	return;
 }
@@ -546,7 +538,6 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 					printf("Line No %llu : No such field for the record : %s\n", p->next->tk->lineNo,p->next->tk->name);
 				p = p->next;
 			}
-			printf("VAR-------------------------%s\n", p->tk->name);
 		}
 		else{
 			semanticAnalyser(ST, p);
@@ -557,11 +548,19 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 					ParamNode inputParams = funcEntry->funcScopePtr->inputParams;
 					ParseTree outputCall = p->children->children;
 					ParseTree inputCall = p->children->next->next->children;
-				
+					int flag = 0;
 					while(outputCall && outputParams)
 					{
+						if(outputCall->notFound)
+						{
+							flag = 1;
+							break;
+						}
 						char* callType = lookup(ST,outputCall->tk->name)->type;
+						scopeTable temp = ST->curr;
+						ST->curr = funcEntry->funcScopePtr;
 						char* paramType = lookup(ST,outputParams->paramName)->type;
+						ST->curr = temp;
 						if(strcmp(callType,paramType) != 0)
 						{
 							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s",p->children->next->tk->lineNo,paramType,callType);
@@ -569,15 +568,24 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 						outputCall = outputCall->next;
 						outputParams = outputParams->next;
 					}
-					if(outputCall)
+					if(outputCall && flag == 0)
 						printf("Line No %llu: Output Arguements more than required\n", p->children->next->tk->lineNo);
-					if(outputParams)
-						printf("Line No %llu: Output Arguements more than required\n", p->children->next->tk->lineNo);
+					if(outputParams && flag == 0)
+						printf("Line No %llu: Output Arguements less than required\n", p->children->next->tk->lineNo);
 
-					while(inputCall && inputParams)
+					flag = 0;
+					while(inputCall && inputParams && !inputCall->notFound)
 					{
+						if(inputCall->notFound)
+						{
+							flag = 1;
+							break;
+						}
 						char* callType = lookup(ST,inputCall->tk->name)->type;
+						scopeTable temp = ST->curr;
+						ST->curr = funcEntry->funcScopePtr;
 						char* paramType = lookup(ST,inputParams->paramName)->type;
+						ST->curr = temp;
 						if(strcmp(callType,paramType) != 0)
 						{
 							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s",p->children->next->tk->lineNo,paramType,callType);
@@ -585,11 +593,10 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 						inputCall = inputCall->next;
 						inputParams = inputParams->next;
 					}
-					if(inputCall)
+					if(inputCall && flag == 0)
 						printf("Line No %llu: input Arguements more than required\n", p->children->next->tk->lineNo);
-					if(inputParams)
+					if(inputParams != NULL && flag == 0)
 						printf("Line No %llu: input Arguements more than required\n", p->children->next->tk->lineNo);
-					
 				}
 				else{
 					printf("Line No %llu : Function %s Not Find\n",p->children->next->tk->lineNo,p->children->next->tk->name);
@@ -678,7 +685,7 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 			if(p->non_term_id == ioStmt)
 			{
 				entry* en = lookup(ST,p->children->next->children->tk->name);
-				if(en->record_or_not && !p->children->next->children->next)
+				if(en && en->record_or_not && !p->children->next->children->next)
 					printf("Line No: %llu Type mismatch \n", p->children->tk->lineNo);
 			}		
 
@@ -762,15 +769,17 @@ void semanticAnalysis(symbolTable* ST, ParseTree PT){
 		else{
 			entry* funcEntry = lookup(ST, "mainFunction");
 			ST->curr = funcEntry->funcScopePtr;
+			// printf("---aaa--- %s\n", funcEntry->funcScopePtr->name);
 			ParseTree ptr = funcPT->children;
 			if(ptr->children == NULL){
 				funcPT = funcPT->next;
 				continue;
 			}
-			ptr = ptr->children;
-			while(ptr && (ptr->non_term_id==declarations || ptr->non_term_id==typeDefinitions))
-				ptr = ptr->next;
+			// ptr = ptr->children;
+			// while(ptr && (ptr->non_term_id==declarations || ptr->non_term_id==typeDefinitions))
+			// 	ptr = ptr->next;
 			semanticAnalyser(ST, ptr);
+			ST->curr = ST->curr->prevScope;
 		}
 		funcPT = funcPT->next;
 	}
