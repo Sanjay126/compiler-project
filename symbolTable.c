@@ -502,6 +502,14 @@ void checkTypeAssign(symbolTable* ST, ParseTree p,char* type)
 			if(strcmp(c,type) == 0)
 				printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,c);
 		}
+
+		if(ptr->non_term_id == TK_NUM + no_of_nt && strcmp(type,"real")==0)
+			printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"int");
+
+
+		if(ptr->non_term_id == TK_RNUM + no_of_nt && strcmp(type,"int")==0)
+			printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"real");
+
 		p = p->next;	
 	}
 	return;
@@ -666,6 +674,13 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 					}
 				}
 			}
+
+			if(p->non_term_id == ioStmt)
+			{
+				entry* en = lookup(ST,p->children->next->children->tk->name);
+				if(en->record_or_not && !p->children->next->children->next)
+					printf("Line No: %llu Type mismatch \n", p->children->tk->lineNo);
+			}				
 		}
 		p = p->next;
 	}
