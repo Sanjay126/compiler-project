@@ -16,6 +16,8 @@ int main(int argc, char *argv[]){
 	}
 	int ASTnodes;
 	int ParseTreeNodes;
+	symbolTable* symtab;
+	ParseTree PT;
 	int opt;
     clock_t    start_time, end_time;
 
@@ -70,7 +72,7 @@ int main(int argc, char *argv[]){
 				intialiseGlobalVariablesLexer();
 				// initialiseGlobalVariablesParser();
 				parseTable T;
-				ParseTree PT = parseInputSourceCode(argv[1], T, PT);
+				PT = parseInputSourceCode(argv[1], T, PT);
 				// printParseTree(PT,"parsetree.txt");
 				// printPARSETREENEW(PT,"parsetree1.txt");
 				noOfASTnodes=noOfPTNode;
@@ -111,14 +113,14 @@ int main(int argc, char *argv[]){
                 // break;
              // Print both total_CPU_time and total_CPU_time_in_seconds 
 			case 5:
-				// symbolTable symtab= createSymbolTable(PT);
-				// printSymbolTable(symtab);
+				symtab= createSymbolTable(PT);
+				printSymbolTable(symtab);
 				break;
 			case 6:
-				// printGlobalVariables(symtab);
+				printGlobalVariables(symtab);
 				break;
 			case 7:
-				// printMemoryReq(symtab);
+				printMemoryReq(symtab);
 				break;
 			case 8:
 				// printAllRecords(symtab);

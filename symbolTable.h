@@ -10,9 +10,10 @@
 symbolTable* createSymbolTable(ParseTree PT);
 
 // scopeTable createScopeTable(char* scope,entry *current);
-
-void printSymbolTable(symbolTable* st);
-
+void printGlobalVariables(symbolTable* ST);
+void printSymbolTable(symbolTable* ST);
+void printScopeTable(scopeTable sc,int spaces,int all);
+void printMemoryReq(symbolTable* ST);
 symbolTable* insert(symbolTable* ST, entry *en);
 // symbolTable closeScope(symbolTable ST);
 // symbolTable openScope(symbolTable ST,int sz);

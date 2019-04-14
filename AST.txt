@@ -4,7 +4,9 @@
                     int	                      4	                 TK_INT	                   ----	              input_par	                    yes	                   ----	                      0
                  d5cc34	                      4	                  TK_ID	                   ----	              input_par	                    yes	                   ----	                      0
                    ----	                   ----	                   ----	                   ----	                     31	                     no	              input_par	                      6
-                   ----	                   ----	                   ----	                   ----	                     31	                     no	             output_par	                      8
+                   real	                      5	                TK_REAL	                   ----	             output_par	                    yes	                   ----	                      0
+                     d3	                      5	                  TK_ID	                   ----	             output_par	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     31	                     no	             output_par	                      7
                     int	                      6	                 TK_INT	                   ----	            declaration	                    yes	                   ----	                      0
                  b5b567	                      6	                  TK_ID	                   ----	            declaration	                    yes	                   ----	                      0
                    ----	                   ----	                   ----	                   ----	                     15	                     no	            declaration	                     27
