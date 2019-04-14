@@ -18,7 +18,7 @@ int main(int argc, char *argv[]){
 	int ParseTreeNodes;
 	symbolTable* symtab;
 	parseTable T;
-	PT = parseInputSourceCode(argv[1], T, PT);
+	ParseTree PT = parseInputSourceCode(argv[1], T, PT);
 	// printParseTree(PT,"parsetree.txt");
 	// printPARSETREENEW(PT,"parsetree1.txt");
 	noOfASTnodes=noOfPTNode;
