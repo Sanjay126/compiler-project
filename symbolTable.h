@@ -14,6 +14,7 @@ void printGlobalVariables(symbolTable* ST);
 void printSymbolTable(symbolTable* ST);
 void printScopeTable(scopeTable sc,int spaces,int all);
 void printMemoryReq(symbolTable* ST);
+void printAllRecords(symbolTable* ST);
 symbolTable* insert(symbolTable* ST, entry *en);
 // symbolTable closeScope(symbolTable ST);
 // symbolTable openScope(symbolTable ST,int sz);

@@ -119,7 +119,7 @@ int main(int argc, char *argv[]){
 				printMemoryReq(symtab);
 				break;
 			case 8:
-				// printAllRecords(symtab);
+				printAllRecords(symtab);
 				break;
 			case 9:
 				start_time = clock();
@@ -145,6 +145,8 @@ int main(int argc, char *argv[]){
 
 				break;
 			case 10:
+				printf("not Implemented");
+				break;
 			default :
 				printf("\n\n---Invalid Option---\n\n");
 				continue;
