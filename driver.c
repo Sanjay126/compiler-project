@@ -17,7 +17,13 @@ int main(int argc, char *argv[]){
 	int ASTnodes;
 	int ParseTreeNodes;
 	symbolTable* symtab;
-	ParseTree PT;
+	parseTable T;
+	ParseTree PT = parseInputSourceCode(argv[1], T, PT);
+	// printParseTree(PT,"parsetree.txt");
+	// printPARSETREENEW(PT,"parsetree1.txt");
+	noOfASTnodes=noOfPTNode;
+	PT = createAST(PT);
+	symtab= createSymbolTable(PT);
 	int opt;
     clock_t    start_time, end_time;
 
@@ -71,20 +77,11 @@ int main(int argc, char *argv[]){
 			case 3:{
 				intialiseGlobalVariablesLexer();
 				// initialiseGlobalVariablesParser();
-				parseTable T;
-				PT = parseInputSourceCode(argv[1], T, PT);
-				// printParseTree(PT,"parsetree.txt");
-				// printPARSETREENEW(PT,"parsetree1.txt");
-				noOfASTnodes=noOfPTNode;
-				PT = createAST(PT);
-				printf("\ninorder traversal of Abstract Syntax Tree in file AST.txt\n");
+				
+				printf("\nInorder traversal of Abstract Syntax Tree in file AST.txt\n");
 				printParseTree(PT,"AST.txt");
 				// printPARSETREENEW(PT,"parsetree2.txt");
 				// symbolTable* ST =  createSymbolTable(PT);
-				// Records rs = enterRecords(PT);
-				// printSymbolTable(ST);
-				// semanticAnalysis(ST, PT);
-
 				freeMemory();
 			}break;
 			case 4:
@@ -113,7 +110,6 @@ int main(int argc, char *argv[]){
                 // break;
              // Print both total_CPU_time and total_CPU_time_in_seconds 
 			case 5:
-				symtab= createSymbolTable(PT);
 				printSymbolTable(symtab);
 				break;
 			case 6:
