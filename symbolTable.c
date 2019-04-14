@@ -680,7 +680,62 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 				entry* en = lookup(ST,p->children->next->children->tk->name);
 				if(en->record_or_not && !p->children->next->children->next)
 					printf("Line No: %llu Type mismatch \n", p->children->tk->lineNo);
-			}				
+			}		
+
+			if(p->non_term_id == iterativeStmt)
+			{
+				ParamNode ls = NULL;
+				ParseTree ptr = p->children->children;
+				while(ptr)
+				{
+					if(ptr->non_term_id == TK_ID + no_of_nt)
+					{
+						ParamNode newNode = (ParamNode)malloc(sizeof(struct paramNode));
+						newNode->paramName = (char*)malloc(sizeof(char)*(strlen(ptr->tk->name)+1));
+						newNode->paramName = ptr->tk->name;
+						newNode->next = NULL;
+						if(ls == NULL)
+							ls = newNode;
+						else
+						{
+							newNode->next = ls;
+							ls = newNode;
+						}
+					}
+					ptr = ptr->next;
+				}
+				int flag = 0;
+				ptr = p->children;
+				while(ptr)
+				{
+					if(ptr->non_term_id == assignmentStmt)
+					{
+						char* name = ptr->children->children->tk->name;
+						ParamNode ptr2 = ls;
+						while(ptr2)
+						{
+							if(strcmp(ptr2->paramName,name) == 0)
+							{
+								flag = 1;
+								break;
+							}
+							ptr2 = ptr2->next;
+						} 
+
+						if(flag == 1)
+							break;
+					}
+					ptr = ptr->next;
+				}
+
+				if(flag == 0)
+				{
+					ptr = p->children->children;
+					while(ptr && ptr->non_term_id != TK_ID+no_of_nt)
+						ptr = ptr->next;
+					printf("Line No %llu: No Variables in while loop are getting updated\n",ptr->tk->lineNo);
+				}
+			}		
 		}
 		p = p->next;
 	}

@@ -4,109 +4,68 @@ program
         input_par
             TK_INT
             TK_ID
-            TK_INT
-            TK_ID
-            TK_INT
-            TK_ID
         output_par
-            TK_REAL
+            TK_RECORDID
             TK_ID
         stmts
-            declarations
-                declaration
-                    TK_REAL
-                    TK_ID
-                declaration
-                    TK_REAL
-                    TK_ID
-            assignmentStmt
+            ioStmt
+                TK_READ
                 singleOrRecId
                     TK_ID
-                arithmeticExpression
-                    TK_RNUM
-            assignmentStmt
+                    TK_FIELDID
+            ioStmt
+                TK_READ
                 singleOrRecId
                     TK_ID
-                arithmeticExpression
-                    term
-                        arithmeticExpression
-                            arithmeticExpression
-                                TK_ID
-                                TK_PLUS
-                                term
-                                    TK_NUM
-                                    TK_MUL
-                                    TK_ID
-                            TK_MINUS
-                            arithmeticExpression
-                                TK_ID
-                                TK_MINUS
-                                TK_NUM
-                        TK_DIV
-                        TK_NUM
-            assignmentStmt
+                    TK_FIELDID
+            ioStmt
+                TK_READ
                 singleOrRecId
                     TK_ID
-                arithmeticExpression
-                    arithmeticExpression
-                        term
-                            arithmeticExpression
-                                TK_ID
-                                TK_MINUS
-                                TK_RNUM
-                            TK_MUL
-                            arithmeticExpression
-                                TK_NUM
-                                TK_MINUS
-                                term
-                                    TK_NUM
-                                    TK_MUL
-                                    TK_NUM
-                    TK_PLUS
-                    term
-                        TK_NUM
-                        TK_MUL
-                        TK_ID
-            conditionalStmt
-                booleanExpression
-                    TK_NOT
-                    TK_ID
-                    TK_EQ
-                    TK_NUM
-                    TK_AND
-                    TK_ID
-                    TK_GT
-                    TK_RNUM
-                assignmentStmt
-                    singleOrRecId
-                        TK_ID
-                    arithmeticExpression
-                        term
-                            TK_ID
-                            TK_DIV
-                            TK_ID
-                elsePart
-                    ioStmt
-                        TK_WRITE
-                        allVar
-                            TK_ID
+                    TK_FIELDID
             returnStmt
                 TK_ID
     mainFunction
         stmts
+            typeDefinitions
+                typeDefinition
+                    TK_RECORDID
+                    fieldDefinition
+                        TK_REAL
+                        TK_FIELDID
+                    fieldDefinition
+                        TK_REAL
+                        TK_FIELDID
+                    fieldDefinition
+                        TK_REAL
+                        TK_FIELDID
+                typeDefinition
+                    TK_RECORDID
+                    fieldDefinition
+                        TK_INT
+                        TK_FIELDID
+                    fieldDefinition
+                        TK_INT
+                        TK_FIELDID
+                    fieldDefinition
+                        TK_REAL
+                        TK_FIELDID
             declarations
                 declaration
-                    TK_INT
-                    TK_ID
-                declaration
-                    TK_INT
+                    TK_RECORDID
                     TK_ID
                 declaration
                     TK_INT
                     TK_ID
                     TK_GLOBAL
                 declaration
-                    TK_REAL
+                    TK_INT
+                    TK_ID
+                declaration
+                    TK_RECORDID
+                    TK_ID
+                declaration
+                    TK_RECORDID
                     TK_ID
             assignmentStmt
                 singleOrRecId
@@ -117,20 +76,75 @@ program
                 TK_READ
                 singleOrRecId
                     TK_ID
-            ioStmt
-                TK_READ
+            assignmentStmt
                 singleOrRecId
                     TK_ID
-            funCallStmt
-                outputParameters
+                    TK_FIELDID
+                arithmeticExpression
+                    TK_RNUM
+            assignmentStmt
+                singleOrRecId
                     TK_ID
-                TK_FUNID
-                inputParameters
+                    TK_FIELDID
+                arithmeticExpression
+                    TK_RNUM
+            assignmentStmt
+                singleOrRecId
                     TK_ID
+                    TK_FIELDID
+                arithmeticExpression
+                    TK_RNUM
+            iterativeStmt
+                booleanExpression
                     TK_ID
+                    TK_LE
                     TK_ID
+                funCallStmt
+                    outputParameters
+                        TK_ID
+                    TK_FUNID
+                    inputParameters
+                        TK_ID
+                assignmentStmt
+                    singleOrRecId
+                        TK_ID
+                        TK_FIELDID
+                    arithmeticExpression
+                        term
+                            TK_ID
+                            TK_FIELDID
+                        TK_PLUS
+                        term
+                            TK_ID
+                            TK_FIELDID
+                assignmentStmt
+                    singleOrRecId
+                        TK_ID
+                    arithmeticExpression
+                        TK_ID
+                        TK_PLUS
+                        TK_NUM
+            assignmentStmt
+                singleOrRecId
+                    TK_ID
+                arithmeticExpression
+                    term
+                        TK_ID
+                        TK_DIV
+                        TK_ID
             ioStmt
                 TK_WRITE
                 allVar
                     TK_ID
+                    TK_FIELDID
+            ioStmt
+                TK_WRITE
+                allVar
+                    TK_ID
+                    TK_FIELDID
+            ioStmt
+                TK_WRITE
+                allVar
+                    TK_ID
+                    TK_FIELDID
             returnStmt
