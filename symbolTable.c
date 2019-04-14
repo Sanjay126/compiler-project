@@ -19,16 +19,34 @@ int hashKey(char *v, int M){
         h = (a*h + *v) % M;
     return h;
 }
+void printAllRecords(symbolTable* s){
+	int norecord=1;
+	if(!s)
+		return;
+	Records recs = s->recs;
+	Record temp=recs->head;
+	while(temp){
+		printf("\n%20s\t",temp->name);
+		rec_dec decl=temp->head;
+		while(decl){
+			printf("%5s, ",decl->type);
+			decl=decl->next;
+		}
+		printf("\t%2d\n",temp->size);
+		temp=temp->next;
+	}
+		
+}	
 void printMemoryReq(symbolTable* s){
 	if(!s||!s->curr)
 		return;
 	entry** arr = s->curr->arr;
-	for(int i=0; i<s->size; i++){
+	for(int i=0; i<s->curr->size; i++){
 		if(arr[i]!=NULL){
 			entry* ptr = arr[i];
 			while(ptr){
 				if((strcmp(ptr->type, "function")==0))
-					printf("%20s\t%4d",ptr->name,ptr->width);
+					printf("\n %20s\t%4d \n",ptr->name,ptr->width);
 				ptr=ptr->next;
 			}
 		}
