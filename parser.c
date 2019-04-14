@@ -15,7 +15,6 @@ Adit Shastri 2016A7PS0121P
 
 //global variable for grammer struct
 Grammar gram;
-
 //Arrays for non-terminals,all symbols and token resp.
 char* ntArray[] = {"assignmentStmt","global_or_not","booleanExpression","highPrecedenceOperators","singleOrRecId","constructedDatatype","dataType","primitiveDatatype","typeDefinitions","more_ids","idList","relationalOp","temp","output_par","stmt","declarations","input_par","logicalOp","newallvar","program","remaining_list","all","term","stmts","returnStmt","declaration","iterativeStmt","otherFunctions","factor","allnew","new_24","function","arithmeticExpression","var","fieldDefinitions","allVar","mainFunction","funCallStmt","parameter_list","fieldDefinition","typeDefinition","expPrime","outputParameters","termPrime","lowPrecedenceOperators","optionalReturn","elsePart","moreFields","conditionalStmt","otherStmts","ioStmt","inputParameters"};
 
@@ -275,6 +274,7 @@ ParseTree createPTNode(int id, ParseTree parent){
 	new->tk = NULL;
 	new->non_term_id = id;
 	new->parent = parent;
+	noOfPTNode++;
 	return new;
 }
 
@@ -574,6 +574,7 @@ void printParseTree(ParseTree PT, char *outfile){
 //Parsing anf forming parsetree
 ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 	
+	noOfPTNode=0;
 	Stack s = intialiseStack();
 	
 	s = pushStack(s,TK_DOLLAR+no_of_nt,NULL);
