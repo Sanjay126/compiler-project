@@ -19,50 +19,20 @@ int hashKey(char *v, int M){
         h = (a*h + *v) % M;
     return h;
 }
-void printMemoryReq(symbolTable* ST){
-	if(!s)
+void printMemoryReq(symbolTable* s){
+	if(!s||!s->curr)
 		return;
-	entry** arr = s->arr;
+	entry** arr = s->curr->arr;
 	for(int i=0; i<s->size; i++){
 		if(arr[i]!=NULL){
 			entry* ptr = arr[i];
 			while(ptr){
-				for(int j=0; j<spaces; j++)
-					printf("\t\t");
-				printf("%20s\t",ptr->name);
-				if((strcmp(ptr->type, "function")==0)&&all)
-					printScopeTable(ptr->funcScopePtr, spaces,all);
-
-				if(ptr->record_or_not){
-					RecordValue recval = ptr->recVal;
-					while(recval){
-						printf("\t\t\t\t%20s\t\t%20d\n", recval->name, recval->isInt);
-						recval = recval->next;
-					}
-				}
-				ptr=ptr->next;
+				if((strcmp(ptr->type, "function")==0))
+					printf("%20s\t%4d",ptr->name,ptr->width);
+	
 			}
 		}
 	}
-	if(all){
-		ParamNode in = s->inputParams;
-		ParamNode out = s->outputParams;
-		
-		printf("\n");
-		while(in){
-			printf("\t\tINPUT  --  %20s\n", in->paramName);
-			in = in->next;
-		}
-		
-		printf("\n");
-		while(out){
-			printf("\t\tOUTPUT  --  %20s\n", out->paramName);
-			out = out->next;
-		}
-	}
-	printf("\n");
-}
-
 }
 void printGlobalVariables(symbolTable* ST){
 	printScopeTable(ST->curr,0,0);
