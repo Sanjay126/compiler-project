@@ -35,22 +35,36 @@ struct recordValue{
 };
 typedef struct recordValue* RecordValue;
 
-
+struct scopetable;
 typedef struct entry{
     char *name;
     char *type;
     char *scope;
-    int width;
-    int offset;
+    int record_or_not;
+    // int width;
+    int global;
+    // int offset;
     int lineNo;
     RecordValue recVal;
-    rec_dec record;
+    // rec_dec record;
+    int inout;
     struct entry *next;
+	int countVariables;
+	struct scopetable *funcScopePtr;
 }entry;
+
+struct paramNode{
+	char* paramName;
+	struct paramNode* next;
+};
+
+typedef struct paramNode* ParamNode;
 
 struct scopetable{
 	int size;
 	char* scope;
+	ParamNode inputParams;
+	ParamNode outputParams;
 	struct scopetable *prevScope;
 	entry** arr;
 };

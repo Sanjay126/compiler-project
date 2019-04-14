@@ -7,25 +7,28 @@
 #ifndef SYMBOLTABLE
 #define SYMBOLTABLE
 
-symbolTable createSymbolTable(ParseTree PT, int size);
+symbolTable* createSymbolTable(ParseTree PT);
 
 // scopeTable createScopeTable(char* scope,entry *current);
 
-void printSymbolTable(symbolTable st, int size);
+void printSymbolTable(symbolTable* st);
 
-symbolTable insert(symbolTable ST, entry *en);
+symbolTable* insert(symbolTable* ST, entry *en);
 // symbolTable closeScope(symbolTable ST);
 // symbolTable openScope(symbolTable ST,int sz);
 
-entry* lookup(symbolTable ST, char* name);
+entry* lookup(symbolTable* ST, char* name);
 
 void freeScopeTable(scopeTable s);
 
 // symbolTable addInGlobal(symbolTable ST,entry *en);
 // entry* makeRecordEntry(ParseTree PT);
 
-symbolTable enterRecords(ParseTree PT,symbolTable ST);
-
+symbolTable* enterRecords(ParseTree PT,symbolTable* ST);
+Record  lookupRecord(Records r,char* name);
+symbolTable* closeScope(symbolTable* ST);
+symbolTable *openScope(symbolTable *ST,int sz,char* scope);
+void semanticAnalysis(symbolTable* ST, ParseTree PT);
 
 #endif
 

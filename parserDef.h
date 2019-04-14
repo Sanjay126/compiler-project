@@ -111,6 +111,7 @@ struct parseTree{
 	struct parseTree* children; //pointing to head of linked list of children
 	struct parseTree* parent; //pointer to parent of node
 	int ruleNo;
+	int notFound;
 };
 typedef struct parseTree* ParseTree; 
 

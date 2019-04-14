@@ -77,7 +77,12 @@ int main(int argc, char *argv[]){
 				PT = createAST(PT);
 				printf("\ninorder traversal of Abstract Syntax Tree in file AST.txt\n");
 				printParseTree(PT,"AST.txt");
+				// printPARSETREENEW(PT,"parsetree2.txt");
+				// symbolTable* ST =  createSymbolTable(PT);
 				// Records rs = enterRecords(PT);
+				// printSymbolTable(ST);
+				// semanticAnalysis(ST, PT);
+
 				freeMemory();
 			}break;
 			case 4:

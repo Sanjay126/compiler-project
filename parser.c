@@ -275,6 +275,7 @@ ParseTree createPTNode(int id, ParseTree parent){
 	new->non_term_id = id;
 	new->parent = parent;
 	noOfPTNode++;
+	new->notFound = 0;
 	return new;
 }
 

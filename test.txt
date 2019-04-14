@@ -1,10 +1,5 @@
 _main
-		record #marks
-		type real : maths; 
-		type real: physics; 
-		type real: chemistry;
-	endrecord;
-	type int :b3;
-	type real :c4bd56;
+%	type int :b3;
+%	type real :c4bd56;
 	return ;
 end
