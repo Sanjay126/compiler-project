@@ -1,5 +1,5 @@
 compileAll:removePrevious compileLexer compileParser compilerAST compileSymbolTable
-		gcc-5 lexer.o parser.o ast.o symbolTable.o driver.c -g -o stage1exe
+		gcc-5 lexer.o parser.o ast.o symbolTable.o driver.c -g -o compiler
 removePrevious:
 	rm *.o *.out -f
 compileLexer:

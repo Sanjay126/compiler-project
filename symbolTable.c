@@ -323,7 +323,7 @@ symbolTable* insert(symbolTable* ST, entry *en){
 	entry* lookedup=lookup(ST,en->name);
 	if(lookedup){
 
-		printf("variable already declared %s\n",en->name);
+		printf("Line No. %d : <%s> already declared.\n", en->lineNo, en->name);
 		//TODO error reporting
 		return ST;
 	}
