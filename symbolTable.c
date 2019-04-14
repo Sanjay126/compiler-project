@@ -633,7 +633,38 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 						}
 					}	
 				}
-				
+			}
+
+			if(p->non_term_id == booleanExpression)
+			{
+				ParseTree ptr = p->children;
+				while(ptr->non_term_id != TK_ID+no_of_nt)
+					ptr = ptr->next;
+				if(!ptr->notFound)
+				{
+					entry* en = lookup(ST,ptr->tk->name);
+					if(!en->record_or_not)
+						checkTypeAssign(ST,p,en->type);
+					else
+					{
+						if(!ptr->next || ptr->next->non_term_id != TK_FIELDID+no_of_nt)
+							checkTypeAssign(ST,p,en->type);
+						if(ptr->next && !ptr->next->notFound && ptr->next->non_term_id != TK_FIELDID+no_of_nt)
+						{
+							RecordValue ls = en->recVal;
+							while(ls)
+							{
+								if(strcmp(ls->name,ptr->next->tk->name) == 0)
+									break;
+								ls = ls->next;
+							}
+							if(ls->isInt)
+								checkTypeAssign(ST,p,"int");
+							else
+								checkTypeAssign(ST,p,"real");
+						}
+					}
+				}
 			}
 		}
 		p = p->next;
