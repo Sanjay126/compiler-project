@@ -130,4 +130,6 @@ struct stack{
 };
 typedef struct stack* Stack;
 int noOfPTNode;
+
+int parserError;
 #endif

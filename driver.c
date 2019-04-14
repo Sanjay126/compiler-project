@@ -122,6 +122,28 @@ int main(int argc, char *argv[]){
 				// printAllRecords(symtab);
 				break;
 			case 9:
+				start_time = clock();
+				{
+					intialiseGlobalVariablesLexer();
+					parseTable T;
+					ParseTree PT = parseInputSourceCode(argv[1], T, PT);
+					// printParseTree(PT,"parsetree.txt");
+					PT = createAST(PT);
+					symbolTable* ST;
+					if(!parserError){
+						ST = createSymbolTable(PT);
+						semanticAnalysis(ST, PT);
+					}
+					freeMemory();
+                }
+                end_time = clock();
+
+                total_CPU_time  =  (double) (end_time - start_time);
+                total_CPU_time_in_seconds =   total_CPU_time / CLOCKS_PER_SEC;
+
+                printf("\nTOTAL_CPU_TIME:\t%lf\nTOTAL_CPU_TIME_IN_SECONDS:\t%lf\n\n", total_CPU_time, total_CPU_time_in_seconds);
+
+				break;
 			case 10:
 			default :
 				printf("\n\n---Invalid Option---\n\n");

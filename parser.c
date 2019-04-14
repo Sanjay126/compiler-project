@@ -574,7 +574,7 @@ void printParseTree(ParseTree PT, char *outfile){
 
 //Parsing anf forming parsetree
 ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
-	
+	parserError = 0;
 	noOfPTNode=0;
 	Stack s = intialiseStack();
 	
@@ -730,6 +730,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 			// }
 			else //Panic Mode : Error
 			{	
+				parserError = 1;
 				printf("Line %llu: The token of type %s for lexeme %s does not match with the expected token of type %s\n",token->lineNo,tokenArray[token->tid],token->name,symbolArray[X]);
 				while(T[X][token->tid]<0){
 				free(token);
@@ -751,6 +752,7 @@ ParseTree parseInputSourceCode(char *testcaseFile, parseTable T,ParseTree PT){
 		else //Case 4 : Top of stack is token but is not equal to the current token
 		{
 			errorFlag = 1;
+			parserError=1;
 			if(X==TK_SEM+no_of_nt)
 				printf("Line %llu :Semicolon is missing\n",token->lineNo);
 			else

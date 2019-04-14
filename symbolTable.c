@@ -509,15 +509,15 @@ void checkTypeAssign(symbolTable* ST, ParseTree p,char* type)
 			}
 
 			if(strcmp(c,type) != 0)
-				printf("1...Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,c);
+				printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,c);
 		}
 
 		if(ptr->non_term_id == TK_NUM + no_of_nt && strcmp(type,"real")==0)
-			printf("2...Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"int");
+			printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"int");
 
 
 		if(ptr->non_term_id == TK_RNUM + no_of_nt && strcmp(type,"int")==0)
-			printf("3...Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"real");
+			printf("Line No %llu:Expected type %s not %s\n", ptr->tk->lineNo,type,"real");
 
 		ptr = ptr->next;	
 	}
@@ -538,7 +538,8 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 			if(en==NULL){
 				//TODO ERROR HANDLING
 				p->notFound = 1;
-				printf("Variable not defined - %s\n", p->tk->name);
+				// if()
+				printf("Line No. %llu : <%s> is undeclared.\n", p->tk->lineNo, p->tk->name);
 				// return;
 			}
 			else if(p->next!=NULL && p->next->non_term_id==TK_FIELDID + no_of_nt){
@@ -580,7 +581,7 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 						ST->curr = temp;
 						if(strcmp(callType,paramType) != 0)
 						{
-							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s",p->children->next->tk->lineNo,paramType,callType);
+							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s\n",p->children->next->tk->lineNo,paramType,callType);
 						}
 						outputCall = outputCall->next;
 						outputParams = outputParams->next;
@@ -605,7 +606,7 @@ void semanticAnalyser(symbolTable* ST, ParseTree ptr){
 						ST->curr = temp;
 						if(strcmp(callType,paramType) != 0)
 						{
-							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s",p->children->next->tk->lineNo,paramType,callType);
+							printf("Line No %llu: Expected Arguement of type %s passed argument of type %s\n",p->children->next->tk->lineNo,paramType,callType);
 						}
 						inputCall = inputCall->next;
 						inputParams = inputParams->next;
