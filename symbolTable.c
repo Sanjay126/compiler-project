@@ -19,8 +19,54 @@ int hashKey(char *v, int M){
         h = (a*h + *v) % M;
     return h;
 }
+void printMemoryReq(symbolTable* ST){
+	if(!s)
+		return;
+	entry** arr = s->arr;
+	for(int i=0; i<s->size; i++){
+		if(arr[i]!=NULL){
+			entry* ptr = arr[i];
+			while(ptr){
+				for(int j=0; j<spaces; j++)
+					printf("\t\t");
+				printf("%20s\t",ptr->name);
+				if((strcmp(ptr->type, "function")==0)&&all)
+					printScopeTable(ptr->funcScopePtr, spaces,all);
 
+				if(ptr->record_or_not){
+					RecordValue recval = ptr->recVal;
+					while(recval){
+						printf("\t\t\t\t%20s\t\t%20d\n", recval->name, recval->isInt);
+						recval = recval->next;
+					}
+				}
+				ptr=ptr->next;
+			}
+		}
+	}
+	if(all){
+		ParamNode in = s->inputParams;
+		ParamNode out = s->outputParams;
+		
+		printf("\n");
+		while(in){
+			printf("\t\tINPUT  --  %20s\n", in->paramName);
+			in = in->next;
+		}
+		
+		printf("\n");
+		while(out){
+			printf("\t\tOUTPUT  --  %20s\n", out->paramName);
+			out = out->next;
+		}
+	}
+	printf("\n");
+}
 
+}
+void printGlobalVariables(symbolTable* ST){
+	printScopeTable(ST->curr,0,0);
+}
 symbolTable* enterRecords(ParseTree PT,symbolTable* ST){
 	ST->recs = (struct records*)malloc(sizeof(struct records));
 	ST->recs->head = NULL;
@@ -408,7 +454,7 @@ void freeScopeTable(scopeTable s){
 	free(s);
 }
 
-void printScopeTable(scopeTable s, int spaces){
+void printScopeTable(scopeTable s, int spaces,int all){
 	if(!s)
 		return;
 	entry** arr = s->arr;
@@ -419,8 +465,8 @@ void printScopeTable(scopeTable s, int spaces){
 				for(int j=0; j<spaces; j++)
 					printf("\t\t");
 				printf("%20s\t\t%20s\t%d\n", ptr->type, ptr->name, ptr->record_or_not);
-				if(strcmp(ptr->type, "function")==0)
-					printScopeTable(ptr->funcScopePtr, spaces+1);
+				if((strcmp(ptr->type, "function")==0)&&all)
+					printScopeTable(ptr->funcScopePtr, spaces+1,all);
 
 				if(ptr->record_or_not){
 					RecordValue recval = ptr->recVal;
@@ -433,27 +479,28 @@ void printScopeTable(scopeTable s, int spaces){
 			}
 		}
 	}
-	
-	ParamNode in = s->inputParams;
-	ParamNode out = s->outputParams;
-	
-	printf("\n");
-	while(in){
-		printf("\t\tINPUT  --  %20s\n", in->paramName);
-		in = in->next;
-	}
-	
-	printf("\n");
-	while(out){
-		printf("\t\tOUTPUT  --  %20s\n", out->paramName);
-		out = out->next;
+	if(all){
+		ParamNode in = s->inputParams;
+		ParamNode out = s->outputParams;
+		
+		printf("\n");
+		while(in){
+			printf("\t\tINPUT  --  %20s\n", in->paramName);
+			in = in->next;
+		}
+		
+		printf("\n");
+		while(out){
+			printf("\t\tOUTPUT  --  %20s\n", out->paramName);
+			out = out->next;
+		}
 	}
 	printf("\n");
 }
 
 void printSymbolTable(symbolTable* ST){
 	scopeTable s = ST->curr;
-	printScopeTable(s, 0);
+	printScopeTable(s, 0,1);
 }
 
 void checkTypeAssign(symbolTable* ST, ParseTree p,char* type)

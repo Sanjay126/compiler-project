@@ -129,5 +129,5 @@ struct stack{
 	SNode head;		
 };
 typedef struct stack* Stack;
-
+int noOfPTNode;
 #endif

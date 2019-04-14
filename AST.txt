@@ -1,597 +1,80 @@
-Group 12
-
-Sanjay Malhotra(2016A7PS0126P)
-Tushar Goel(2016A7PS0023P)
-Nilay Arora(2016A7PS0117P)
-Adit Shastri(2016A7PS0121P)
-
-1.) Original Rule:
-	<program> ===> <otherFunctions> <mainFunction>
-	
-	---Corresponding Semantic Rules---
-	other=new(other_functions,otherFunctions.addr)
-	main=new(main,mainFunction.addr)
-	root.addr=new(program,other,main)
-
-2.) Original Rule:
-	<mainFunction>===> TK_MAIN <stmts> TK_END
-	
-	---Corresponding Semantic Rules---
-	mainFunction.addr=stms.addr
-
-3.) Original Rule:
-	<otherFunctions> ===> <function> <otherFunctions1>
-	
-	---Corresponding Semantic Rules---
-	function=new(function,function.addr)
-	otherFunctions.addr=connectToHead(function,otherFunctions1.addr)
-
-4.) Original Rule:
-	<otherFunctions> ===>eps
-	
-	---Corresponding Semantic Rules---
-	otherFunctions.addr=NULL
-
-5.) Original Rule:
-	<function> ===> TK_FUNID <input_par> <output_par> TK_SEM <stmts> TK_END
-	
-	---Corresponding Semantic Rules---
-	stmts = new(statements, stmts.addr)
-	function.addr = connectToHead( TK_FUNID.addr, input_par.addr, output_par.addr, stmts)
-
-6.) Original Rule:
-	<input_par> ===> TK_INPUT  TK_PARAMETER  TK_LIST TK_SQL  <parameter_list>  TK_SQR
-	
-	---Corresponding Semantic Rules---
-	input_par.addr = new(input,parameter_list.addr)
-
-7.) Original Rule:
-	<output_par> ===> TK_OUTPUT  TK_PARAMETER  TK_LIST TK_SQL  <parameter_list> TK_SQR
-	
-	---Corresponding Semantic Rules---
-	output_par.addr = new(output,parameter_list.addr)
-
-8.) Original Rule:
-	<output_par> ===> eps
-	
-	---Corresponding Semantic Rules---
-	output_par.addr=NULL
-
-9.) Original Rule:
-	<parameter_list> ===> <dataType>  TK_ID  <remaining_list>
-	
-	---Corresponding Semantic Rules---
-	data = new(data, dataType.addr, TK_ID.addr)
-	parameter_list.addr=connectToHead(data, remaining_list.addr)
-
-10.) Original Rule:	
-	<dataType> ===>  <primitiveDatatype>
-	
-	---Corresponding Semantic Rules---
-	dataType.addr = primitiveDatatype.addr
-	
-
-11.) Original Rule:
-	<dataType> ===> <constructedDatatype>
-	
-	---Corresponding Semantic Rules---
-	dataType.addr = constructedDatatype.addr
-
-12.) Original Rule:
-	<primitiveDatatype> ===> TK_INT
-		
-	---Corresponding Semantic Rules---
-	primitiveDatatype.addr=TK_INT.addr
-
-13.) Original Rule:
-	<primitiveDatatype> ===> TK_REAL
-	
-	---Corresponding Semantic Rules---
-	primitiveDatatype.addr=TK_REAL.addr
-
-14.) Original Rule:
-	<constructedDatatype> ===> TK_RECORD  TK_RECORDID
-	
-	---Corresponding Semantic Rules---
-	constructedDatatype.addr = new(Record,TK_RECORDID.addr)
-
-15.) Original Rule:
-	<remaining_list> ===> TK_COMMA <parameter_list>
-	
-	---Corresponding Semantic Rules---
-	remaining_list.addr=parameter_list.addr
-
-16.) Original Rule:
-	<remaining_list> ===> eps
-	
-	---Corresponding Semantic Rules---
-	<remaining_list>.addr=NULL
-
-17.) Original Rule:
-	<stmts> ===> <typeDefinitions> <declarations> <otherStmts> <returnStmt>
-	
-	---Corresponding Semantic Rules---
-	type = new(typedef, typeDefinitions.addr)
-	dec = new(declaration, declaration.addr)
-	others = new(others, otherStmts.addr)
-	return = new(returns, returnStmt.addr)
-	stmts.addr = connectToHead(type, dec, others, return)
-
-18.) Original Rule:
-	<typeDefinitions> ===> <typeDefinition> <typeDefinitions1>
-	
-	---Corresponding Semantic Rules---
-	typeDefinitions.addr = connectToHead(typeDefinition.addr, typeDefinitions1.addr)
-	
-
-19.) Original Rule:
-	<typeDefinitions> ===>  eps
-	
-	---Corresponding Semantic Rules---
-	<typeDefinitions>.addr=NULL
-
-20.) Original Rule:
-	<typeDefinition> ===> TK_RECORD TK_RECORDID <fieldDefinitions> TK_ENDRECORD TK_SEM
-	
-	---Corresponding Semantic Rules---
-	typeDefinition.addr = new(record, TK_RECORDID.addr, fieldDefinitions.addr)	
-
-21.) Original Rule:
-	<fieldDefinitions> ===> <fieldDefinition1> <fieldDefinition2> <moreFields>
-	
-	---Corresponding Semantic Rules---
-	field1 = new(field, fieldDefinition1.addr)
-	field2 = new(field, fieldDefinition2.addr)
-	fieldDefinitions.addr = connectToHead(field1, field2, moreFields.addr)
-	
-22.) Original Rule:
-	<fieldDefinition> ===> TK_TYPE <primitiveDatatype> TK_COLON TK_FIELDID TK_SEM
-	
-	---Corresponding Semantic Rules---
-	fieldDefinition.addr = connectToHead(primitiveDatatype.addr, TK_FIELDID.addr)
-
-23.) Original Rule:
-	<moreFields> ===> <fieldDefinition> <moreFields1>
-		
-	---Corresponding Semantic Rules---
-	moreFields.addr = connectToHead(fieldDefinition.addr,moreFields1.addr)
-	
-
-24.) Original Rule:
-	<moreFields> ===> eps
-	
-	---Corresponding Semantic Rules---
-	morefields.addr=NULL
-
-25.) Original Rule:
-	<declarations> ===> <declaration> <declarations1>
-	
-	---Corresponding Semantic Rules---
-	dec = new(var_declr, declaration.addr)
-	declarations.addr= connectToHead(dec,  declarations1.addr)
-	
-
-26.) Original Rule:
-	<declarations> ===> eps
-	
-	---Corresponding Semantic Rules---
-	declarations.addr=NULL
-
-27.) Original Rule:
-	<declaration> ===> TK_TYPE <dataType> TK_COLON TK_ID  <global_or_not> TK_SEM
-	
-	---Corresponding Semantic Rules---
-	declaration.addr = connectToHead( dataType.addr,  TK_ID.addr, global_or_not.addr)
-
-28.) Original Rule:
-	<global_or_not> ===> TK_COLON  TK_GLOBAL
-	
-	---Corresponding Semantic Rules---
-	global_or_not.addr=TK_GLOBAL.addr
-
-29.) Original Rule:
-	<global_or_not> ===> eps
-	
-	---Corresponding Semantic Rules---
-	global_or_not.addr=NULL
-
-30.) Original Rule:
-	<otherStmts> ===> <stmt> <otherStmts1>
-	
-	---Corresponding Semantic Rules---
-	otherStmts.addr = connectToHead(stmt.addr, otherstmts1.addr)	
-
-31.) Original Rule:
-	<otherStmts> ===> eps
-	
-	---Corresponding Semantic Rules---
-	otherstmts.addr=NULL
-	
-32.) Original Rule:
-	<stmt> ===> <assignmentStmt>
-	
-	---Corresponding Semantic Rules---
-	stmt.addr= new(assignStmt, assignmentStmt.addr)
-	
-33.) Original Rule:	
-	<stmt> ===> <funCallStmt>
-	
-	---Corresponding Semantic Rules---
-	stmt.addr=new(funcStmt,funcallstmt.addr)
-
-34.) Original Rule:	
-	<stmt> ===> <iterativeStmt>
-	
-	---Corresponding Semantic Rules---
-	stmt.addr=new(iterStmt,iterativestmt.addr)
-
-35.) Original Rule:	
-	<stmt> ===> <conditionalStmt>
-	
-	---Corresponding Semantic Rules---
-	stmt.addr=new(condStmt,conditionalstmt.addr)
-36.) Original Rule:
-	<stmt> ===> <ioStmt>
-	
-	---Corresponding Semantic Rules---
-	stmt.addr=new(IO_Stmt,iostmt.addr)
-
-37.) Original Rule:	
-	<assignmentStmt> ===> <singleOrRecId> TK_ASSIGNOP  <arithmeticExpression> TK_SEM
-	
-	---Corresponding Semantic Rules---
-	single = new(varID, singleorRecid.addr)
-	assignmentStmt.addr = connectToHead(single, arithmeticExpression.addr)
-
-38.) Original Rule:
-	<singleOrRecId> ===>TK_ID  <new_24>
-		
-	---Corresponding Semantic Rules---
-	singleOrRecId.addr = connectToHead(TK_ID.addr, new_24.addr)
-
-39.) Original Rule:
-	<new_24> ===> TK_DOT  TK_FIELDID
-	
-	---Corresponding Semantic Rules---
-	new_24.addr = new(recField, TK_FIELDID.addr)
-
-40.) Original Rule:	
-	<new_24> ===> eps
-	
-	---Corresponding Semantic Rules---
-	new_24.addr= NULL
-
-41.) Original Rule:	
-	<funCallStmt> ===> <outputParameters> TK_CALL  TK_FUNID  TK_WITH TK_PARAMETERS <inputParameters>  TK_SEM
-	
-	---Corresponding Semantic Rules---
-	input  = new(inParams, inputParameters.addr)
-	funCallStmt.addr = connectToHead( outputParameters.addr, TK_FUNID.addr, input)
-
-42.) Original Rule:	
-	<outputParameters> ==> TK_SQL <idList> TK_SQR TK_ASSIGNOP
-	
-	---Corresponding Semantic Rules---
-	outputParameters.addr = new(outParams, idList.addr)
-
-43.) Original Rule:	
-	<outputParameters> ==> eps
-	
-	---Corresponding Semantic Rules---
-	outputParameters.addr=NULL
-
-44.) Original Rule:	
-	<inputParameters> ===> TK_SQL <idList> TK_SQR
-	
-	---Corresponding Semantic Rules---
-	inputParameters.addr = idlist.addr
-	
-
-45.) Original Rule:	
-	<iterativeStmt> ===> TK_WHILE TK_OP <booleanExpression> TK_CL <stmt> <otherStmts> TK_ENDWHILE
-	
-	---Corresponding Semantic Rules---
-	statements = new(statements, stmt.addr, otherStmts.addr)
-	iterativeStmt.addr = connectToHead( booleanExpression.addr, statements)
-	
-	
-46.) Original Rule:	
-	<conditionalStmt> ===> TK_IF TK_OP <booleanExpression> TK_CL TK_THEN <stmt> <otherStmts> <elsePart>
-	
-	---Corresponding Semantic Rules---
-	statements = new(statements, stmt.addr, otherStmts.addr)
-	conditionalstmt.addr = connectToHead(booleanExpression.addr, statements, elsePart.addr)
-	
-	
-
-47.) Original Rule:
-	<elsePart> ===> TK_ELSE <stmt> <otherStmts> TK_ENDIF
-	
-	---Corresponding Semantic Rules---
-	statements = new(statements, stmt.addr, otherStmts.addr)
-	elsePart.addr = new(else, statements)
-	
-
-48.) Original Rule:
-	<elsePart> ===> TK_ENDIF
-	
-	---Corresponding Semantic Rules---
-	elsePart.addr=NULL
-
-49.) Original Rule:
-	<ioStmt> ===> TK_READ TK_OP <singleOrRecId> TK_CL TK_SEM
-	
-	---Corresponding Semantic Rules---
-	iostmt.addr = new(readStmt, singleOrRecid.addr)
-	
-50.) Original Rule:
-	<ioStmt> ===>  TK_WRITE TK_OP <allVar> TK_CL TK_SEM
-		
-	---Corresponding Semantic Rules---
-	iostmt.addr = new(writeStmt, allvar.addr)
-
-51.) Original Rule:	
-	<allVar> ===>  TK_ID <newallvar>
-		
-	---Corresponding Semantic Rules---
-	allVar.addr= new(varName, TK_ID, newallvar.addr)
-
-52.) Original Rule:	
-	<allVar> ===>  TK_RNUM
-	
-	---Corresponding Semantic Rules---
-	allVar.addr= TK_RNUM.addr
-
-53.) Original Rule:
-	<allVar> ===>  TK_NUM
-	
-	---Corresponding Semantic Rules---
-	allVar.addr= TK_NUM.addr
-	
-54.) Original Rule:
-	<newallvar> ===>  TK_DOT TK_FIELDID
-	
-	---Corresponding Semantic Rules---
-	newallvar.addr= new(recName, TK_FIELDID)
-
-55.) Original Rule:	
-	<newallvar> ===>  eps
-	
-	---Corresponding Semantic Rules---
-	newallvar.addr= NULL
-	
-56.) Original Rule:
-	<arithmeticExpression> ===>  <term> <expPrime>
-	
-	---Corresponding Semantic Rules---
-	arithmeticExpression.addr= new(arith, term.addr, expPrime.addr)
-
-57.) Original Rule:	
-	<expPrime> ===>  <lowPrecedenceOperators> <term> <expPrime>
-	
-	---Corresponding Semantic Rules---
-	expPrime.addr= new(lowerPrec, term.addr, lowPrecedenceOperators.addr, expPrime.addr)
-
-58.) Original Rule:	
-	<expPrime> ===>  eps
-	
-	---Corresponding Semantic Rules---
-	expPrime.addr= NULL
-	
-
-59.) Original Rule:
-	<term> ===>  <factor> <termPrime>
-	
-	---Corresponding Semantic Rules---
-	term.addr= connectToHead(factor.addr, termPrime.addr)
-
-60.) Original Rule:
-	<termPrime> ===>  <highPrecedenceOperators> <factor> <termPrime>
-	
-	---Corresponding Semantic Rules---
-	termPrime.addr= new(higherPrec, factor.addr, highPrecedenceOperators.addr, termPrime.addr)
-
-61.) Original Rule:
-	<termPrime> ===>  eps
-		
-	---Corresponding Semantic Rules---
-	termPrime.addr= NULL
-
-62.) Original Rule:
-	<factor> ===> <all>
-		
-	---Corresponding Semantic Rules---
-	factor.addr= all.addr
-
-63.) Original Rule:
-	<factor> TK_OP <arithmeticExpression> TK_CL
-		
-	---Corresponding Semantic Rules---
-	factor.addr= arithmeticExpression.addr
-64.) Original Rule:
-	<lowPrecedenceOperators> ===>  TK_MINUS
-	
-	---Corresponding Semantic Rules---
-	lowPrecedenceOperators.addr= TK_MINUS
-
-65.) Original Rule:
-	<lowPrecedenceOperators> ===> TK_PLUS
-	
-	---Corresponding Semantic Rules---
-	lowPrecedenceOperators.addr=tk_plus.addr
-
-66.) Original Rule:
-	<highPrecedenceOperators> ===> TK_MUL
-	
-	---Corresponding Semantic Rules---
-	highPrecedenceOperators.addr=tk_mul.addr
-
-67.) Original Rule:	
-	<highPrecedenceOperators> ===> TK_DIV
-	
-	---Corresponding Semantic Rules---
-	highPrecedenceOperators.addr=tk_div.addr
-68.) Original Rule:
-	<all> ===>  TK_ID <allnew>
-	
-	---Corresponding Semantic Rules---
-	all.addr= new(varName, TK_ID, allnew.addr)
-
-69.) Original Rule:
-	<all> ===>  TK_NUM
-	
-	---Corresponding Semantic Rules---
-	all.addr= TK_NUM.addr
-70.) Original Rule:
-	<all> ===>  TK_RNUM
-		
-	---Corresponding Semantic Rules---
-	all.addr= TK_RNUM.addr
-
-71.) Original Rule:
-	<allnew> ===>  <temp>
-	
-	---Corresponding Semantic Rules---
-	allnew.addr= temp.addr
-
-72.) Original Rule:
-	<allnew> ===>  eps
-		
-	---Corresponding Semantic Rules---
-	allnew.addr= NULL
-73.) Original Rule:
-	<temp> ===>  eps
-		
-	---Corresponding Semantic Rules---
-	temp.addr= NULL
-
-74.) Original Rule:
-	<temp> TK_DOT TK_FIELDID
-	
-	---Corresponding Semantic Rules---
-	temp.addr= new(recID, TK_FIELDID)
-
-75.) Original Rule:	
-	<booleanExpression> ===> TK_OP  <booleanExpression1> TK_CL <logicalOp> TK_OP <booleanExpression2> TK_CL
-	
-	---Corresponding Semantic Rules---
-	booleanExpression.addr= new(boolean, booleanExpression1.addr, logicalOp.addr, booleanExpression2.addr)	
-
-76.) Original Rule:
-	<booleanExpression> ===> <allVar> <relationalOp> <allVar>
-		
-	---Corresponding Semantic Rules---
-	booleanExpression.addr= new(boolean, var.addr, relationalOp.addr, var.addr)
-	
-77.) Original Rule:	
-	<booleanExpression> ===> TK_NOT TK_OP <booleanExpression1>TK_CL
-		
-	---Corresponding Semantic Rules---
-	booleanExpression.addr= new(boolean, TK_NOT, booleanExpression.addr)
-
-78.) Original Rule:
-	<var> ===> TK_NUM
-	
-	---Corresponding Semantic Rules---
-	var.addr=TK_NUM.addr
-
-79.) Original Rule:
-	<var> ===> TK_RNUM
-	
-	---Corresponding Semantic Rules---
-	var.addr=TK_RNUM.addr
-
-80.) Original Rule:
-	<var> ===> <TK_ID>
-	
-	---Corresponding Semantic Rules---
-	var.addr = TK_ID.addr
-
-81.) Original Rule:
-	<logicalOp> ===> TK_AND
-	
-	---Corresponding Semantic Rules---
-	logicalOp.addr= TK_AND.addr
-
-82.) Original Rule:
-	<logicalOp> ===> TK_OR
-	
-	---Corresponding Semantic Rules---
-	logicalOp.addr= TK_OR.addr
-
-83.) Original Rule:
-	<relationalOp> ===> TK_LT
-	
-	---Corresponding Semantic Rules---
-	relationalOp.addr=TK_LT.addr
-
-84.) Original Rule:
-	<relationalOp> ===> TK_LE
-	
-	---Corresponding Semantic Rules---
-	relationalOp.addr=TK_LE.addr
-
-85.) Original Rule:
-	<relationalOp> ===> TK_EQ
-	
-	---Corresponding Semantic Rules---
-	relationalOp.addr=TK_EQ.addr
-
-86.) Original Rule:
-	<relationalOp> ===> TK_GT
-	
-	---Corresponding Semantic Rules---
-	relationalOp.addr=TK_GT.addr
-
-87.) Original Rule:
-	<relationalOp> ===> TK_GE
-	
-	---Corresponding Semantic Rules---
-	relationalOp.addr=TK_GE.addr
-
-88.) Original Rule:
-	<relationalOp> ===> TK_NE
-	
-	---Corresponding Semantic Rules---
-	relationalOp.addr=TK_NE.addr
-
-89.) Original Rule:
-	<returnStmt> ===> TK_RETURN <optionalReturn> TK_SEM
-	
-	---Corresponding Semantic Rules---
-	returnStmt.addr  =  optionalReturn.addr
-	
-
-90.) Original Rule:
-	<optionalReturn> ===> TK_SQL <idList> TK_SQR
-	
-	---Corresponding Semantic Rules---
-	optionalReturn.addr=idlist.addr
-	
-
-91.) Original Rule:
-	<optionalReturn> ===> eps
-	
-	---Corresponding Semantic Rules---
-	optionalReturn.addr=NULL
-	
-92.) Original Rule:
-	<idList> ===> TK_ID <more_ids>
-	
-	---Corresponding Semantic Rules---
-	ID = new(id, TK_ID.addr)
-	idlist.addr = connectToHead(ID, moreid.addr)
-	
-
-93.) Original Rule:
-	<more_ids> ===> TK_COMMA <idList>
-	
-	---Corresponding Semantic Rules---
-	moreids.addr=idlist.addr
-	
-
-94.) Original Rule:
-	<more_ids> ===> eps
-	
-	---Corresponding Semantic Rules---
-	moreids.addr=NULL
+                 lexeme	                 lineno	              tokenName	          valueIfNumber	       parentNodeSymbol	             isLeafNode	             NodeSymbol	                 ruleNo	
+
+                  _sumN	                      4	               TK_FUNID	                   ----	               function	                    yes	                   ----	                      0
+                    int	                      4	                 TK_INT	                   ----	              input_par	                    yes	                   ----	                      0
+                 d5cc34	                      4	                  TK_ID	                   ----	              input_par	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     31	                     no	              input_par	                      6
+                   real	                      5	                TK_REAL	                   ----	             output_par	                    yes	                   ----	                      0
+                     d3	                      5	                  TK_ID	                   ----	             output_par	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     31	                     no	             output_par	                      7
+                    int	                      6	                 TK_INT	                   ----	            declaration	                    yes	                   ----	                      0
+                 b5b567	                      6	                  TK_ID	                   ----	            declaration	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     15	                     no	            declaration	                     27
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	           declarations	                     25
+                 b5b567	                      7	                  TK_ID	                   ----	          singleOrRecId	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	          singleOrRecId	                     38
+                      1	                      7	                 TK_NUM	                      1	   arithmeticExpression	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	   arithmeticExpression	                     56
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	         assignmentStmt	                     37
+                     d3	                      8	                  TK_ID	                   ----	          singleOrRecId	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	          singleOrRecId	                     38
+                   0.00	                      8	                TK_RNUM	                   0.00	   arithmeticExpression	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	   arithmeticExpression	                     56
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	         assignmentStmt	                     37
+                 b5b567	                      9	                  TK_ID	                   ----	      booleanExpression	                    yes	                   ----	                      0
+                     <=	                      9	                  TK_LE	                   ----	      booleanExpression	                    yes	                   ----	                      0
+                 d5cc34	                      9	                  TK_ID	                   ----	      booleanExpression	                    yes	                   ----	                      0
+                    &&&	                      9	                 TK_AND	                   ----	      booleanExpression	                    yes	                   ----	                      0
+                 b5b567	                      9	                  TK_ID	                   ----	      booleanExpression	                    yes	                   ----	                      0
+                     <=	                      9	                  TK_LE	                   ----	      booleanExpression	                    yes	                   ----	                      0
+                 d5cc34	                      9	                  TK_ID	                   ----	      booleanExpression	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     26	                     no	      booleanExpression	                     75
+                   read	                     10	                TK_READ	                   ----	                 ioStmt	                    yes	                   ----	                      0
+                   c3bd	                     10	                  TK_ID	                   ----	          singleOrRecId	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     50	                     no	          singleOrRecId	                     38
+                   ----	                   ----	                   ----	                   ----	                     26	                     no	                 ioStmt	                     49
+                     d3	                     11	                  TK_ID	                   ----	          singleOrRecId	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	          singleOrRecId	                     38
+                     d3	                     11	                  TK_ID	                   ----	   arithmeticExpression	                    yes	                   ----	                      0
+                      +	                     11	                TK_PLUS	                   ----	   arithmeticExpression	                    yes	                   ----	                      0
+                   c3bd	                     11	                  TK_ID	                   ----	   arithmeticExpression	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	   arithmeticExpression	                     56
+                   ----	                   ----	                   ----	                   ----	                     26	                     no	         assignmentStmt	                     37
+                 b5b567	                     12	                  TK_ID	                   ----	          singleOrRecId	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	          singleOrRecId	                     38
+                 b5b567	                     12	                  TK_ID	                   ----	   arithmeticExpression	                    yes	                   ----	                      0
+                      +	                     12	                TK_PLUS	                   ----	   arithmeticExpression	                    yes	                   ----	                      0
+                      1	                     12	                 TK_NUM	                      1	   arithmeticExpression	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	   arithmeticExpression	                     56
+                   ----	                   ----	                   ----	                   ----	                     26	                     no	         assignmentStmt	                     37
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	          iterativeStmt	                     45
+                     d3	                     14	                  TK_ID	                   ----	             returnStmt	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	             returnStmt	                     89
+                   ----	                   ----	                   ----	                   ----	                     31	                     no	                  stmts	                     17
+                   ----	                   ----	                   ----	                   ----	                     19	                     no	               function	                      5
+                    int	                     18	                 TK_INT	                   ----	            declaration	                    yes	                   ----	                      0
+                     b3	                     18	                  TK_ID	                   ----	            declaration	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     15	                     no	            declaration	                     27
+                   real	                     19	                TK_REAL	                   ----	            declaration	                    yes	                   ----	                      0
+                 c4bd56	                     19	                  TK_ID	                   ----	            declaration	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     15	                     no	            declaration	                     27
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	           declarations	                     25
+                     b3	                     20	                  TK_ID	                   ----	          singleOrRecId	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	          singleOrRecId	                     38
+                      7	                     20	                 TK_NUM	                      7	   arithmeticExpression	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                      0	                     no	   arithmeticExpression	                     56
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	         assignmentStmt	                     37
+                 c4bd56	                     21	                  TK_ID	                   ----	       outputParameters	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     37	                     no	       outputParameters	                     42
+                  _sumN	                     21	               TK_FUNID	                   ----	            funCallStmt	                    yes	                   ----	                      0
+                     b3	                     21	                  TK_ID	                   ----	        inputParameters	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     37	                     no	        inputParameters	                     44
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	            funCallStmt	                     41
+                  write	                     22	               TK_WRITE	                   ----	                 ioStmt	                    yes	                   ----	                      0
+                 c4bd56	                     22	                  TK_ID	                   ----	                 allVar	                    yes	                   ----	                      0
+                   ----	                   ----	                   ----	                   ----	                     50	                     no	                 allVar	                     51
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	                 ioStmt	                     50
+                   ----	                   ----	                   ----	                   ----	                     23	                     no	             returnStmt	                     89
+                   ----	                   ----	                   ----	                   ----	                     36	                     no	                  stmts	                     17
+                   ----	                   ----	                   ----	                   ----	                     19	                     no	           mainFunction	                      2
+                   ----	                   ----	                   ----	                   ----	                   ROOT	                     no	                program	                      1

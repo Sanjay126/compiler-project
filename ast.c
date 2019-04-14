@@ -11,6 +11,7 @@ ParseTree ast;
 
 ParseTree del_child(ParseTree node,int i)
 {
+	noOfASTnodes--;
 	ParseTree ptr = node->children;
 	if(i == 0)
 	{
@@ -821,6 +822,7 @@ static ParseTree (*functions[94])() = {case1, case2, case3, case4, case5, case6,
 
 ParseTree createAST(ParseTree PT)
 {
+	// noOfASTnodes=noOfPTNode;
 	if(PT->children == NULL)
 		return PT;
 	ParseTree ptr  = PT->children;
