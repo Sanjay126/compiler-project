@@ -29,7 +29,7 @@ void printMemoryReq(symbolTable* s){
 			while(ptr){
 				if((strcmp(ptr->type, "function")==0))
 					printf("%20s\t%4d",ptr->name,ptr->width);
-	
+				ptr=ptr->next;
 			}
 		}
 	}
